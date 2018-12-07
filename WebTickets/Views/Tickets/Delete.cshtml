@@ -1,0 +1,226 @@
+﻿@model Model.DB_Model.Ticket
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Ticket</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Numero_Ticket)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Numero_Ticket)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Fecha)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Fecha)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Privado)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Privado)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Operador_Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Operador_Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Operador_Sector_Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Operador_Sector_Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Usuario_Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Usuario_Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombre_completo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nombre_completo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Area_Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Area_Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Ubicacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Ubicacion)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Telefono)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Telefono)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EMail)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EMail)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Asignado_A)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Asignado_A)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Asignado_A_Sector)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Asignado_A_Sector)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Prioridad)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Prioridad)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Incidente)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Incidente)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Proceso)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Proceso)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Tipo_Trabajo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Tipo_Trabajo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Id_Planta)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Id_Planta)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Id_EquipoPrinc)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Id_EquipoPrinc)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Id_EquipoSec)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Id_EquipoSec)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Id_Componente)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Id_Componente)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Estado)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Estado)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Calificacion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Calificacion)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Fecha_Ultimo_Estado)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Fecha_Ultimo_Estado)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Fecha_Entrega)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Fecha_Entrega)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Operador_Ultimo_Estado)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Operador_Ultimo_Estado)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Adjunto)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Adjunto)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Tipo_Adjunto)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Tipo_Adjunto)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Ruta_Adjunto)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Ruta_Adjunto)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombre_Adjunto)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nombre_Adjunto)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Insert_Oper)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Insert_Oper)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Insert_Datetime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Insert_Datetime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Update_Oper)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Update_Oper)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Update_Datetime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Update_Datetime)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

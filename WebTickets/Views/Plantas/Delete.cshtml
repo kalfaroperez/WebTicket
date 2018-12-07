@@ -1,0 +1,64 @@
+﻿@model Model.DB_Model.Planta
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Eliminar</h2>
+
+<h3>Esta seguro que se desea eliminar este registro?</h3>
+<div>
+    <h4>Planta</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Estado)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Estado)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Insert_Oper)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Insert_Oper)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Insert_Datetime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Insert_Datetime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Update_Oper)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Update_Oper)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Update_Datetime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Update_Datetime)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Eliminar" class="btn btn-default" /> |
+		<a asp-action="Index">Volver a Listado</a>
+    </form>
+</div>

@@ -1,0 +1,4 @@
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persistence.DbContextScope\obj\Debug\netcoreapp2.1\Persistence.DbContextScope.csprojAssemblyReference.cache
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persistence.DbContextScope\obj\Debug\netcoreapp2.1\Persistence.DbContextScope.csproj.CoreCompileInputs.cache
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persistence.DbContextScope\obj\Debug\netcoreapp2.1\Persistence.DbContextScope.AssemblyInfoInputs.cache
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persistence.DbContextScope\obj\Debug\netcoreapp2.1\Persistence.DbContextScope.AssemblyInfo.cs

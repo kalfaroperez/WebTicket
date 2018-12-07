@@ -1,0 +1,327 @@
+﻿@model TicketViewModel
+
+@{
+	ViewData["Title"] = "Nuevo Ticket";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<form class="form-horizontal" role="form" id="ticketForm" asp-action="Create">
+	<div class="panel panel-primary margen-top">
+		<div class="row">
+			<div class="col-xs-4">
+				<label asp-for="Numero_Ticket" class="input-sm"></label>
+				<input type="hidden" asp-for="Numero_Ticket" />
+				<span class="input-sm"> @Model.Numero_Ticket </span>
+			</div>
+			<div class="col-xs-4">
+				<label asp-for="Fecha" class="input-sm">Fecha: </label>
+				<span class="input-sm"> @Model.Fecha </span>
+			</div>
+			<div class="col-xs-4">
+				<label asp-for="Username" class="input-sm"></label>
+				<input type="hidden" asp-for="Username" />
+				<input type="hidden" asp-for="Nombre_completo" />
+				<label asp-for="Username" class="input-sm">@Model.Username - @Model.Nombre_completo </label>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default margen-top">
+		<div class="panel-heading input-sm">
+			<div class="col-xs-4">
+				<span class="input-sm">  <b>Datos del Usuario </b> </span><b></b>
+				<input type="hidden" asp-for="Operador_Id" />
+				<input type="hidden" asp-for="Usuario_Id" />
+			</div>
+		</div>
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-xs-5">
+					<div class="form-group-sm">
+						<label asp-for="Operador_UserName" class="input-sm col-xs-4">Usuario </label>
+						<div class="controls col-sm-6">
+							<input asp-for="Operador_UserName" class="form-control input-sm" />
+						</div>
+						<div class="col-xs-1">
+							<button data-toggle="modal" data-target="#modalUsuario">
+								<span class="font-size: 48px; ">
+									<i class="fa fa-search"></i>
+								</span>
+							</button>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label asp-for="Operador_Nombre_completo" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<input asp-for="Operador_Nombre_completo" class="form-control input-sm" />
+					</div>
+				</div>
+				<div class="col-xs-5">
+					<label asp-for="Area" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<input asp-for="Area" class="form-control input-sm" />
+						<input type="hidden" asp-for="Area_Id" />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label asp-for="Email" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<input asp-for="Email" class="form-control input-sm" />
+					</div>
+				</div>
+				<div class="col-xs-5">
+					<label asp-for="Ubicacion" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<input asp-for="Ubicacion" class="form-control input-sm" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default margen-top">
+		<div class="panel-heading input-sm">
+			<div class="col-xs-4">
+				<span class="input-sm">  <b>Informacion Ticket </b> </span>
+			</div>
+			<div class="col-xs-4">
+				<span class="input-sm"> <b> </b></span>
+				<span class="input-sm"> </span>
+			</div>
+			<div class="col-xs-4">
+				<span class="input-sm"> <b>Fecha Ultimo Estado: </b></span>
+				<span class="input-sm"> @Model.Fecha_Ultimo_Estado </span>
+			</div>
+		</div>
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="form-group-sm">
+						<label asp-for="Incidente" class="input-sm col-xs-1"></label>
+						<div class="controls col-sm-10">
+							<textarea asp-for="Incidente" rows="1" cols="40" class="form-control input-sm"></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="form-group-sm">
+						<label asp-for="Comentarios" class="input-sm col-xs-1"></label>
+						<div class="controls col-sm-10">
+							<textarea asp-for="Comentarios" rows="3" cols="40" class="form-control input-sm"></textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label asp-for="FileUpload" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<input asp-for="FileUpload" type="file" class="controls input-sm " multiple />
+						<span asp-validation-for="FileUpload" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label asp-for="Prioridad" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<select class="combobox input-sm" asp-for="Prioridad" asp-items="@Model.Lista_Prioridades"></select>
+						<span asp-validation-for="Prioridad" class=" text-danger"></span>
+					</div>
+				</div>
+				<div class="col-xs-5">
+					<label asp-for="Asignado_A" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<select class="combobox input-sm" asp-for="Asignado_A" asp-items="@Model.Lista_Asignados_A"></select>
+						<span asp-validation-for="Asignado_A" class=" text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label asp-for="Proceso" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<select class="combobox input-sm" asp-for="Proceso" asp-items="@Model.Lista_Procesos"></select>
+						<span asp-validation-for="Proceso" class=" text-danger"></span>
+					</div>
+				</div>
+				<div class="col-xs-5">
+					<label asp-for="Tipo_Trabajo" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<select class="combobox input-sm" asp-for="Tipo_Trabajo" asp-items="@Model.Lista_Tipo_Trabajos">
+							<option>Seleccione...</option>
+						</select>
+						<span asp-validation-for="Tipo_Trabajo" class=" text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label asp-for="Planta" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<select class="combobox input-sm" asp-for="Planta" asp-items="@Model.Lista_Plantas">
+							<option>Seleccione...</option>
+						</select>
+						<span asp-validation-for="Planta" class=" text-danger"></span>
+					</div>
+				</div>
+				<div class="col-xs-5">
+					<label asp-for="EquipoPrincipal" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<select class="combobox input-sm" asp-for="EquipoPrincipal" asp-items="@Model.Lista_Equipos_princ">
+							<option>Seleccione...</option>
+						</select>
+						<span asp-validation-for="EquipoPrincipal" class=" text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label asp-for="EquipoSecundario" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<select class="combobox input-sm" asp-for="EquipoSecundario" asp-items="@Model.Lista_Equipos_sec">
+							<option>Seleccione...</option>
+						</select>
+						<span asp-validation-for="EquipoSecundario" class=" text-danger"></span>
+					</div>
+				</div>
+				<div class="col-xs-5">
+					<label asp-for="Componente" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<select class="combobox input-sm" asp-for="Componente" asp-items="@Model.Lista_Componentes">
+							<option>Seleccione...</option>
+						</select>
+						<span asp-validation-for="Componente" class=" text-danger"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label asp-for="Estado" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<select class="combobox input-sm" asp-for="Estado" asp-items="@Model.Lista_Estados">
+							<option>Seleccione...</option>
+						</select>
+						<span asp-validation-for="Estado" class=" text-danger"></span>
+					</div>
+				</div>
+				<div class="col-xs-5">
+					<label asp-for="Fecha_Entrega" class="input-sm col-xs-4"></label>
+					<div class="controls col-sm-8">
+						<input asp-for="Fecha_Entrega" class="form-control input-sm" />
+						<span asp-validation-for="Fecha_Entrega" class=" text-danger"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="row">
+			<div class="col-md-12">
+				<center>
+					<input type="submit" value="Guardar" class="btn btn-default" />
+				</center>
+			</div>
+		</div>
+	</div>
+</form>
+<div class="row">
+	<table class="table table-sm table-dark">
+		<thead>
+			<tr>
+				<th>
+					<span class="font-size: 48px;">
+						<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+					</span>
+				</th>
+				<th>Nombre Completo</th>
+				<th>Area</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model.Lista_Usuarios)
+			{
+				<tr>
+					<td>
+						<a href="#" class="user_in_list" onclick="cargar_Usuario('@{ @item.Id }', '@Url.Action("GetUsuario", "Tickets")' );">
+							<span class="font-size: 48px;">
+								<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+							</span>
+						</a>
+					</td>
+					<td>@item.FullName</td>
+					<td>@item.Area</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="modalUsuario" tabindex="-1" role="dialog" aria-labelledby="modalUsuarioTitle" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalUsuarioTitle">Usuario - Operador</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<table class="table">
+					<thead class="thead-dark">
+						<tr>
+							<th>
+								<span class="font-size: 48px;">
+									<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+								</span>
+							</th>
+							<th>Nombre Completo</th>
+							<th>Area</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model.Lista_Usuarios)
+						{
+							<tr>
+								<td>
+									<button class="user_in_list" onclick="cargar_Usuario('@{ @item.Id }', '@Url.Action("GetUsuario", "Tickets")' );" >
+										<span class="font-size: 48px;">
+											<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+										</span>
+									</button>
+								</td>
+								<td>@item.FullName</td>
+								<td>@item.Area</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div>
+	<a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+	<script>
+		$(document).ready(function () {
+			$('#modalUsuario').on('shown.bs.modal', function () {
+			});
+		});
+
+
+	</script>
+}

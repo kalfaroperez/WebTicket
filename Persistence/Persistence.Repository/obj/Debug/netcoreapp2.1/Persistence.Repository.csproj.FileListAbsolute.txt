@@ -1,0 +1,3 @@
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persistence.Repository\obj\Debug\netcoreapp2.1\Persistence.Repository.csproj.CoreCompileInputs.cache
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persistence.Repository\obj\Debug\netcoreapp2.1\Persistence.Repository.AssemblyInfoInputs.cache
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persistence.Repository\obj\Debug\netcoreapp2.1\Persistence.Repository.AssemblyInfo.cs

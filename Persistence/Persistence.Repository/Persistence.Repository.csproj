@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Commons\Common\Common.csproj" />
+    <ProjectReference Include="..\Persitence.DatabaseContext\Persistence.DatabaseContext.csproj" />
+  </ItemGroup>
+
+</Project>

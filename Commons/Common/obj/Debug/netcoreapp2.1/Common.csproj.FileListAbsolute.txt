@@ -1,0 +1,14 @@
+D:\Users\kalfaro\source\repos\Ticket\Commons\Common\bin\Debug\netcoreapp2.1\Common.deps.json
+D:\Users\kalfaro\source\repos\Ticket\Commons\Common\bin\Debug\netcoreapp2.1\Common.dll
+D:\Users\kalfaro\source\repos\Ticket\Commons\Common\bin\Debug\netcoreapp2.1\Common.pdb
+D:\Users\kalfaro\source\repos\Ticket\Commons\Common\obj\Debug\netcoreapp2.1\Common.csprojAssemblyReference.cache
+D:\Users\kalfaro\source\repos\Ticket\Commons\Common\obj\Debug\netcoreapp2.1\Common.csproj.CoreCompileInputs.cache
+D:\Users\kalfaro\source\repos\Ticket\Commons\Common\obj\Debug\netcoreapp2.1\Common.dll
+D:\Users\kalfaro\source\repos\Ticket\Commons\Common\obj\Debug\netcoreapp2.1\Common.pdb
+D:\Users\Administrador\source\repos\Ticket\Commons\Common\bin\Debug\netcoreapp2.1\Common.deps.json
+D:\Users\Administrador\source\repos\Ticket\Commons\Common\bin\Debug\netcoreapp2.1\Common.dll
+D:\Users\Administrador\source\repos\Ticket\Commons\Common\bin\Debug\netcoreapp2.1\Common.pdb
+D:\Users\Administrador\source\repos\Ticket\Commons\Common\obj\Debug\netcoreapp2.1\Common.csproj.CoreCompileInputs.cache
+D:\Users\Administrador\source\repos\Ticket\Commons\Common\obj\Debug\netcoreapp2.1\Common.dll
+D:\Users\Administrador\source\repos\Ticket\Commons\Common\obj\Debug\netcoreapp2.1\Common.pdb
+D:\Users\Administrador\source\repos\Ticket\Commons\Common\obj\Debug\netcoreapp2.1\Common.csprojAssemblyReference.cache

@@ -1,0 +1,181 @@
+[INFO] 10:19:25.302:
+- Microsoft.Extensions.Logging.LoggingExtensions.UsingProfileAsKeyRepositoryWithDPAPI (Line #0)
+- User profile is available. Using 'D:\Users\Administrador\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+ 
+[INFO] 10:19:27.665:
+- Microsoft.EntityFrameworkCore.Diagnostics.EventDefinition`4.Log (Line #0)
+- Entity Framework Core 2.1.4-rtm-31024 initialized 'ApplicationDbContext' using provider 'Pomelo.EntityFrameworkCore.MySql' with options: None
+ 
+[INFO] 10:19:28.497:
+- Microsoft.EntityFrameworkCore.Internal.RelationalLoggerExtensions.CommandExecuted (Line #0)
+- Executed DbCommand (78ms) [Parameters=[@__roleName_0='?' (Size = 256)], CommandType='Text', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM `AspNetRoles` AS `rol`
+        WHERE `rol`.`Discriminator` IN ('ApplicationRole', 'IdentityRole') AND (`rol`.`Name` = @__roleName_0))
+    THEN TRUE ELSE FALSE
+END
+ 
+[INFO] 10:19:28.617:
+- Microsoft.EntityFrameworkCore.Internal.RelationalLoggerExtensions.CommandExecuted (Line #0)
+- Executed DbCommand (0ms) [Parameters=[@__roleName_0='?' (Size = 256)], CommandType='Text', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM `AspNetRoles` AS `rol`
+        WHERE `rol`.`Discriminator` IN ('ApplicationRole', 'IdentityRole') AND (`rol`.`Name` = @__roleName_0))
+    THEN TRUE ELSE FALSE
+END
+ 
+[INFO] 10:19:28.649:
+- Microsoft.EntityFrameworkCore.Diagnostics.EventDefinition`4.Log (Line #0)
+- Entity Framework Core 2.1.4-rtm-31024 initialized 'ApplicationDbContext' using provider 'Pomelo.EntityFrameworkCore.MySql' with options: None
+ 
+[INFO] 10:19:28.665:
+- Microsoft.EntityFrameworkCore.Internal.RelationalLoggerExtensions.CommandExecuted (Line #0)
+- Executed DbCommand (1ms) [Parameters=[@__ToUpper_0='?' (Size = 256)], CommandType='Text', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM `AspNetUsers` AS `u`
+        WHERE `u`.`Discriminator` IN ('ApplicationUser', 'IdentityUser') AND (`u`.`NormalizedEmail` = @__ToUpper_0))
+    THEN TRUE ELSE FALSE
+END
+ 
+[INFO] 10:19:29.227:
+- Microsoft.AspNetCore.Hosting.Internal.HostingApplicationDiagnostics.LogRequestStarting (Line #0)
+- Request starting HTTP/1.1 DEBUG http://localhost:53270/  0
+ 
+[INFO] 10:19:29.227:
+- Microsoft.AspNetCore.Hosting.Internal.HostingApplicationDiagnostics.LogRequestStarting (Line #0)
+- Request starting HTTP/1.1 GET http://localhost:44384/  
+ 
+[INFO] 10:19:29.304:
+- Microsoft.AspNetCore.Hosting.Internal.HostingApplicationDiagnostics.LogRequestFinished (Line #0)
+- Request finished in 75.3992ms 200 
+ 
+[INFO] 10:19:29.364:
+- Microsoft.EntityFrameworkCore.Diagnostics.EventDefinition`4.Log (Line #0)
+- Entity Framework Core 2.1.4-rtm-31024 initialized 'ApplicationDbContext' using provider 'Pomelo.EntityFrameworkCore.MySql' with options: None
+ 
+[INFO] 10:19:29.551:
+- Microsoft.EntityFrameworkCore.Internal.RelationalLoggerExtensions.CommandExecuted (Line #0)
+- Executed DbCommand (8ms) [Parameters=[@__get_Item_0='?' (Size = 255)], CommandType='Text', CommandTimeout='30']
+SELECT `e`.`Id`, `e`.`AccessFailedCount`, `e`.`ConcurrencyStamp`, `e`.`Discriminator`, `e`.`Email`, `e`.`EmailConfirmed`, `e`.`LockoutEnabled`, `e`.`LockoutEnd`, `e`.`NormalizedEmail`, `e`.`NormalizedUserName`, `e`.`PasswordHash`, `e`.`PhoneNumber`, `e`.`PhoneNumberConfirmed`, `e`.`SecurityStamp`, `e`.`TwoFactorEnabled`, `e`.`UserName`, `e`.`FullName`
+FROM `AspNetUsers` AS `e`
+WHERE (`e`.`Discriminator` = 'ApplicationUser') AND (`e`.`Id` = @__get_Item_0)
+LIMIT 1
+ 
+[INFO] 10:19:29.786:
+- Microsoft.EntityFrameworkCore.Internal.RelationalLoggerExtensions.CommandExecuted (Line #0)
+- Executed DbCommand (15ms) [Parameters=[@__user_Id_0='?' (Size = 255)], CommandType='Text', CommandTimeout='30']
+SELECT `uc`.`Id`, `uc`.`ClaimType`, `uc`.`ClaimValue`, `uc`.`UserId`
+FROM `AspNetUserClaims` AS `uc`
+WHERE `uc`.`UserId` = @__user_Id_0
+ 
+[INFO] 10:19:29.877:
+- Microsoft.EntityFrameworkCore.Internal.RelationalLoggerExtensions.CommandExecuted (Line #0)
+- Executed DbCommand (24ms) [Parameters=[@__userId_0='?' (Size = 255)], CommandType='Text', CommandTimeout='30']
+SELECT `role`.`Name`
+FROM `AspNetUserRoles` AS `userRole`
+INNER JOIN `AspNetRoles` AS `role` ON `userRole`.`RoleId` = `role`.`Id`
+WHERE (`userRole`.`Discriminator` IN ('ApplicationUserRole', 'IdentityUserRole<string>') AND `role`.`Discriminator` IN ('ApplicationRole', 'IdentityRole')) AND (`userRole`.`UserId` = @__userId_0)
+ 
+[INFO] 10:19:30.011:
+- Microsoft.EntityFrameworkCore.Internal.RelationalLoggerExtensions.CommandExecuted (Line #0)
+- Executed DbCommand (1ms) [Parameters=[@__normalizedName_0='?' (Size = 256)], CommandType='Text', CommandTimeout='30']
+SELECT `r`.`Id`, `r`.`ConcurrencyStamp`, `r`.`Discriminator`, `r`.`Name`, `r`.`NormalizedName`, `r`.`Enabled`
+FROM `AspNetRoles` AS `r`
+WHERE `r`.`Discriminator` IN ('ApplicationRole', 'IdentityRole') AND (`r`.`NormalizedName` = @__normalizedName_0)
+LIMIT 1
+ 
+[INFO] 10:19:30.192:
+- Microsoft.EntityFrameworkCore.Internal.RelationalLoggerExtensions.CommandExecuted (Line #0)
+- Executed DbCommand (6ms) [Parameters=[@__role_Id_0='?' (Size = 255)], CommandType='Text', CommandTimeout='30']
+SELECT `rc`.`ClaimType`, `rc`.`ClaimValue`
+FROM `AspNetRoleClaims` AS `rc`
+WHERE `rc`.`RoleId` = @__role_Id_0
+ 
+[INFO] 10:19:30.729:
+- Microsoft.AspNetCore.Mvc.Internal.MvcCoreLoggerExtensions.ExecutingAction (Line #0)
+- Route matched with {action = "Index", controller = "Home", page = "", area = ""}. Executing action WebTickets.Controllers.HomeController.Index (WebTickets)
+ 
+[INFO] 10:19:30.774:
+- Microsoft.AspNetCore.Mvc.Internal.MvcCoreLoggerExtensions.ActionMethodExecuting (Line #0)
+- Executing action method WebTickets.Controllers.HomeController.Index (WebTickets) - Validation state: Valid
+ 
+[INFO] 10:19:30.793:
+- Microsoft.AspNetCore.Mvc.Internal.MvcCoreLoggerExtensions.ActionMethodExecuted (Line #0)
+- Executed action method WebTickets.Controllers.HomeController.Index (WebTickets), returned result Microsoft.AspNetCore.Mvc.ViewResult in 1.6906ms.
+ 
+[INFO] 10:19:30.883:
+- Microsoft.AspNetCore.Mvc.ViewFeatures.Internal.MvcViewFeaturesLoggerExtensions.ViewResultExecuting (Line #0)
+- Executing ViewResult, running view Index.
+ 
+[INFO] 10:19:31.311:
+- Microsoft.AspNetCore.Mvc.ViewFeatures.Internal.MvcViewFeaturesLoggerExtensions.ViewResultExecuted (Line #0)
+- Executed ViewResult - view Index executed in 486.2981ms.
+ 
+[INFO] 10:19:31.311:
+- Microsoft.AspNetCore.Mvc.Internal.MvcCoreLoggerExtensions.ExecutedAction (Line #0)
+- Executed action WebTickets.Controllers.HomeController.Index (WebTickets) in 574.5877ms
+ 
+[INFO] 10:19:31.357:
+- Microsoft.AspNetCore.Hosting.Internal.HostingApplicationDiagnostics.LogRequestFinished (Line #0)
+- Request finished in 2131.437ms 200 text/html; charset=utf-8
+ 
+[INFO] 10:28:01.270:
+- Microsoft.AspNetCore.Hosting.Internal.HostingApplicationDiagnostics.LogRequestStarting (Line #0)
+- Request starting HTTP/1.1 GET http://localhost:44384/Plantas  
+ 
+[INFO] 10:28:01.321:
+- Microsoft.AspNetCore.Mvc.Internal.MvcCoreLoggerExtensions.ExecutingAction (Line #0)
+- Route matched with {action = "Index", controller = "Plantas", page = "", area = ""}. Executing action WebTickets.Controllers.PlantasController.Index (WebTickets)
+ 
+[INFO] 10:28:01.343:
+- Microsoft.Extensions.Logging.LoggingExtensions.UserAuthorizationSucceeded (Line #0)
+- Authorization was successful.
+ 
+[INFO] 10:28:01.353:
+- Microsoft.AspNetCore.Mvc.Internal.MvcCoreLoggerExtensions.ActionMethodExecuting (Line #0)
+- Executing action method WebTickets.Controllers.PlantasController.Index (WebTickets) - Validation state: Valid
+ 
+[INFO] 10:28:01.353:
+- WebTickets.Controllers.PlantasController+<Index>d__5.MoveNext (Line #41)
+- Lista de Plantas Iniciada
+ 
+[INFO] 10:28:01.370:
+- Microsoft.EntityFrameworkCore.Diagnostics.EventDefinition`4.Log (Line #0)
+- Entity Framework Core 2.1.4-rtm-31024 initialized 'ApplicationDbContext' using provider 'Pomelo.EntityFrameworkCore.MySql' with options: None
+ 
+[INFO] 10:28:01.445:
+- Microsoft.EntityFrameworkCore.Internal.RelationalLoggerExtensions.CommandExecuted (Line #0)
+- Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `p`.`Id`, `p`.`Descripcion`, `p`.`Estado`, `p`.`Insert_Datetime`, `p`.`Insert_Oper`, `p`.`Nombre`, `p`.`Update_Datetime`, `p`.`Update_Oper`
+FROM `Planta` AS `p`
+ 
+[INFO] 10:28:01.491:
+- WebTickets.Controllers.PlantasController+<Index>d__5.MoveNext (Line #50)
+- Lista de Plantas Completada
+ 
+[INFO] 10:28:01.497:
+- Microsoft.AspNetCore.Mvc.Internal.MvcCoreLoggerExtensions.ActionMethodExecuted (Line #0)
+- Executed action method WebTickets.Controllers.PlantasController.Index (WebTickets), returned result Microsoft.AspNetCore.Mvc.ViewResult in 141.5701ms.
+ 
+[INFO] 10:28:01.515:
+- Microsoft.AspNetCore.Mvc.ViewFeatures.Internal.MvcViewFeaturesLoggerExtensions.ViewResultExecuting (Line #0)
+- Executing ViewResult, running view Index.
+ 
+[INFO] 10:28:01.543:
+- Microsoft.AspNetCore.Mvc.ViewFeatures.Internal.MvcViewFeaturesLoggerExtensions.ViewResultExecuted (Line #0)
+- Executed ViewResult - view Index executed in 35.9549ms.
+ 
+[INFO] 10:28:01.543:
+- Microsoft.AspNetCore.Mvc.Internal.MvcCoreLoggerExtensions.ExecutedAction (Line #0)
+- Executed action WebTickets.Controllers.PlantasController.Index (WebTickets) in 226.7918ms
+ 
+[INFO] 10:28:01.559:
+- Microsoft.AspNetCore.Hosting.Internal.HostingApplicationDiagnostics.LogRequestFinished (Line #0)
+- Request finished in 288.6347ms 200 text/html; charset=utf-8
+ 

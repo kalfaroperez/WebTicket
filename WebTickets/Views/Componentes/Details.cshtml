@@ -1,0 +1,37 @@
+﻿@model Model.DB_Model.Componentes
+
+@{
+	ViewData["Title"] = "Details";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Detalle Registro</h2>
+
+<div>
+	<h4>Equipo Principal</h4>
+	<hr />
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Nombre)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Nombre)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Descripcion)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Descripcion)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Estado)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Estado)
+		</dd>
+	</dl>
+</div>
+<div>
+	<a asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
+	<a asp-action="Index">Volver a Listado</a>
+</div>

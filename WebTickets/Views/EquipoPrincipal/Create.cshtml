@@ -1,0 +1,69 @@
+﻿@model EquiposPrincipalViewModel
+
+@{
+	ViewData["Title"] = "Create";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Equipo Principal</h4>
+<h2>Nuevo</h2>
+<hr />
+<div class="row">
+	<div class="col-md-6">
+		<form asp-action="Create" class="form-horizontal" method="post" enctype="multipart/form-data">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="Nombre" class="col-md-4 control-label"></label>
+				<div class="col-md-6">
+					<input asp-for="Nombre" class="form-control" />
+					<span asp-validation-for="Nombre" class="text-danger"></span>
+				</div>
+
+			</div>
+			<div class="form-group">
+				<label asp-for="Descripcion" class="col-md-4 control-label"></label>
+				<div class="col-md-6">
+					<input asp-for="Descripcion" class="form-control" />
+					<span asp-validation-for="Descripcion" class="text-danger"></span>
+				</div>
+
+			</div>
+
+
+			<div class="form-group">
+				<label asp-for="Estado" class="col-md-4 control-label"></label>
+				<div class="col-md-6">
+					<input type="checkbox" asp-for="Estado" class="form-check-input" />
+					<span asp-validation-for="Estado" class="text-danger"></span>
+				</div>
+
+			</div>
+
+			<div class="form-group">
+				<label asp-for="FileUpload" class="col-md-4 control-label">Ficha Tecnica</label>
+				<div class="col-md-6">
+					<input asp-for="FileUpload" type="file" class="form-control" multiple />
+					<span asp-validation-for="FileUpload" class="text-danger"></span>
+				</div>
+
+			</div>
+			<div class="form-group">
+				<hr />
+				<label class="col-md-4 control-label"></label>
+				<div class="col-md-6">
+					<center>
+						<input type="submit" value="Guardar" class="btn btn-default" />
+					</center>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="col-md-10">
+	<a asp-action="Index">Volver a Listado</a>
+</div>
+
+@section Scripts {
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

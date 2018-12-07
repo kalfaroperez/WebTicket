@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Model.DB_Model.RegistroEquipo>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.NombrePlanta)
+            </th>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.NombreEquipoPrinc)
+            </th>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.NombreEquipoSec)
+            </th>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.NombreComponente)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+           
+            <td>
+                @Html.DisplayFor(modelItem => item.NombrePlanta)
+            </td>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreEquipoPrinc)
+            </td>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreEquipoSec)
+            </td>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreComponente)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

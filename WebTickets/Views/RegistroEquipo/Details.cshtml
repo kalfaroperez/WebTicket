@@ -1,0 +1,67 @@
+﻿@model Model.DB_Model.RegistroEquipo
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>RegistroEquipo</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.IdPlanta)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IdPlanta)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.NombrePlanta)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NombrePlanta)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IdEquipoPrinc)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IdEquipoPrinc)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.NombreEquipoPrinc)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NombreEquipoPrinc)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IdEquipoSec)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IdEquipoSec)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.NombreEquipoSec)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NombreEquipoSec)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IdComponente)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IdComponente)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.NombreComponente)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NombreComponente)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

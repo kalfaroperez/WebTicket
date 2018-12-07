@@ -1,0 +1,12 @@
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persitence.DatabaseContext\bin\Debug\netcoreapp2.1\Persitence.DatabaseContext.deps.json
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persitence.DatabaseContext\bin\Debug\netcoreapp2.1\Persitence.DatabaseContext.dll
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persitence.DatabaseContext\obj\Debug\netcoreapp2.1\Persitence.DatabaseContext.csprojAssemblyReference.cache
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persitence.DatabaseContext\obj\Debug\netcoreapp2.1\Persitence.DatabaseContext.csproj.CoreCompileInputs.cache
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persitence.DatabaseContext\obj\Debug\netcoreapp2.1\Persitence.DatabaseContext.AssemblyInfoInputs.cache
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persitence.DatabaseContext\obj\Debug\netcoreapp2.1\Persitence.DatabaseContext.AssemblyInfo.cs
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persitence.DatabaseContext\bin\Debug\netcoreapp2.1\Model.dll
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persitence.DatabaseContext\bin\Debug\netcoreapp2.1\Persitence.DatabaseContext.pdb
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persitence.DatabaseContext\bin\Debug\netcoreapp2.1\Model.pdb
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persitence.DatabaseContext\obj\Debug\netcoreapp2.1\Persitence.DatabaseContext.csproj.CopyComplete
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persitence.DatabaseContext\obj\Debug\netcoreapp2.1\Persitence.DatabaseContext.dll
+D:\Users\Administrador\source\repos\Ticket\Persistence\Persitence.DatabaseContext\obj\Debug\netcoreapp2.1\Persitence.DatabaseContext.pdb
