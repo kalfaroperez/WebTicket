@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,6 +15,7 @@ using Model.DB_Model;
 using Persistence.DatabaseContext;
 using WebTickets.Helpers;
 using WebTickets.ViewModels;
+using static WebTickets.Helpers.FileHelpers;
 
 namespace WebTickets.Controllers
 {
@@ -24,6 +26,7 @@ namespace WebTickets.Controllers
         private readonly IFileProvider _fileProvider;
         private const string _Administrador = "Administrador";
         private const string _Operador = "Operador";
+        private const string path_Ficha_tec = "Ficha_tec_";
 
         public EquipoPrincipalController(
             ApplicationDbContext context,
@@ -98,26 +101,31 @@ namespace WebTickets.Controllers
                 {
                     foreach (var formFile in equipoPrincipal.FileUpload)
                     {
-                        await FileHelpers.ProcessFormFile(formFile, ModelState);
+                        await ProcessFormFile(formFile, ModelState);
                     }
                 }
             }
             if (ModelState.IsValid)
             {
-                EquipoPrincipal ep = new EquipoPrincipal();
-                ep.Nombre = equipoPrincipal.Nombre;
-                ep.Descripcion = equipoPrincipal.Descripcion;
-                ep.Estado = equipoPrincipal.Estado;
-                ep.Insert_Oper = "Insert";
-                ep.Update_Oper = "";
-                ep.Insert_Datetime = DateTime.Now;
-                ep.Update_Datetime = DateTime.Now;
+                EquipoPrincipal ep = new EquipoPrincipal
+                {
+                    Nombre = equipoPrincipal.Nombre,
+                    Descripcion = equipoPrincipal.Descripcion,
+                    Estado = equipoPrincipal.Estado,
+                    Insert_Oper = "Insert",
+                    Update_Oper = "",
+                    Insert_Datetime = DateTime.Now,
+                    Update_Datetime = DateTime.Now
+                };
 
                 _context.Add(ep);
                 await _context.SaveChangesAsync();
                 //Una vez guardo el registro, Tomo el ID y lo envio para crear la carpeta 
                 //con el nombre del ID y guardar el Adjunto.
-                await UploadFiles(equipoPrincipal.FileUpload, ep.Id);
+                await UploadFiles(
+                    equipoPrincipal.FileUpload,
+                    path_Ficha_tec + ep.Id.ToString(),
+                    Enum.GetName(typeof(PathUploapFile), PathUploapFile.Fichas_tecnicas));
 
                 return RedirectToAction(nameof(Index));
             }
@@ -137,11 +145,13 @@ namespace WebTickets.Controllers
             {
                 return NotFound();
             }
-            EquiposPrincipalViewModel equipoPrin = new EquiposPrincipalViewModel();
-            equipoPrin.Nombre = ep.Nombre;
-            equipoPrin.Descripcion = ep.Descripcion;
-            equipoPrin.Estado = ep.Estado;
-            GetFilesByIdEquipo(id, equipoPrin);
+            EquiposPrincipalViewModel equipoPrin = new EquiposPrincipalViewModel
+            {
+                Nombre = ep.Nombre,
+                Descripcion = ep.Descripcion,
+                Estado = ep.Estado
+            };
+            GetFilesByIdEquipo(path_Ficha_tec + id, equipoPrin);
             return View(equipoPrin);
         }
 
@@ -164,7 +174,7 @@ namespace WebTickets.Controllers
                 {
                     foreach (var formFile in equipoPrincipal.FileUpload)
                     {
-                        await FileHelpers.ProcessFormFile(formFile, ModelState);
+                        await ProcessFormFile(formFile, ModelState);
                     }
                 }
             }
@@ -184,7 +194,10 @@ namespace WebTickets.Controllers
                     await _context.SaveChangesAsync();
                     //Una vez guardo el registro, Tomo el ID y lo envio para crear la carpeta 
                     //con el nombre del ID y guardar el Adjunto.
-                    await UploadFiles(equipoPrincipal.FileUpload, equipoPrincipal.Id);
+                    await UploadFiles(
+                        equipoPrincipal.FileUpload,
+                        path_Ficha_tec + ep.Id,
+                        Enum.GetName(typeof(PathUploapFile), PathUploapFile.Fichas_tecnicas));
                     
                 }
                 catch (DbUpdateConcurrencyException)
@@ -237,46 +250,21 @@ namespace WebTickets.Controllers
             return _context.EquipoPrincipal.Any(e => e.Id == id);
         }
 
-        public async Task<IActionResult> UploadFiles(List<IFormFile> files, int id_equipo)
-        {
-            if (files != null)
-            {
-                if (files.Count > 0 && id_equipo != 0)
-                {
-                    string path = FileHelpers.GetPathFile_FichaTecnica();
-                    Directory.CreateDirectory(string.Format("{0}\\{1}", path, id_equipo.ToString()));
-                    // full path to file in temp location
-                    var filePath = string.Format("{0}\\{1}", path, id_equipo);
-
-                    foreach (var formFile in files)
-                    {
-                        if (formFile.Length > 0)
-                        {
-
-                            var filePathURL = Path.Combine(filePath, formFile.FileName);
-                            using (var stream = new FileStream(filePathURL, FileMode.Create))
-                            {
-                                await formFile.CopyToAsync(stream);
-                            }
-                        }
-                    }
-
-                }
-            }
-            return Ok(new { ok = "ok"});
-        }
-
-        public void GetFilesByIdEquipo(int? id_equipo, EquiposPrincipalViewModel ep)
+        public void GetFilesByIdEquipo(string id_elememto, EquiposPrincipalViewModel ep)
         {
             string path = FileHelpers.GetPathFile_FichaTecnica();            
-            string pathSource = string.Format("{0}\\{1}", path, id_equipo.ToString());
+            string pathSource = string.Format("{0}\\{1}", path, id_elememto);
             bool existe_ruta = Directory.Exists(pathSource);
             
             if (existe_ruta)
             {
                 foreach (var item in Directory.GetFiles(pathSource))
                 {
-                    ep.Files.Add(new FileDetails { Name = item, Path = pathSource });
+                    ep.Files.Add(new FileDetails {
+                        Name = Path.GetFileName(item),
+                        Path = pathSource,
+                        Fecha_modificacion = System.IO.File.GetLastWriteTime(item)
+                    });
                 }
                 
             }
@@ -293,8 +281,8 @@ namespace WebTickets.Controllers
                 await stream.CopyToAsync(memory);
             }
             memory.Position = 0;
-            return File(memory, FileHelpers.GetContentType(filename), Path.GetFileName(filename));
+            return File(memory, GetContentType(filename), Path.GetFileName(filename));
         }
-        
+
     }
 }

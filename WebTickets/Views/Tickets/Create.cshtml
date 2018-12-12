@@ -4,7 +4,14 @@
 	ViewData["Title"] = "Nuevo Ticket";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<form class="form-horizontal" role="form" id="ticketForm" asp-action="Create">
+<form class="form-horizontal" role="form" id="ticketForm" asp-action="Create" enctype="multipart/form-data">
+	@if (!string.IsNullOrEmpty(@ViewBag.Resultado))
+	{
+		<div class="alert alert-success" role="alert">
+			@ViewBag.Resultado
+		</div>
+	}
+
 	<div class="panel panel-primary margen-top">
 		<div class="row">
 			<div class="col-xs-4">
@@ -41,7 +48,7 @@
 							<input asp-for="Operador_UserName" class="form-control input-sm" />
 						</div>
 						<div class="col-xs-1">
-							<button data-toggle="modal" data-target="#modalUsuario">
+							<button type="button" data-toggle="modal" data-target="#modalUsuario">
 								<span class="font-size: 48px; ">
 									<i class="fa fa-search"></i>
 								</span>
@@ -92,8 +99,8 @@
 				<span class="input-sm"> </span>
 			</div>
 			<div class="col-xs-4">
-				<span class="input-sm"> <b>Fecha Ultimo Estado: </b></span>
-				<span class="input-sm"> @Model.Fecha_Ultimo_Estado </span>
+				<!--<span class="input-sm"> <b>Fecha Ultimo Estado: </b></span>
+				<span class="input-sm"> @Model.Fecha_Ultimo_Estado </span>-->
 			</div>
 		</div>
 		<div class="panel-body">
@@ -230,37 +237,7 @@
 		</div>
 	</div>
 </form>
-<div class="row">
-	<table class="table table-sm table-dark">
-		<thead>
-			<tr>
-				<th>
-					<span class="font-size: 48px;">
-						<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-					</span>
-				</th>
-				<th>Nombre Completo</th>
-				<th>Area</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var item in Model.Lista_Usuarios)
-			{
-				<tr>
-					<td>
-						<a href="#" class="user_in_list" onclick="cargar_Usuario('@{ @item.Id }', '@Url.Action("GetUsuario", "Tickets")' );">
-							<span class="font-size: 48px;">
-								<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-							</span>
-						</a>
-					</td>
-					<td>@item.FullName</td>
-					<td>@item.Area</td>
-				</tr>
-			}
-		</tbody>
-	</table>
-</div>
+
 <!-- Modal -->
 <div class="modal fade" id="modalUsuario" tabindex="-1" role="dialog" aria-labelledby="modalUsuarioTitle" aria-hidden="true">
 	<div class="modal-dialog" role="document">
@@ -289,7 +266,7 @@
 						{
 							<tr>
 								<td>
-									<button class="user_in_list" onclick="cargar_Usuario('@{ @item.Id }', '@Url.Action("GetUsuario", "Tickets")' );" >
+									<button class="user_in_list" onclick="cargar_Usuario('@{ @item.Id }', '@Url.Action("GetUsuario", "Tickets")' );">
 										<span class="font-size: 48px;">
 											<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 										</span>
@@ -316,12 +293,4 @@
 @section Scripts {
 	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-	<script>
-		$(document).ready(function () {
-			$('#modalUsuario').on('shown.bs.modal', function () {
-			});
-		});
-
-
-	</script>
 }

@@ -33,7 +33,7 @@ namespace Model.DB_Model
         public int Estado { get; set; }
         public string Calificacion { get; set; }
         public DateTime Fecha_Ultimo_Estado { get; set; }
-        public DateTime? Fecha_Entrega { get; set; }
+        public DateTime Fecha_Entrega { get; set; }
         public string Operador_Ultimo_Estado { get; set; }
         public byte[] Adjunto { get; set; }
         public string Tipo_Adjunto { get; set; }

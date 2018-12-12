@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -16,8 +17,13 @@ using WebTickets.ViewModels;
 namespace WebTickets.Helpers
 {
 
-    public class FileHelpers
+    public class FileHelpers : ControllerBase
     {
+        public enum PathUploapFile
+        {
+            Fichas_tecnicas,
+            Tickets
+        }
 
         public static IConfiguration Configuration { get; set; }
 
@@ -41,8 +47,62 @@ namespace WebTickets.Helpers
 
             Configuration = builder.Build();
 
-            return Configuration.GetSection("FilesSources")["Path_Ficha_Tecnica"];
+            return Configuration.GetSection("FilesSources")["Path_Ticket"];
 
+        }
+        /// <summary>
+        /// Sube un archivo al servido asociado al ticket o al equipo principal. 
+        /// Este metodo debe llevar una bandera que indique en qe ruta se debe guardar
+        /// </summary>
+        /// <param name="files"></param>
+        /// <param name="id_elemento"></param>
+        /// <param name=""></param>
+        /// <returns></returns>
+        public static async Task<IActionResult> UploadFiles(List<IFormFile> files, string id_elemento, string pathFileUpload)
+        {
+            if (files != null)
+            {
+                if (files.Count > 0 && !string.IsNullOrEmpty(id_elemento))
+                {
+                    string path = "";
+                    switch (pathFileUpload)
+                    {
+                        case "Fichas_tecnicas":
+                            path = GetPathFile_FichaTecnica();
+                            break;
+                        case "Tickets":
+                            path = GetPathFile_Ticket();
+                            break;
+                        default:
+                            break;
+                    }
+                    
+                    Directory.CreateDirectory(string.Format("{0}\\{1}", path, id_elemento));
+                    // full path to file in temp location
+                    var filePath = string.Format("{0}\\{1}", path, id_elemento);
+
+                    foreach (var formFile in files)
+                    {
+                        if (formFile.Length > 0)
+                        {
+
+                            var filePathURL = Path.Combine(filePath, formFile.FileName);
+                            using (var stream = new FileStream(filePathURL, FileMode.Create))
+                            {
+                                await formFile.CopyToAsync(stream);
+                            }
+                        }
+                    }
+
+                }
+            }
+            return new OkObjectResult("ok");
+        }
+
+        
+        private IActionResult File(MemoryStream memory, string v1, string v2)
+        {
+            throw new NotImplementedException();
         }
 
         public static async Task<string> ProcessFormFile(IFormFile formFile,

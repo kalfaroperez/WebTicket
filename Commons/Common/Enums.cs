@@ -5,8 +5,10 @@ using System.Reflection;
 
 namespace Common
 {
+    
     public class Enums
     {
+       
         public enum Gender
         {
             Male,

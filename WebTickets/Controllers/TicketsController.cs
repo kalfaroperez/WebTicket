@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Model.Auth;
 using Model.DB_Model;
 using Persistence.DatabaseContext;
+using WebTickets.Helpers;
 using WebTickets.ViewModels;
+using static WebTickets.Helpers.FileHelpers;
 
 namespace WebTickets.Controllers
 {
@@ -20,18 +25,26 @@ namespace WebTickets.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IFileProvider _fileProvider;
         private readonly ILogger _logger;
+        
+        //Esta variable me servirá como bandera para confirmar si la peticion tuvo exito o no
+        private static bool exito = false;
+        private static string ticket_numero;
 
         public TicketsController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILoggerFactory loggerFactory,
+            IFileProvider fileProvider,
             ApplicationDbContext context)
         {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = loggerFactory.CreateLogger<TicketsController>();
+            _fileProvider = fileProvider;
+
         }
 
         // GET: Tickets
@@ -63,6 +76,12 @@ namespace WebTickets.Controllers
         {
             TicketViewModel tvm = new TicketViewModel();
             CargarFormulario_Tickets(tvm);
+            if (exito)
+            {
+                ViewBag.Resultado = string.Format("Su Ticket {0} ha sido registrado con exito!!",ticket_numero);
+                exito = false;
+                ticket_numero = "";
+            }
             return View(tvm);
         }
                
@@ -74,11 +93,27 @@ namespace WebTickets.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TicketViewModel tvm)
         {
+            if (tvm != null)
+            {
+                if (tvm.FileUpload != null)
+                {
+                    foreach (var formFile in tvm.FileUpload)
+                    {
+                        await ProcessFormFile(formFile, ModelState);
+                    }
+                }
+            }
             if (ModelState.IsValid)
             {
                 Ticket ticket = Fill_TicketModel(tvm);
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
+                //Una vez guardo el registro, Tomo el ID y lo envio para crear la carpeta 
+                //con el nombre del ID y guardar el Adjunto.
+                await UploadFiles(
+                    tvm.FileUpload,
+                    ticket.Numero_Ticket,
+                    Enum.GetName(typeof(PathUploapFile), PathUploapFile.Tickets));
 
                 SigoTicket sigoTicket = new SigoTicket
                 {
@@ -91,7 +126,9 @@ namespace WebTickets.Controllers
                 };
                 _context.SigoTicket.Add(sigoTicket);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Create));
+                exito = true;
+                ticket_numero = ticket.Numero_Ticket;
+                return RedirectToAction(nameof(Create), ViewBag.Resultado);
             }
             CargarFormulario_Tickets(tvm);
             return View(tvm);
@@ -112,9 +149,9 @@ namespace WebTickets.Controllers
             {
                 return NotFound();
             }
-            TicketViewModel tvm = new TicketViewModel();
-            CargarFormulario_Tickets(tvm);
-            return View(ticket);
+            TicketViewModel tvm = CargarFormulario_Tickets(ticket);
+            GetFilesByIdTicket(tvm.Numero_Ticket, tvm);
+            return View(tvm);
         }
 
         // POST: Tickets/Edit/5
@@ -122,23 +159,54 @@ namespace WebTickets.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ulong id, [Bind("Id,Numero_Ticket,Fecha,Privado,Operador_Id,Operador_Sector_Id,Usuario_Id,Nombre_completo,Area_Id,Piso,Telefono,EMail,Asignado_A,Asignado_A_Sector,Prioridad,Incidente,Proceso,Tipo_Trabajo,Id_Planta,Id_EquipoPrinc,Id_EquipoSec,Id_Componente,Estado,Calificacion,Fecha_Ultimo_Estado,Fecha_Entrega,Operador_Ultimo_Estado,Adjunto,Tipo_Adjunto,Ruta_Adjunto,Nombre_Adjunto,Insert_Oper,Insert_Datetime,Update_Oper,Update_Datetime")] Ticket ticket)
+        public async Task<IActionResult> Edit(ulong id, TicketViewModel tvm)
         {
-            if (id != ticket.Id)
+            if (id != tvm.Id)
             {
                 return NotFound();
             }
-
+            if (tvm != null)
+            {
+                if (tvm.FileUpload != null)
+                {
+                    foreach (var formFile in tvm.FileUpload)
+                    {
+                        await ProcessFormFile(formFile, ModelState);
+                    }
+                }
+            }
             if (ModelState.IsValid)
             {
                 try
                 {
+
+                    Ticket ticket = Fill_TicketModel(tvm);
                     _context.Update(ticket);
+                    await _context.SaveChangesAsync();
+                    //Una vez guardo el registro, Tomo el ID y lo envio para crear la carpeta 
+                    //con el nombre del ID y guardar el Adjunto.
+                    await UploadFiles(
+                        tvm.FileUpload,
+                        ticket.Numero_Ticket,
+                        Enum.GetName(typeof(PathUploapFile), PathUploapFile.Tickets));
+
+
+                    SigoTicket sigoTicket = new SigoTicket
+                    {
+                        SeqTicketId = ticket.Id,
+                        Fecha = DateTime.Now,
+                        OperadorId = ticket.Operador_Id,
+                        UsuarioId = ticket.Usuario_Id,
+                        CampoCambiado = "NotasTrabajo",
+                        ValorActual = tvm.NotasTrabajo,
+                        NotasTrabajo = tvm.NotasTrabajo
+                    };
+                    _context.SigoTicket.Add(sigoTicket);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TicketExists(ticket.Id))
+                    if (!TicketExists(tvm.Id))
                     {
                         return NotFound();
                     }
@@ -149,7 +217,8 @@ namespace WebTickets.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(ticket);
+            CargarFormulario_Tickets(tvm);
+            return View(tvm);
         }
 
         // GET: Tickets/Delete/5
@@ -214,10 +283,54 @@ namespace WebTickets.Controllers
             return Json(uvm);
         }
 
+        public void GetFilesByIdTicket(string id_elememto, TicketViewModel ti)
+        {
+            string path = FileHelpers.GetPathFile_Ticket();
+            string pathSource = string.Format("{0}\\{1}", path, id_elememto);
+            bool existe_ruta = Directory.Exists(pathSource);
+
+            if (existe_ruta)
+            {
+                foreach (var item in Directory.GetFiles(pathSource))
+                {
+                    
+                    ti.Files.Add(new FileDetails {
+                        Name = Path.GetFileName(item),
+                        Path = pathSource,
+                        Fecha_modificacion = System.IO.File.GetLastWriteTime(item)
+                    });
+                }
+
+            }
+        }
+
+        public async Task<IActionResult> Download(string filename)
+        {
+            if (filename == null)
+                return Content("filename not present");
+
+            string[] param = filename.Split("---");
+            string numero_ticket = param[0];
+            string _filename = param[1];
+            string path_file = string.Format("{0}\\{1}\\{2}", 
+                GetPathFile_Ticket(),
+                numero_ticket,
+                _filename);
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(path_file, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return File(memory, GetContentType(path_file), Path.GetFileName(path_file));
+        }
+
         #region Helpers
 
         private static Ticket Fill_TicketModel(TicketViewModel tvm)
         {
+            
             Ticket ticket = new Ticket
             {
                 Numero_Ticket = tvm.Numero_Ticket,
@@ -242,10 +355,14 @@ namespace WebTickets.Controllers
                 Estado = tvm.Estado,
                 Calificacion = tvm.Calificacion,
                 Fecha_Entrega = tvm.Fecha_Entrega,
-                Fecha_Ultimo_Estado = tvm.Fecha_Ultimo_Estado,
+                Fecha_Ultimo_Estado = DateTime.Now,
                 Insert_Datetime = DateTime.Now,
                 Update_Datetime = DateTime.Now
             };
+            if (tvm.Id.ToString() != null)
+            {
+                ticket.Id = tvm.Id;
+            }
             return ticket;
         }
 
@@ -306,10 +423,92 @@ namespace WebTickets.Controllers
             return tvm;
         }
 
+        private TicketViewModel CargarFormulario_Tickets(Ticket ticket)
+        {
+            TicketViewModel tvm = new TicketViewModel();
+            //Consulto El Id del usuario en Session
+            string user_id = _userManager.GetUserId(User);
+            var user = _context.ApplicationUser.Find(user_id);
+            tvm.Username = _userManager.GetUserName(User);
+
+            //Usuario que creara el ticket
+            tvm.Usuario_Id = user_id;
+
+            tvm.Id = ticket.Id;
+            //Numero Ticket Consecutivo
+            tvm.Numero_Ticket = ticket.Numero_Ticket;
+            tvm.Fecha = ticket.Fecha;
+            tvm.Nombre_completo = user.FullName;
+
+            //Datos Operador
+            tvm.Operador_Id = ticket.Operador_Id;
+            var operador = _context.ApplicationUser.Find(ticket.Operador_Id);
+            //Ahora Procedo a cargar los Selectores del Formulario
+            tvm.Operador_Nombre_completo = operador.FullName;
+            tvm.Operador_UserName = operador.UserName;
+            tvm.Email = operador.Email;
+            tvm.Area_Id = operador.Area;
+            tvm.Area = _context.Area.Find(operador.Area).Nombre;
+            tvm.Ubicacion = operador.Ubicacion;
+
+            tvm.Incidente = ticket.Incidente;
+            tvm.Comentarios = ticket.Comentarios;
+
+            //Selector Prioridades
+            tvm.Lista_Prioridades = GetPrioridades();
+            tvm.Prioridad = ticket.Prioridad;
+
+            //Selector Procesos
+            tvm.Lista_Procesos = GetProcesos();
+            tvm.Proceso = ticket.Proceso;
+
+            //Selector Asignados_A
+            tvm.Lista_Asignados_A = Get_Lista_Asignado_A();
+            tvm.Asignado_A = ticket.Asignado_A;
+
+            //Selector Tipo Trabajos
+            tvm.Lista_Tipo_Trabajos = Get_Tipo_Trabajos();
+            tvm.Tipo_Trabajo = ticket.Tipo_Trabajo;
+
+            //Selector Plantas
+            tvm.Lista_Plantas = Get_Plantas();
+            tvm.Planta = ticket.Id_Planta;
+
+            //Selector Equipos_princ
+            tvm.Lista_Equipos_princ = Get_Equipos_principales();
+            tvm.EquipoPrincipal = ticket.Id_EquipoPrinc;
+
+            //Selector Equipos_sec
+            tvm.Lista_Equipos_sec = Get_Equipos_Secundarios();
+            tvm.EquipoSecundario = ticket.Id_EquipoSec;
+
+            //Selector Componentes
+            tvm.Lista_Componentes = Get_Componentes();  
+            tvm.Componente = ticket.Id_Componente;
+
+            //Selector Estados
+            tvm.Lista_Estados = Get_Estados_Servicio();
+            tvm.Estado = ticket.Estado;
+
+            tvm.Fecha_Entrega = ticket.Fecha_Entrega;
+            tvm.Fecha_Ultimo_Estado = ticket.Fecha_Ultimo_Estado;
+            tvm.Lista_Usuarios = Get_Usuarios();
+            tvm.Lista_Actividades = Get_SeguimientoTicket(ticket.Id);
+
+
+            return tvm;
+        }
+
         private List<ApplicationUser> Get_Usuarios()
         {
             var usuarios = _context.ApplicationUser.ToList();
             return usuarios;
+        }
+
+        private List<SigoTicket> Get_SeguimientoTicket(ulong id_ticket)
+        {
+            var lista = _context.SigoTicket.Where(st => st.SeqTicketId == id_ticket).ToList();
+            return lista;
         }
 
         /// <summary>

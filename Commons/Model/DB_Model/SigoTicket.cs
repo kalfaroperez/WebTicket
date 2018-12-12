@@ -12,6 +12,7 @@ namespace Model.DB_Model
         public DateTime Fecha { get; set; }
         public string OperadorId { get; set; }
         public string UsuarioId { get; set; }
+        public string NotasTrabajo { get; set; }
         public string CampoCambiado { get; set; }
         public string ValorAnterior { get; set; }
         public string ValorActual { get; set; }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Model.Auth;
+using Model.DB_Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -53,6 +54,7 @@ namespace WebTickets.ViewModels
     {
         public string Name { get; set; }
         public string Path { get; set; }
+        public DateTime Fecha_modificacion { get; set; }
     }
 
     public class PlantaViewModel
@@ -68,12 +70,16 @@ namespace WebTickets.ViewModels
 
     public class TicketViewModel
     {
+        public ulong Id { get; set; }
+
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Ticket #")]
         public string Numero_Ticket { get; set; }
 
+        private DateTime _fecha;
+
         [Required(ErrorMessage = "El campo {0} es requerido")]
-        public DateTime Fecha { get => DateTime.Now; }
+        public DateTime Fecha { get => DateTime.Now; set => _fecha = value; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public string Operador_UserName { get; set; }
@@ -161,8 +167,6 @@ namespace WebTickets.ViewModels
 
         public string Calificacion { get; set; }
         public List<SelectListItem> Lista_Calificaion { get; set; }
-
-
         
         public string Usuario { get; set; }
         public List<ApplicationUser> Lista_Usuarios { get; set; }
@@ -172,7 +176,10 @@ namespace WebTickets.ViewModels
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public DateTime Fecha_Entrega { get; set; }
-            
+
+        [Display(Name = "Notas de Trabajo")]
+        public string NotasTrabajo { get; set; }
+        public List<SigoTicket> Lista_Actividades{ get; set; }
     }
 
     public class UsuarioViewModel {

@@ -55,12 +55,15 @@
 					<ul class="list-group">
 						@foreach (var file in Model.Files)
 						{
-							<li class="list-group-item">
-								<input type="hidden" name="fileName" value="fileName" />
-								<a asp-action="Download" asp-route-filename="@file.Name">
-									@file.Name
-								</a>
-							</li>
+						<li class="list-group-item">
+							<i class="fa fa-file-archive-o" aria-hidden="true"></i>
+							<input type="hidden" name="fileName" value="fileName" />
+							<a asp-action="Download" asp-route-filename="@file.Name">
+								@file.Name
+							</a>
+							-
+							@file.Fecha_modificacion
+						</li>
 						}
 					</ul>
 				</div>
