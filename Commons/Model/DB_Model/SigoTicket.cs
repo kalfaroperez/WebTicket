@@ -8,7 +8,7 @@ namespace Model.DB_Model
     {
         [Key]
         public ulong SeqSigoTicketId { get; set; }
-        public ulong SeqTicketId { get; set; }
+        public int SeqTicketId { get; set; }
         public DateTime Fecha { get; set; }
         public string OperadorId { get; set; }
         public string UsuarioId { get; set; }

@@ -117,7 +117,7 @@ namespace WebTickets.Controllers
 
                 SigoTicket sigoTicket = new SigoTicket
                 {
-                    SeqTicketId = ticket.Id,
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
                     Fecha = DateTime.Now,
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
@@ -193,7 +193,7 @@ namespace WebTickets.Controllers
 
                     SigoTicket sigoTicket = new SigoTicket
                     {
-                        SeqTicketId = ticket.Id,
+                        SeqTicketId = Convert.ToInt32(ticket.Id),
                         Fecha = DateTime.Now,
                         OperadorId = ticket.Operador_Id,
                         UsuarioId = ticket.Usuario_Id,
@@ -493,7 +493,8 @@ namespace WebTickets.Controllers
             tvm.Fecha_Entrega = ticket.Fecha_Entrega;
             tvm.Fecha_Ultimo_Estado = ticket.Fecha_Ultimo_Estado;
             tvm.Lista_Usuarios = Get_Usuarios();
-            tvm.Lista_Actividades = Get_SeguimientoTicket(ticket.Id);
+            tvm.Lista_Actividades = Get_SeguimientoTicket(Convert.ToInt32(ticket.Id));
+            //tvm.Lista_Actividades = Get_SeguimientoTicket();
 
 
             return tvm;
@@ -505,9 +506,15 @@ namespace WebTickets.Controllers
             return usuarios;
         }
 
-        private List<SigoTicket> Get_SeguimientoTicket(ulong id_ticket)
+        private List<SigoTicket> Get_SeguimientoTicket(int id_ticket)
         {
-            var lista = _context.SigoTicket.Where(st => st.SeqTicketId == id_ticket).ToList();
+            var lista = _context.SigoTicket.ToList().Where(st => st.SeqTicketId == id_ticket).ToList();
+            return lista;
+        }
+
+        private List<SigoTicket> Get_SeguimientoTicket()
+        {
+            var lista = _context.SigoTicket.ToList();
             return lista;
         }
 
