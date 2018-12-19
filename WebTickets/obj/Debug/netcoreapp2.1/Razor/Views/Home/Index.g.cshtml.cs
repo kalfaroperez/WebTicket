@@ -81,7 +81,7 @@ using Model.Custom;
             WriteLiteral("\r\n<div class=\"row\">\r\n\t<div class=\"col-md-12  col-lg-12 col-xs-12\" style=\"margin-top:100px; margin-bottom:100px\">\r\n\t\t<center>\r\n\t\t\t");
             EndContext();
             BeginContext(174, 56, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("img", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "4272fccccb894daca48a3a88556dde7d", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("img", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "ee448de61c084baaae5be808aaf9bc99", async() => {
             }
             );
             __Microsoft_AspNetCore_Mvc_Razor_TagHelpers_UrlResolutionTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.Razor.TagHelpers.UrlResolutionTagHelper>();

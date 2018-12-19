@@ -377,29 +377,88 @@
 					</div>
 					<div class="row">
 						<div class="col-xs-5">
-							<label class="input-sm col-xs-1">Actividades </label>
-							<div class="controls col-sm-8">
-								
+							<label class="control-label col-xs-1 col-md-1_5 col-lg-2">Actividades</label>
+							<div class="controls col-sm-10">
+
 							</div>
 						</div>
 					</div>
-					@foreach (var item in Model.Lista_Actividades)
-					{
-						<div class="row">
-							<div class="col-md-12 box-seguimiento">
-								<div class="form-group-sm ">
-									<div class="controls col-md-10">
-										<div style="float:left">
-											@{ @item.ValorActual }
-										</div>
-										<div style="float:right">
-											@{ @item.CampoCambiado }
-										</div>
-									</div>
-								</div>
-							</div>
+					<div class="row">
+						<label class="control-label col-xs-1 col-md-1_5 col-lg-2"></label>
+						<div class="col-xs-10">
+							<ul>
+								@foreach (var item in Model.Lista_Actividades)
+								{
+									@if (item.CampoCambiado == "NotasTrabajo")
+									{
+										<li class="h-card">
+											<div class="row">
+												<div class="col-xs-12">
+													<div style="float:left"> <span><i class="fa fa-user-circle"></i> @{ @item.UsuarioId }</span> </div>
+													<div style="float:right"> <span>Fecha de modificion:@{ @item.Fecha }</span> </div>
+												</div>
+											</div>
+											<div class="row" style="margin-top: 2px">
+												<span class="col-md-10">
+													@{ @item.CampoCambiado}
+												</span>
+											</div>
+											<div class="row" style="margin-top: 2px">
+												<span class="col-md-10">
+													@{ @item.NotasTrabajo}
+												</span>
+											</div>
+										</li>
+									}
+									else if (item.NombreAdjunto != null || string.IsNullOrEmpty(item.NombreAdjunto))
+									{
+										<li class="h-card">
+											<div class="row">
+												<div class="col-xs-12">
+													<div style="float:left"> <span><i class="fa fa-user-circle"></i> @{ @item.UsuarioId }</span> </div>
+													<div style="float:right"> <span>Fecha de modificion:@{ @item.Fecha }</span> </div>
+												</div>
+											</div>
+											<div class="row" style="margin-top: 2px">
+												<span class="col-md-10">
+													@{ @item.CampoCambiado}
+												</span>
+											</div>
+											<div class="row" style="margin-top: 2px">
+												<span class="col-md-10">
+													@{ @item.NombreAdjunto} - @{ @item.TipoAdjunto}
+												</span>
+
+											</div>
+										</li>
+									}
+									else
+									{
+
+										<li class="h-card">
+											<div class="row">
+												<div class="col-xs-12">
+													<div style="float:left"> <span><i class="fa fa-user-circle"></i> @{ @item.UsuarioId }</span> </div>
+													<div style="float:right"> <span>Fecha de modificion:@{ @item.Fecha }</span> </div>
+												</div>
+											</div>
+											<div class="row" style="margin-top: 2px">
+												<span class="col-md-10">
+													@{ @item.CampoCambiado}
+												</span>
+											</div>
+											<div class="row" style="margin-top: 2px">
+												<span class="col-md-10">
+													Valor anterior: @{ @item.ValorAnterior}
+													Ahora Valor Actual:  @{ @item.ValorActual}
+												</span>
+											</div>
+										</li>
+									}
+								}
+							</ul>
 						</div>
-					}
+					</div>
 				</div>
 				<div id="tab02" class="tab-contents">
 					<h2>Tab 2</h2>

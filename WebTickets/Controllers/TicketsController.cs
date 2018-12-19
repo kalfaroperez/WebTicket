@@ -19,7 +19,7 @@ using static WebTickets.Helpers.FileHelpers;
 
 namespace WebTickets.Controllers
 {
-    
+
     public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -27,7 +27,7 @@ namespace WebTickets.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IFileProvider _fileProvider;
         private readonly ILogger _logger;
-        
+
         //Esta variable me servirá como bandera para confirmar si la peticion tuvo exito o no
         private static bool exito = false;
         private static string ticket_numero;
@@ -78,13 +78,13 @@ namespace WebTickets.Controllers
             CargarFormulario_Tickets(tvm);
             if (exito)
             {
-                ViewBag.Resultado = string.Format("Su Ticket {0} ha sido registrado con exito!!",ticket_numero);
+                ViewBag.Resultado = string.Format("Su Ticket {0} ha sido registrado con exito!!", ticket_numero);
                 exito = false;
                 ticket_numero = "";
             }
             return View(tvm);
         }
-               
+
 
         // POST: Tickets/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -134,7 +134,7 @@ namespace WebTickets.Controllers
             return View(tvm);
         }
 
-        
+
 
         // GET: Tickets/Edit/5
         public async Task<IActionResult> Edit(ulong? id)
@@ -199,7 +199,8 @@ namespace WebTickets.Controllers
                         UsuarioId = ticket.Usuario_Id,
                         CampoCambiado = "NotasTrabajo",
                         ValorActual = tvm.NotasTrabajo,
-                        NotasTrabajo = tvm.NotasTrabajo
+                        NotasTrabajo = tvm.NotasTrabajo,
+                        InsertDatetime = DateTime.Now
                     };
                     _context.SigoTicket.Add(sigoTicket);
                     await _context.SaveChangesAsync();
@@ -258,14 +259,14 @@ namespace WebTickets.Controllers
         [HttpPost]
         public IActionResult GetUsuario([FromBody]UsuarioViewModel usuario)
         {
-            
+
             UsuarioViewModel uvm = new UsuarioViewModel();
             var item = _context.ApplicationUser.Find(usuario.Id);
             if (item == null)
             {
-                return NotFound() ;
+                return NotFound();
             }
-            
+
             uvm.Id = item.Id;
             uvm.Nombre_completo = item.FullName;
             uvm.UserName = item.UserName;
@@ -293,8 +294,9 @@ namespace WebTickets.Controllers
             {
                 foreach (var item in Directory.GetFiles(pathSource))
                 {
-                    
-                    ti.Files.Add(new FileDetails {
+
+                    ti.Files.Add(new FileDetails
+                    {
                         Name = Path.GetFileName(item),
                         Path = pathSource,
                         Fecha_modificacion = System.IO.File.GetLastWriteTime(item)
@@ -312,7 +314,7 @@ namespace WebTickets.Controllers
             string[] param = filename.Split("---");
             string numero_ticket = param[0];
             string _filename = param[1];
-            string path_file = string.Format("{0}\\{1}\\{2}", 
+            string path_file = string.Format("{0}\\{1}\\{2}",
                 GetPathFile_Ticket(),
                 numero_ticket,
                 _filename);
@@ -330,7 +332,7 @@ namespace WebTickets.Controllers
 
         private static Ticket Fill_TicketModel(TicketViewModel tvm)
         {
-            
+
             Ticket ticket = new Ticket
             {
                 Numero_Ticket = tvm.Numero_Ticket,
@@ -483,7 +485,7 @@ namespace WebTickets.Controllers
             tvm.EquipoSecundario = ticket.Id_EquipoSec;
 
             //Selector Componentes
-            tvm.Lista_Componentes = Get_Componentes();  
+            tvm.Lista_Componentes = Get_Componentes();
             tvm.Componente = ticket.Id_Componente;
 
             //Selector Estados
@@ -506,10 +508,34 @@ namespace WebTickets.Controllers
             return usuarios;
         }
 
-        private List<SigoTicket> Get_SeguimientoTicket(int id_ticket)
+        private List<SigoTicketViewModel> Get_SeguimientoTicket(int id_ticket)
         {
+            List<SigoTicketViewModel> lista_seg = new List<SigoTicketViewModel>();
             var lista = _context.SigoTicket.ToList().Where(st => st.SeqTicketId == id_ticket).ToList();
-            return lista;
+            foreach (var item in lista)
+            {
+                var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
+                var usuario = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName; 
+                SigoTicketViewModel stvm = new SigoTicketViewModel
+                {
+                    Id = item.SeqSigoTicketId.ToString(),
+                    OperadorId = operador,
+                    UsuarioId = usuario,
+                    NotasTrabajo = item.NotasTrabajo,
+                    ValorActual = item.ValorActual,
+                    ValorAnterior = item.ValorAnterior,
+                    Visible = item.Visible,
+                    Fecha = item.Fecha,
+                    Comentario = item.Comentario,
+                    NombreAdjunto = item.NombreAdjunto,
+                    TipoAdjunto = item.TipoAdjunto,
+                    CampoCambiado = item.CampoCambiado,
+                    InsertDatetime = item.InsertDatetime
+                };
+                lista_seg.Add(stvm);
+            }
+
+            return lista_seg;
         }
 
         private List<SigoTicket> Get_SeguimientoTicket()

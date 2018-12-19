@@ -179,7 +179,26 @@ namespace WebTickets.ViewModels
 
         [Display(Name = "Notas de Trabajo")]
         public string NotasTrabajo { get; set; }
-        public List<SigoTicket> Lista_Actividades{ get; set; }
+        public List<SigoTicketViewModel> Lista_Actividades{ get; set; }
+    }
+
+    public class SigoTicketViewModel
+    {
+        public string Id { get; set; }
+        public DateTime Fecha { get; set; }
+        public string OperadorId { get; set; }
+        public string UsuarioId { get; set; }
+        public string NotasTrabajo { get; set; }
+        public string CampoCambiado { get; set; }
+        public string ValorAnterior { get; set; }
+        public string ValorActual { get; set; }
+        public string Comentario { get; set; }
+        public int Visible { get; set; }
+        public string TipoAdjunto { get; set; }
+        public string NombreAdjunto { get; set; }
+        public string InsertOper { get; set; }
+        public string InsertUser { get; set; }
+        public DateTime InsertDatetime { get; set; }
     }
 
     public class UsuarioViewModel {

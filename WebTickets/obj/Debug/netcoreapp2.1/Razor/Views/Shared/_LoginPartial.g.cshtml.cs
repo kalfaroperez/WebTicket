@@ -91,12 +91,12 @@ using Model.Custom;
             WriteLiteral("\t");
             EndContext();
             BeginContext(148, 482, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "7452d12fded94144941098ad39e54cf0", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "9b86ec72dfb24c598c58b9741b401cee", async() => {
                 BeginContext(325, 59, true);
                 WriteLiteral("\r\n\t\t<ul class=\"nav navbar-nav navbar-right\">\r\n\t\t\t<li>\r\n\t\t\t\t");
                 EndContext();
                 BeginContext(384, 112, false);
-                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "5c81ba0ae9bd4203a418bdd26833a4f0", async() => {
+                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "9c55b357445240a6bae0026431927dfb", async() => {
                     BeginContext(455, 6, true);
                     WriteLiteral("Hello ");
                     EndContext();
