@@ -51,7 +51,32 @@ namespace WebTickets.Controllers
         // GET: Tickets
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Ticket.ToListAsync());
+            
+            var result = new List<TicketListViewModel>();
+            try
+            {
+
+                var lista = await _context.Ticket.ToListAsync();
+                result = lista.Select(x => new TicketListViewModel
+                {
+                    Id = x.Id.ToString(),
+                    Numero_Ticket = x.Numero_Ticket,
+                    Username = _context.ApplicationUser.Find(x.Usuario_Id).UserName,
+                    Operador_Nombre_Completo = _context.ApplicationUser.Find(x.Usuario_Id).FullName,
+                    Prioridad = _context.Prioridad.Find(x.Prioridad).Nombre_Prioridad,
+                    Asignado_A = _context.ApplicationUser.Find(x.Asignado_A).UserName,
+                    Fecha = x.Fecha,
+                    Fecha_Entrega = x.Fecha_Entrega,
+                    EstadoServicio = _context.EstadoServicio.Find(x.Estado).Nombre,
+                }).ToList();
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+            }
+
+            return View(result);
         }
 
         // GET: Tickets/Details/5
@@ -237,14 +262,13 @@ namespace WebTickets.Controllers
                     Fecha = DateTime.Now,
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
-                    CampoCambiado = "Notas de Trabajo",
-                    ValorAnterior = ticket.Operador_Id,
-                    ValorActual = tvm.Operador_Nombre_completo,
+                    CampoCambiado = "NotasTrabajo",
+                    NotasTrabajo = tvm.NotasTrabajo,
                     InsertDatetime = DateTime.Now
                 };
-            }
-            
-            
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChangesAsync();
+            }           
 
             if (ticket.Operador_Id != tvm.Operador_Id)
             {
@@ -261,7 +285,7 @@ namespace WebTickets.Controllers
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
             }
             else if (ticket.Area_Id != tvm.Area_Id)
             {
@@ -278,7 +302,7 @@ namespace WebTickets.Controllers
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
             }
             else if (ticket.Prioridad != tvm.Prioridad)
             {
@@ -295,7 +319,7 @@ namespace WebTickets.Controllers
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
             }
             else if (ticket.Proceso != tvm.Proceso)
             {
@@ -312,7 +336,7 @@ namespace WebTickets.Controllers
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
             }
             else if (ticket.Asignado_A != tvm.Asignado_A)
             {
@@ -323,13 +347,13 @@ namespace WebTickets.Controllers
                     Fecha = DateTime.Now,
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
-                    CampoCambiado = "Asignado A",
+                    CampoCambiado = "Asignado_A",
                     ValorAnterior = ticket.Asignado_A.ToString(),
                     ValorActual = tvm.Asignado_A.ToString(),
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
             }
             else if (ticket.Tipo_Trabajo != tvm.Tipo_Trabajo)
             {
@@ -340,13 +364,13 @@ namespace WebTickets.Controllers
                     Fecha = DateTime.Now,
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
-                    CampoCambiado = "Tipo Trabajo",
+                    CampoCambiado = "Tipo_Trabajo",
                     ValorAnterior = ticket.Tipo_Trabajo.ToString(),
                     ValorActual = tvm.Tipo_Trabajo.ToString(),
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
             }
             else if (ticket.Id_Planta != tvm.Planta)
             {
@@ -363,7 +387,7 @@ namespace WebTickets.Controllers
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
             }
             else if (ticket.Id_EquipoPrinc != tvm.EquipoPrincipal)
             {
@@ -374,13 +398,13 @@ namespace WebTickets.Controllers
                     Fecha = DateTime.Now,
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
-                    CampoCambiado = "Equipo Principal",
+                    CampoCambiado = "EquipoPrincipal",
                     ValorAnterior = ticket.Id_EquipoPrinc.ToString(),
                     ValorActual = tvm.Planta.ToString(),
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
             }
             else if (ticket.Id_EquipoSec != tvm.EquipoSecundario)
             {
@@ -391,13 +415,13 @@ namespace WebTickets.Controllers
                     Fecha = DateTime.Now,
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
-                    CampoCambiado = "Equipo Secundario",
+                    CampoCambiado = "EquipoSecundario",
                     ValorAnterior = ticket.Id_EquipoSec.ToString(),
                     ValorActual = tvm.EquipoSecundario.ToString(),
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
             }
             else if (ticket.Id_Componente != tvm.Componente)
             {
@@ -414,7 +438,7 @@ namespace WebTickets.Controllers
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
             }
             else if (ticket.Estado != tvm.Estado)
             {
@@ -425,13 +449,13 @@ namespace WebTickets.Controllers
                     Fecha = DateTime.Now,
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
-                    CampoCambiado = "Estado Servicio",
+                    CampoCambiado = "EstadoServicio",
                     ValorAnterior = ticket.Estado.ToString(),
                     ValorActual = tvm.Estado.ToString(),
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
             }
             else if (ticket.Fecha_Entrega != tvm.Fecha_Entrega)
             {
@@ -442,13 +466,13 @@ namespace WebTickets.Controllers
                     Fecha = DateTime.Now,
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
-                    CampoCambiado = "Fecha Entrega",
+                    CampoCambiado = "Fecha_Entrega",
                     ValorAnterior = ticket.Fecha_Entrega.ToString(),
                     ValorActual = tvm.Fecha_Entrega.ToString(),
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
             }
             return camposCambiados;
         }

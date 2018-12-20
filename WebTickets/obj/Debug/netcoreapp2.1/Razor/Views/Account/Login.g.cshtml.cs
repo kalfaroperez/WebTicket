@@ -206,7 +206,7 @@ Write(ViewBag.Title);
             WriteLiteral("\t\t</section>\r\n    </div>\r\n\t<div class=\"col-md-8\">\r\n\t\t<!--Imagen Logo-->\r\n\t\t<center>\r\n\t\t\t");
             EndContext();
             BeginContext(2089, 58, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("img", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "86509d67afa54f14afd234804b4bff55", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("img", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "0cedfe73549e456cad96e4cf9a3979b1", async() => {
             }
             );
             __Microsoft_AspNetCore_Mvc_Razor_TagHelpers_UrlResolutionTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.Razor.TagHelpers.UrlResolutionTagHelper>();

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Model.DB_Model.Ticket>
+﻿@model IEnumerable<TicketListViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -8,10 +8,10 @@
 <h2>Index</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Nuevo Ticket</a>
 </p>
-<table class="table">
-    <thead>
+<table class="table table-sm">
+    <thead class="table-primary">
 		<tr>
 			<th>
 				@Html.DisplayNameFor(model => model.Numero_Ticket)
@@ -23,20 +23,16 @@
 				@Html.DisplayNameFor(model => model.Fecha)
 			</th>
 			<th>
-				@*Html.DisplayNameFor(model => model.Usuario_Id)*@
-				<label>Usuario</label>
+				@Html.DisplayNameFor(model => model.Username)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.Nombre_completo)
+				@Html.DisplayNameFor(model => model.Operador_Nombre_Completo)
 			</th>
 			<th>
 				@Html.DisplayNameFor(model => model.Asignado_A)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.Incidente)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Estado)
+				@Html.DisplayNameFor(model => model.EstadoServicio)
 			</th>
 			<th></th>
 		</tr>
@@ -54,21 +50,17 @@
 				@Html.DisplayFor(modelItem => item.Fecha)
 			</td>
 			<td>
-				@Html.DisplayFor(modelItem => item.Usuario_Id)
+				@Html.DisplayFor(modelItem => item.Username)
 			</td>
 			<td>
-				@Html.DisplayFor(modelItem => item.Nombre_completo)
+				@Html.DisplayFor(modelItem => item.Operador_Nombre_Completo)
 			</td>
 
 			<td>
 				@Html.DisplayFor(modelItem => item.Asignado_A)
-			</td>
+			</td>			
 			<td>
-				@Html.DisplayFor(modelItem => item.Incidente)
-			</td>
-			
-			<td>
-				@Html.DisplayFor(modelItem => item.Estado)
+				@Html.DisplayFor(modelItem => item.EstadoServicio)
 			</td>
 			<td>
 				<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

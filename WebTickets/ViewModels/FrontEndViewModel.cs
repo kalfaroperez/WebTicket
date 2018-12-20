@@ -109,7 +109,7 @@ namespace WebTickets.ViewModels
         public string Telefono { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
-        [Display(Name ="Correo Electronico")]
+        [Display(Name = "Correo Electronico")]
         [EmailAddress]
         [StringLength(250, ErrorMessage = "El campo Nombre solo puede tener 250 caracteres")]
         public string Email { get; set; }
@@ -167,7 +167,7 @@ namespace WebTickets.ViewModels
 
         public string Calificacion { get; set; }
         public List<SelectListItem> Lista_Calificaion { get; set; }
-        
+
         public string Usuario { get; set; }
         public List<ApplicationUser> Lista_Usuarios { get; set; }
 
@@ -179,7 +179,34 @@ namespace WebTickets.ViewModels
 
         [Display(Name = "Notas de Trabajo")]
         public string NotasTrabajo { get; set; }
-        public List<SigoTicketViewModel> Lista_Actividades{ get; set; }
+        public List<SigoTicketViewModel> Lista_Actividades { get; set; }
+    }
+
+    public class TicketListViewModel
+    {
+        public string Id { get; set; }
+        public string Numero_Ticket { get; set; }
+
+        [Display(Name = "Usuario")]
+        public string Username { get; set; }
+
+        [Display(Name = "Nombre Completo")]
+        public string Operador_Nombre_Completo { get; set; }
+
+        [Display(Name = "Asignado a")]
+        public string Asignado_A { get; set; }
+
+        [Display(Name = "Prioridad")]
+        public string Prioridad { get; set; }
+
+
+        [Display(Name = "Fecha Creacion")]
+        public DateTime Fecha { get; set; }
+
+        [Display(Name = "Fecha Entrega")]
+        public DateTime Fecha_Entrega { get; set; }
+
+        public string EstadoServicio { get; set; }
     }
 
     public class SigoTicketViewModel
