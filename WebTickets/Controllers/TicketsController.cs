@@ -20,7 +20,7 @@ using static WebTickets.Helpers.FileHelpers;
 
 namespace WebTickets.Controllers
 {
-
+	//Ok
     public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;
