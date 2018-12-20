@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model.Auth;
+using Service;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,13 @@ namespace FrontEnd.Controllers
     public class RolesController : Controller
     {
         private readonly ApplicationRoleManager _roleManager;
+
+        public RolesController(
+            IUserService userService,
+            ApplicationRoleManager roleManager)
+        {
+            _roleManager = roleManager;
+        }
         // GET: User
         public ActionResult Index()
         {

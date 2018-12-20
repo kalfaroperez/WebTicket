@@ -18,10 +18,16 @@ namespace WebTickets.Controllers
     {
 
         private readonly IUserService _userService;
-
-        public UsersController(IUserService userService)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationRoleManager _roleManager;
+        public UsersController(
+            IUserService userService, 
+            UserManager<ApplicationUser> userManager, 
+            ApplicationRoleManager roleManager )
         {
             _userService = userService;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
 
@@ -33,7 +39,7 @@ namespace WebTickets.Controllers
 
             return View(model);
         }
-        /*
+        
         public async Task<ActionResult> Get(string id)
         {
             var model = await _userManager.FindByIdAsync(id);
@@ -56,6 +62,6 @@ namespace WebTickets.Controllers
 
             return RedirectToAction("Index");
         }
-        */
+        
     }
 }

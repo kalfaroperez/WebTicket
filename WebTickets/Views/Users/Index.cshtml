@@ -4,25 +4,26 @@
 }
 
 <h2 class="page-header">@ViewBag.Title</h2>
-
-<table class="table table-striped">
-    <thead>
-		<tr>
-			<th>#</th>
-			<th>Username</th>
-			<th>Email</th>
-		</tr>
-    </thead>
-    <tbody>
-		@{ int cont = 0;}
-        @foreach (var m in Model)
-		{
-			cont++;
-		<tr>
-			<td>@cont</td>
-			<td>@m.UserName</td>
-			<td><a href="~/users/get/@m.Id">@m.Email</a></td>
-		</tr>
-        }
-    </tbody>
-</table>
+<form asp-action="Get" method="Post">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Username</th>
+				<th>Email</th>
+			</tr>
+		</thead>
+		<tbody>
+			@{ int cont = 0;}
+			@foreach (var m in Model)
+			{
+				cont++;
+				<tr>
+					<td>@cont</td>
+					<td>@m.UserName</td>
+					<td><a asp-action="Get" asp-controller="Users" asp-route-id="@m.Id">@m.Email</a></td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</form>
