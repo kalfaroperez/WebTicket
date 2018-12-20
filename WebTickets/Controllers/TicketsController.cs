@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Model.Auth;
@@ -177,9 +178,50 @@ namespace WebTickets.Controllers
             }
             if (ModelState.IsValid)
             {
+                //Ticket Comparer
+                var ticket_comparer = _context.Ticket.FirstOrDefault(t => t.Id == tvm.Id);
+
+                using (var transaction = _context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        Ticket ticket = Fill_TicketModel(tvm);
+                        _context.Update(ticket);
+                        await _context.SaveChangesAsync();
+
+                        //Una vez guardo el registro, Tomo el ID y lo envio para crear la carpeta 
+                        //con el nombre del ID y guardar el Adjunto.
+                        await UploadFiles(
+                            tvm.FileUpload,
+                            ticket.Numero_Ticket,
+                            Enum.GetName(typeof(PathUploapFile), PathUploapFile.Tickets));
+
+                        GetCamposCambiados(tvm, ticket_comparer);
+
+                        transaction.Commit();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!TicketExists(tvm.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+                
+                /*
                 try
                 {
+                    List<string> campos = GetCamposCambiados(tvm);
 
+                    foreach (var item in campos)
+                    {
+
+                    }
                     Ticket ticket = Fill_TicketModel(tvm);
                     _context.Update(ticket);
                     await _context.SaveChangesAsync();
@@ -203,6 +245,7 @@ namespace WebTickets.Controllers
                         InsertDatetime = DateTime.Now
                     };
                     _context.SigoTicket.Add(sigoTicket);
+                    
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -215,7 +258,7 @@ namespace WebTickets.Controllers
                     {
                         throw;
                     }
-                }
+                }*/
                 return RedirectToAction(nameof(Index));
             }
             CargarFormulario_Tickets(tvm);
@@ -251,7 +294,7 @@ namespace WebTickets.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TicketExists(ulong id)
+        private bool TicketExists(ulong? id)
         {
             return _context.Ticket.Any(e => e.Id == id);
         }
@@ -515,7 +558,7 @@ namespace WebTickets.Controllers
             foreach (var item in lista)
             {
                 var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
-                var usuario = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName; 
+                var usuario = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
                 SigoTicketViewModel stvm = new SigoTicketViewModel
                 {
                     Id = item.SeqSigoTicketId.ToString(),
@@ -749,6 +792,221 @@ namespace WebTickets.Controllers
             }
 
             return lista;
+        }
+
+        private List<string> GetCamposCambiados(TicketViewModel tvm, Ticket ticket_comparer)
+        {
+            List<string> camposCambiados = new List<string>();
+            Ticket ticket = ticket_comparer;
+            //_context.Ticket.FirstOrDefault(t => t.Id == tvm.Id);
+
+            //Comparare los campos de la bd con los de 
+            //la aplicacion para saber cual fue actualizado.
+            if (ticket.Operador_Id != tvm.Operador_Id)
+            {
+                camposCambiados.Add("Operador");
+                SigoTicket sigoTicket = new SigoTicket
+                {
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
+                    Fecha = DateTime.Now,
+                    OperadorId = ticket.Operador_Id,
+                    UsuarioId = ticket.Usuario_Id,
+                    CampoCambiado = "Operador",
+                    ValorAnterior = ticket.Operador_Id,
+                    ValorActual = tvm.Operador_Nombre_completo,
+                    InsertDatetime = DateTime.Now
+                };
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChanges();
+            }
+            else if (ticket.Area_Id != tvm.Area_Id)
+            {
+                camposCambiados.Add("Area");
+                SigoTicket sigoTicket = new SigoTicket
+                {
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
+                    Fecha = DateTime.Now,
+                    OperadorId = ticket.Operador_Id,
+                    UsuarioId = ticket.Usuario_Id,
+                    CampoCambiado = "Area",
+                    ValorAnterior = ticket.Area_Id.ToString(),
+                    ValorActual = tvm.Area,
+                    InsertDatetime = DateTime.Now
+                };
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChanges();
+            }
+            else if (ticket.Prioridad != tvm.Prioridad)
+            {
+                camposCambiados.Add("Prioridad");
+                SigoTicket sigoTicket = new SigoTicket
+                {
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
+                    Fecha = DateTime.Now,
+                    OperadorId = ticket.Operador_Id,
+                    UsuarioId = ticket.Usuario_Id,
+                    CampoCambiado = "Prioridad",
+                    ValorAnterior = ticket.Prioridad.ToString(),
+                    ValorActual = tvm.Prioridad.ToString(),
+                    InsertDatetime = DateTime.Now
+                };
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChanges();
+            }
+            else if (ticket.Proceso != tvm.Proceso)
+            {
+                camposCambiados.Add("Proceso");
+                SigoTicket sigoTicket = new SigoTicket
+                {
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
+                    Fecha = DateTime.Now,
+                    OperadorId = ticket.Operador_Id,
+                    UsuarioId = ticket.Usuario_Id,
+                    CampoCambiado = "Proceso",
+                    ValorAnterior = ticket.Proceso.ToString(),
+                    ValorActual = tvm.Proceso.ToString(),
+                    InsertDatetime = DateTime.Now
+                };
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChanges();
+            }
+            else if (ticket.Asignado_A != tvm.Asignado_A)
+            {
+                camposCambiados.Add("Asignado_A");
+                SigoTicket sigoTicket = new SigoTicket
+                {
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
+                    Fecha = DateTime.Now,
+                    OperadorId = ticket.Operador_Id,
+                    UsuarioId = ticket.Usuario_Id,
+                    CampoCambiado = "Asignado_A",
+                    ValorAnterior = ticket.Asignado_A.ToString(),
+                    ValorActual = tvm.Asignado_A.ToString(),
+                    InsertDatetime = DateTime.Now
+                };
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChanges();
+            }
+            else if (ticket.Tipo_Trabajo != tvm.Tipo_Trabajo)
+            {
+                camposCambiados.Add("Tipo_Trabajo");
+                SigoTicket sigoTicket = new SigoTicket
+                {
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
+                    Fecha = DateTime.Now,
+                    OperadorId = ticket.Operador_Id,
+                    UsuarioId = ticket.Usuario_Id,
+                    CampoCambiado = "Tipo_Trabajo",
+                    ValorAnterior = ticket.Tipo_Trabajo.ToString(),
+                    ValorActual = tvm.Tipo_Trabajo.ToString(),
+                    InsertDatetime = DateTime.Now
+                };
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChanges();
+            }
+            else if (ticket.Id_Planta != tvm.Planta)
+            {
+                camposCambiados.Add("Planta");
+                SigoTicket sigoTicket = new SigoTicket
+                {
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
+                    Fecha = DateTime.Now,
+                    OperadorId = ticket.Operador_Id,
+                    UsuarioId = ticket.Usuario_Id,
+                    CampoCambiado = "Planta",
+                    ValorAnterior = ticket.Id_Planta.ToString(),
+                    ValorActual = tvm.Planta.ToString(),
+                    InsertDatetime = DateTime.Now
+                };
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChanges();
+            }
+            else if (ticket.Id_EquipoPrinc != tvm.EquipoPrincipal)
+            {
+                camposCambiados.Add("EquipoPrincipal");
+                SigoTicket sigoTicket = new SigoTicket
+                {
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
+                    Fecha = DateTime.Now,
+                    OperadorId = ticket.Operador_Id,
+                    UsuarioId = ticket.Usuario_Id,
+                    CampoCambiado = "EquipoPrincipal",
+                    ValorAnterior = ticket.Id_EquipoPrinc.ToString(),
+                    ValorActual = tvm.Planta.ToString(),
+                    InsertDatetime = DateTime.Now
+                };
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChanges();
+            }
+            else if (ticket.Id_EquipoSec != tvm.EquipoSecundario)
+            {
+                camposCambiados.Add("EquipoSecundario");
+                SigoTicket sigoTicket = new SigoTicket
+                {
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
+                    Fecha = DateTime.Now,
+                    OperadorId = ticket.Operador_Id,
+                    UsuarioId = ticket.Usuario_Id,
+                    CampoCambiado = "EquipoSecundario",
+                    ValorAnterior = ticket.Id_EquipoSec.ToString(),
+                    ValorActual = tvm.EquipoSecundario.ToString(),
+                    InsertDatetime = DateTime.Now
+                };
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChanges();
+            }
+            else if (ticket.Id_Componente != tvm.Componente)
+            {
+                camposCambiados.Add("Componente");
+                SigoTicket sigoTicket = new SigoTicket
+                {
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
+                    Fecha = DateTime.Now,
+                    OperadorId = ticket.Operador_Id,
+                    UsuarioId = ticket.Usuario_Id,
+                    CampoCambiado = "Componente",
+                    ValorAnterior = ticket.Id_Componente.ToString(),
+                    ValorActual = tvm.Componente.ToString(),
+                    InsertDatetime = DateTime.Now
+                };
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChanges();
+            }
+            else if (ticket.Estado != tvm.Estado)
+            {
+                camposCambiados.Add("Estado");
+                SigoTicket sigoTicket = new SigoTicket
+                {
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
+                    Fecha = DateTime.Now,
+                    OperadorId = ticket.Operador_Id,
+                    UsuarioId = ticket.Usuario_Id,
+                    CampoCambiado = "EstadoServicio",
+                    ValorAnterior = ticket.Estado.ToString(),
+                    ValorActual = tvm.Estado.ToString(),
+                    InsertDatetime = DateTime.Now
+                };
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChanges();
+            }
+            else if (ticket.Fecha_Entrega != tvm.Fecha_Entrega)
+            {
+                camposCambiados.Add("Fecha_Entrega");
+                SigoTicket sigoTicket = new SigoTicket
+                {
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
+                    Fecha = DateTime.Now,
+                    OperadorId = ticket.Operador_Id,
+                    UsuarioId = ticket.Usuario_Id,
+                    CampoCambiado = "Fecha_Entrega",
+                    ValorAnterior = ticket.Fecha_Entrega.ToString(),
+                    ValorActual = tvm.Fecha_Entrega.ToString(),
+                    InsertDatetime = DateTime.Now
+                };
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChanges();
+            }
+            return camposCambiados;
         }
 
         #endregion
