@@ -12,6 +12,14 @@
 		</div>
 	}
 
+	@if (!string.IsNullOrEmpty(Model.Error))
+	{
+		<div class="alert alert-danger" role="alert">
+			@Model.Error
+		</div>
+	}
+
+
 	<div class="panel panel-primary margen-top">
 		<div class="row">
 			<div class="col-xs-4">
@@ -262,19 +270,22 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach (var item in Model.Lista_Usuarios)
+						@if (Model.Lista_Usuarios != null)
 						{
-							<tr>
-								<td>
-									<button class="user_in_list" onclick="cargar_Usuario('@{ @item.Id }', '@Url.Action("GetUsuario", "Tickets")' );">
-										<span class="font-size: 48px;">
-											<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-										</span>
-									</button>
-								</td>
-								<td>@item.FullName</td>
-								<td>@item.Area</td>
-							</tr>
+							@foreach (var item in Model.Lista_Usuarios)
+							{
+								<tr>
+									<td>
+										<button class="user_in_list" onclick="cargar_Usuario('@{ @item.Id }', '@Url.Action("GetUsuario", "Tickets")' );">
+											<span class="font-size: 48px;">
+												<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+											</span>
+										</button>
+									</td>
+									<td>@item.FullName</td>
+									<td>@item.Area</td>
+								</tr>
+							}
 						}
 					</tbody>
 				</table>

@@ -10,64 +10,67 @@
 <p>
     <a asp-action="Create">Nuevo Ticket</a>
 </p>
-<table class="table table-sm">
-    <thead class="table-primary">
-		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.Numero_Ticket)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Prioridad)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Fecha)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Username)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Operador_Nombre_Completo)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Asignado_A)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.EstadoServicio)
-			</th>
-			<th></th>
-		</tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-		<tr>
-			<td>
-				@Html.DisplayFor(modelItem => item.Numero_Ticket)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.Prioridad)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.Fecha)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.Username)
-			</td>
-			<td>
-				@Html.DisplayFor(modelItem => item.Operador_Nombre_Completo)
-			</td>
+<div class="table-responsive">
+	<table class="table table-striped table-sm ">
+		<thead class="table-primary">
+			<tr>
+				<th>
+					@Html.DisplayNameFor(model => model.Numero_Ticket)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Prioridad)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Fecha)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Username)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Operador_Nombre_Completo)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Asignado_A)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.EstadoServicio)
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.Numero_Ticket)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Prioridad)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Fecha)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Username)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Operador_Nombre_Completo)
+					</td>
 
-			<td>
-				@Html.DisplayFor(modelItem => item.Asignado_A)
-			</td>			
-			<td>
-				@Html.DisplayFor(modelItem => item.EstadoServicio)
-			</td>
-			<td>
-				<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-				<a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-				<a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-			</td>
-		</tr>
-}
-    </tbody>
-</table>
+					<td>
+						@Html.DisplayFor(modelItem => item.Asignado_A)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.EstadoServicio)
+					</td>
+					<td>
+						<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+						<a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+						<a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>

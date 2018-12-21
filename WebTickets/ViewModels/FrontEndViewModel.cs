@@ -180,6 +180,12 @@ namespace WebTickets.ViewModels
         [Display(Name = "Notas de Trabajo")]
         public string NotasTrabajo { get; set; }
         public List<SigoTicketViewModel> Lista_Actividades { get; set; }
+
+        [Display(Name = "Notas Cierre Servicio")]
+        public string NotaCierreServicio { get; set; }
+        
+        public string Error { get; set; }
+        public string Exito { get; set; }
     }
 
     public class TicketListViewModel
@@ -217,6 +223,7 @@ namespace WebTickets.ViewModels
         public string UsuarioId { get; set; }
         public string NotasTrabajo { get; set; }
         public string CampoCambiado { get; set; }
+        public int CambioNumero { get; set; }
         public string ValorAnterior { get; set; }
         public string ValorActual { get; set; }
         public string Comentario { get; set; }

@@ -14,6 +14,7 @@ namespace Model.DB_Model
         public string UsuarioId { get; set; }
         public string NotasTrabajo { get; set; }
         public string CampoCambiado { get; set; }
+        public int CambioNumero { get; set; }
         public string ValorAnterior { get; set; }
         public string ValorActual { get; set; }
         public string Comentario { get; set; }

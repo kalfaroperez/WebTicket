@@ -363,8 +363,8 @@
 					<div class="row">
 						<div class="col-xs-12">
 							<div class="form-group-sm">
-								<label asp-for="NotasTrabajo" class="input-sm col-xs-1"></label>
-								<div class="controls col-sm-10">
+								<label asp-for="NotasTrabajo" class="input-sm col-xs-2"></label>
+								<div class="controls col-xs-10">
 									<textarea asp-for="NotasTrabajo" rows="3" cols="40" class="form-control input-sm"></textarea>
 								</div>
 							</div>
@@ -376,84 +376,59 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-5">
-							<label class="control-label col-xs-1 col-md-1_5 col-lg-2">Actividades</label>
-							<div class="controls col-sm-10">
-
+						<div class="col-xs-2 col-md-2">
+							<div class="controls col-sm-10 input-sm">
+								<b>Activadades</b>
 							</div>
 						</div>
 					</div>
 					<div class="row">
-						<label class="control-label col-xs-1 col-md-1_5 col-lg-2"></label>
-						<div class="col-xs-10">
+						<label class="control-label col-xs-2 col-md-2 col-lg-2"></label>
+						<div class="col-xs-12 col-md-12 col-lg-12">
 							<ul>
-								@foreach (var item in Model.Lista_Actividades)
+								@if (Model.Lista_Actividades != null)
 								{
-									@if (item.CampoCambiado == "NotasTrabajo")
+									@foreach (var item in Model.Lista_Actividades)
 									{
-										<li class="h-card">
-											<div class="row">
-												<div class="col-xs-12">
-													<div style="float:left"> <span><i class="fa fa-user-circle"></i> @{ @item.UsuarioId }</span> </div>
-													<div style="float:right"> <span>Fecha de modificion:@{ @item.Fecha }</span> </div>
+										@if (item.CampoCambiado == "NotasTrabajo" && item.NotasTrabajo != "")
+										{
+											<li class="h-card">
+												<div class="row">
+													<div class="col-xs-12 input-sm">
+														<div style="float:left">
+															<span><i class="fa fa-user-circle"></i> <b> @{ @item.UsuarioId } </b> </span>
+														</div>
+														<div style="float:right">
+															<span><b>Fecha de modificion:</b> @{ @item.Fecha }</span>
+														</div>
+													</div>
 												</div>
-											</div>
-											<div class="row" style="margin-top: 2px">
-												<span class="col-md-10">
-													@{ @item.CampoCambiado}
-												</span>
-											</div>
-											<div class="row" style="margin-top: 2px">
-												<span class="col-md-10">
-													@{ @item.NotasTrabajo}
-												</span>
-											</div>
-										</li>
-									}
-									else if (item.NombreAdjunto != null || string.IsNullOrEmpty(item.NombreAdjunto))
-									{
-										<li class="h-card">
-											<div class="row">
-												<div class="col-xs-12">
-													<div style="float:left"> <span><i class="fa fa-user-circle"></i> @{ @item.UsuarioId }</span> </div>
-													<div style="float:right"> <span>Fecha de modificion:@{ @item.Fecha }</span> </div>
+												<div class="row">
+													<span class="col-md-10  input-sm"><b>@{ @item.CampoCambiado}: </b></span>
+													<span class="col-md-10"> @{ @item.NotasTrabajo} </span>
 												</div>
-											</div>
-											<div class="row" style="margin-top: 2px">
-												<span class="col-md-10">
-													@{ @item.CampoCambiado}
-												</span>
-											</div>
-											<div class="row" style="margin-top: 2px">
-												<span class="col-md-10">
-													@{ @item.NombreAdjunto} - @{ @item.TipoAdjunto}
-												</span>
-
-											</div>
-										</li>
-									}
-									else
-									{
-
-										<li class="h-card">
-											<div class="row">
-												<div class="col-xs-12">
-													<div style="float:left"> <span><i class="fa fa-user-circle"></i> @{ @item.UsuarioId }</span> </div>
-													<div style="float:right"> <span>Fecha de modificion:@{ @item.Fecha }</span> </div>
+											</li>
+										}
+										else
+										{
+											<li class="h-card">
+												<div class="row">
+													<div class="col-xs-12 input-sm">
+														<div style="float:left"> <span><i class="fa fa-user-circle"></i> <b> @{ @item.UsuarioId } </b></span> </div>
+														<div style="float:right"> <span><b>Fecha de modificion:</b>@{ @item.Fecha }</span> </div>
+													</div>
 												</div>
-											</div>
-											<div class="row" style="margin-top: 2px">
-												<span class="col-md-10">
-													@{ @item.CampoCambiado}
-												</span>
-											</div>
-											<div class="row" style="margin-top: 2px">
-												<span class="col-md-10">
-													Valor anterior: @{ @item.ValorAnterior}
-													Ahora Valor Actual:  @{ @item.ValorActual}
-												</span>
-											</div>
-										</li>
+												<div class="row" style="margin-top: 2px">
+													<span class="col-md-10 input-sm"> <b>Campos Afectados</b> </span>
+													<div class="col-md-10">
+														<label class="input-sm">@{ @item.CampoCambiado}:</label> 
+														<span> @{ @item.ValorActual} </span> 
+														 <label class="input-sm"> <b> valor anterior: </b></label>
+														<span>@{ @item.ValorAnterior}</span>	
+													</div>
+												</div>
+											</li>
+										}
 									}
 								}
 							</ul>
@@ -461,8 +436,16 @@
 					</div>
 				</div>
 				<div id="tab02" class="tab-contents">
-					<h2>Tab 2</h2>
-					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eius quos aliquam consequuntur, esse provident impedit minima porro! Laudantium laboriosam culpa quis fugiat ea, architecto velit ab, deserunt rem quibusdam voluptatum.</p>
+					<div class="row">
+						<div class="col-xs-12">
+							<div class="form-group-sm">
+								<label asp-for="NotaCierreServicio" class="input-sm col-xs-1"></label>
+								<div class="controls col-sm-10">
+									<textarea asp-for="NotaCierreServicio" rows="3" cols="40" class="form-control input-sm"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -503,19 +486,22 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach (var item in Model.Lista_Usuarios)
+						@if (Model.Lista_Usuarios != null)
 						{
-							<tr>
-								<td>
-									<button class="user_in_list" onclick="cargar_Usuario('@{ @item.Id }', '@Url.Action("GetUsuario", "Tickets")' );">
-										<span class="font-size: 48px;">
-											<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-										</span>
-									</button>
-								</td>
-								<td>@item.FullName</td>
-								<td>@item.Area</td>
-							</tr>
+							@foreach (var item in Model.Lista_Usuarios)
+							{
+								<tr>
+									<td>
+										<button class="user_in_list" onclick="cargar_Usuario('@{ @item.Id }', '@Url.Action("GetUsuario", "Tickets")' );">
+											<span class="font-size: 48px;">
+												<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+											</span>
+										</button>
+									</td>
+									<td>@item.FullName</td>
+									<td>@item.Area</td>
+								</tr>
+							}
 						}
 					</tbody>
 				</table>

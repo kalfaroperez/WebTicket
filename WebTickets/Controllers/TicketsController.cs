@@ -51,12 +51,12 @@ namespace WebTickets.Controllers
         // GET: Tickets
         public async Task<IActionResult> Index()
         {
-            
+
             var result = new List<TicketListViewModel>();
             try
             {
 
-                var lista = await _context.Ticket.ToListAsync();
+                var lista = await _context.Ticket.AsNoTracking().ToListAsync();
                 result = lista.Select(x => new TicketListViewModel
                 {
                     Id = x.Id.ToString(),
@@ -73,6 +73,7 @@ namespace WebTickets.Controllers
             }
             catch (Exception e)
             {
+
                 _logger.LogError(e.Message);
             }
 
@@ -203,20 +204,18 @@ namespace WebTickets.Controllers
             }
             if (ModelState.IsValid)
             {
-
-                try
+                
+                using (var transaction = _context.Database.BeginTransaction())
                 {
-                    using (var transaction = _context.Database.BeginTransaction())
+                    try
                     {
-
-                        GetCamposCambiados(tvm);
-                        Ticket ticket = Fill_TicketModel(tvm);
+                        
+                        InsertSeguimientoTicket(tvm);
                         //Ticket Comparer Compara los cambios
+                        Ticket ticket = Fill_TicketModel(tvm);
                         _context.Update(ticket);
                         await _context.SaveChangesAsync();
-
-
-
+                        
                         //Una vez guardo el registro, Tomo el ID y lo envio para crear la carpeta 
                         //con el nombre del ID y guardar el Adjunto.
                         await UploadFiles(
@@ -224,22 +223,19 @@ namespace WebTickets.Controllers
                             ticket.Numero_Ticket,
                             Enum.GetName(typeof(PathUploapFile), PathUploapFile.Tickets));
 
-
                         transaction.Commit();
-                    }
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TicketExists(tvm.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
 
+                    }
+                    catch (Exception ex)
+                    {
+
+
+                        tvm.Error = "No se ha podido guardar el registro. Ha ocurrido un error <br/>"
+                                            + ex.Message + "<br/> " + ex.InnerException;
+                        return View(tvm);
+                    }
+
+                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -247,11 +243,11 @@ namespace WebTickets.Controllers
             return View(tvm);
         }
 
-        private List<string> GetCamposCambiados(TicketViewModel tvm)
+        private List<string> InsertSeguimientoTicket(TicketViewModel tvm)
         {
             List<string> camposCambiados = new List<string>();
             var ticket = _context.Ticket.AsNoTracking().FirstOrDefault(t => t.Id == tvm.Id);
-
+            var cambioNumeroSeg = _context.SigoTicket.AsNoTracking().Where(s => s.SeqTicketId == Convert.ToInt32(tvm.Id)).GroupBy(s => s.CambioNumero).Count();
             //Comparare los campos de la bd con los de 
             //la aplicacion para saber cual fue actualizado.
             if (!string.IsNullOrEmpty(tvm.NotasTrabajo))
@@ -263,12 +259,13 @@ namespace WebTickets.Controllers
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "NotasTrabajo",
+                    CambioNumero = cambioNumeroSeg,
                     NotasTrabajo = tvm.NotasTrabajo,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChangesAsync();
-            }           
+                _context.SaveChanges();
+            }
 
             if (ticket.Operador_Id != tvm.Operador_Id)
             {
@@ -280,14 +277,15 @@ namespace WebTickets.Controllers
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Operador",
-                    ValorAnterior = ticket.Operador_Id,
-                    ValorActual = tvm.Operador_Nombre_completo,
+                    CambioNumero = cambioNumeroSeg,
+                    ValorAnterior = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Operador_Id).FullName,
+                    ValorActual = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t=> t.Id == tvm.Operador_Id).FullName,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
-            else if (ticket.Area_Id != tvm.Area_Id)
+            if (ticket.Area_Id != tvm.Area_Id)
             {
                 camposCambiados.Add("Area");
                 SigoTicket sigoTicket = new SigoTicket
@@ -297,14 +295,15 @@ namespace WebTickets.Controllers
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Area",
-                    ValorAnterior = ticket.Area_Id.ToString(),
-                    ValorActual = tvm.Area,
+                    CambioNumero = cambioNumeroSeg,
+                    ValorAnterior = _context.Planta.AsNoTracking().SingleOrDefault(a => a.Id == ticket.Area_Id).Nombre,
+                    ValorActual = _context.Planta.AsNoTracking().SingleOrDefault(a => a.Id == tvm.Area_Id).Nombre,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
-            else if (ticket.Prioridad != tvm.Prioridad)
+            if (ticket.Prioridad != tvm.Prioridad)
             {
                 camposCambiados.Add("Prioridad");
                 SigoTicket sigoTicket = new SigoTicket
@@ -314,14 +313,15 @@ namespace WebTickets.Controllers
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Prioridad",
-                    ValorAnterior = ticket.Prioridad.ToString(),
-                    ValorActual = tvm.Prioridad.ToString(),
+                    CambioNumero = cambioNumeroSeg,
+                    ValorAnterior = _context.Prioridad.AsNoTracking().SingleOrDefault(p => p.Id == ticket.Prioridad).Nombre_Prioridad,
+                    ValorActual = _context.Prioridad.AsNoTracking().SingleOrDefault(p => p.Id == tvm.Prioridad).Nombre_Prioridad,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
-            else if (ticket.Proceso != tvm.Proceso)
+            if (ticket.Proceso != tvm.Proceso)
             {
                 camposCambiados.Add("Proceso");
                 SigoTicket sigoTicket = new SigoTicket
@@ -331,14 +331,15 @@ namespace WebTickets.Controllers
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Proceso",
-                    ValorAnterior = ticket.Proceso.ToString(),
-                    ValorActual = tvm.Proceso.ToString(),
+                    CambioNumero = cambioNumeroSeg,
+                    ValorAnterior = _context.Procesos.AsNoTracking().SingleOrDefault(p => p.Id == ticket.Proceso).Nombre_Proceso,
+                    ValorActual = _context.Procesos.AsNoTracking().SingleOrDefault(p => p.Id == tvm.Proceso).Nombre_Proceso,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
-            else if (ticket.Asignado_A != tvm.Asignado_A)
+            if (ticket.Asignado_A != tvm.Asignado_A)
             {
                 camposCambiados.Add("Asignado_A");
                 SigoTicket sigoTicket = new SigoTicket
@@ -348,14 +349,15 @@ namespace WebTickets.Controllers
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Asignado_A",
-                    ValorAnterior = ticket.Asignado_A.ToString(),
-                    ValorActual = tvm.Asignado_A.ToString(),
+                    CambioNumero = cambioNumeroSeg,
+                    ValorAnterior = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Asignado_A).FullName,
+                    ValorActual =  _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == tvm.Asignado_A).FullName,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
-            else if (ticket.Tipo_Trabajo != tvm.Tipo_Trabajo)
+            if (ticket.Tipo_Trabajo != tvm.Tipo_Trabajo)
             {
                 camposCambiados.Add("Tipo_Trabajo");
                 SigoTicket sigoTicket = new SigoTicket
@@ -365,14 +367,15 @@ namespace WebTickets.Controllers
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Tipo_Trabajo",
-                    ValorAnterior = ticket.Tipo_Trabajo.ToString(),
-                    ValorActual = tvm.Tipo_Trabajo.ToString(),
+                    CambioNumero = cambioNumeroSeg,
+                    ValorAnterior = _context.TipoTrabajo.AsNoTracking().SingleOrDefault(tt => tt.Id == ticket.Tipo_Trabajo).Nombre,
+                    ValorActual = _context.TipoTrabajo.AsNoTracking().SingleOrDefault(tt => tt.Id == tvm.Tipo_Trabajo).Nombre,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
-            else if (ticket.Id_Planta != tvm.Planta)
+            if (ticket.Id_Planta != tvm.Planta)
             {
                 camposCambiados.Add("Planta");
                 SigoTicket sigoTicket = new SigoTicket
@@ -382,14 +385,15 @@ namespace WebTickets.Controllers
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Planta",
-                    ValorAnterior = ticket.Id_Planta.ToString(),
-                    ValorActual = tvm.Planta.ToString(),
+                    CambioNumero = cambioNumeroSeg,
+                    ValorAnterior = _context.Planta.AsNoTracking().SingleOrDefault(p => p.Id == ticket.Id_Planta).Nombre,
+                    ValorActual = _context.Planta.AsNoTracking().SingleOrDefault(p => p.Id == tvm.Planta).Nombre,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
-            else if (ticket.Id_EquipoPrinc != tvm.EquipoPrincipal)
+            if (ticket.Id_EquipoPrinc != tvm.EquipoPrincipal)
             {
                 camposCambiados.Add("EquipoPrincipal");
                 SigoTicket sigoTicket = new SigoTicket
@@ -399,14 +403,15 @@ namespace WebTickets.Controllers
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "EquipoPrincipal",
-                    ValorAnterior = ticket.Id_EquipoPrinc.ToString(),
-                    ValorActual = tvm.Planta.ToString(),
+                    CambioNumero = cambioNumeroSeg,
+                    ValorAnterior = _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(ep =>ep.Id == ticket.Id_EquipoPrinc).Nombre,
+                    ValorActual = _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(ep => ep.Id == tvm.EquipoPrincipal).Nombre,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
-            else if (ticket.Id_EquipoSec != tvm.EquipoSecundario)
+            if (ticket.Id_EquipoSec != tvm.EquipoSecundario)
             {
                 camposCambiados.Add("EquipoSecundario");
                 SigoTicket sigoTicket = new SigoTicket
@@ -416,14 +421,15 @@ namespace WebTickets.Controllers
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "EquipoSecundario",
-                    ValorAnterior = ticket.Id_EquipoSec.ToString(),
-                    ValorActual = tvm.EquipoSecundario.ToString(),
+                    CambioNumero = cambioNumeroSeg,
+                    ValorAnterior = _context.EquipoSecundario.AsNoTracking().SingleOrDefault(es=> es.Id == ticket.Id_EquipoSec).Nombre,
+                    ValorActual = _context.EquipoSecundario.AsNoTracking().SingleOrDefault(es => es.Id == tvm.EquipoSecundario).Nombre,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
-            else if (ticket.Id_Componente != tvm.Componente)
+            if (ticket.Id_Componente != tvm.Componente)
             {
                 camposCambiados.Add("Componente");
                 SigoTicket sigoTicket = new SigoTicket
@@ -433,14 +439,15 @@ namespace WebTickets.Controllers
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Componente",
-                    ValorAnterior = ticket.Id_Componente.ToString(),
-                    ValorActual = tvm.Componente.ToString(),
+                    CambioNumero = cambioNumeroSeg,
+                    ValorAnterior = _context.Componentes.AsNoTracking().SingleOrDefault(c => c.Id == ticket.Id_Componente).Nombre,
+                    ValorActual = _context.Componentes.AsNoTracking().SingleOrDefault(c => c.Id == tvm.Componente).Nombre,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
-            else if (ticket.Estado != tvm.Estado)
+            if (ticket.Estado != tvm.Estado)
             {
                 camposCambiados.Add("Estado");
                 SigoTicket sigoTicket = new SigoTicket
@@ -450,14 +457,15 @@ namespace WebTickets.Controllers
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "EstadoServicio",
-                    ValorAnterior = ticket.Estado.ToString(),
-                    ValorActual = tvm.Estado.ToString(),
+                    CambioNumero = cambioNumeroSeg,
+                    ValorAnterior = _context.EstadoServicio.AsNoTracking().FirstOrDefault(es => es.Id == ticket.Estado).Nombre,
+                    ValorActual = _context.EstadoServicio.AsNoTracking().FirstOrDefault(es => es.Id == tvm.Estado).Nombre,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
-            else if (ticket.Fecha_Entrega != tvm.Fecha_Entrega)
+            if (ticket.Fecha_Entrega != tvm.Fecha_Entrega)
             {
                 camposCambiados.Add("Fecha_Entrega");
                 SigoTicket sigoTicket = new SigoTicket
@@ -467,12 +475,13 @@ namespace WebTickets.Controllers
                     OperadorId = ticket.Operador_Id,
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Fecha_Entrega",
+                    CambioNumero = cambioNumeroSeg,
                     ValorAnterior = ticket.Fecha_Entrega.ToString(),
                     ValorActual = tvm.Fecha_Entrega.ToString(),
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
             return camposCambiados;
         }
