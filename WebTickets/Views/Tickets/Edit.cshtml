@@ -3,6 +3,7 @@
 @{
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <style type="text/css">
 	body {
 		font-family: 'Open Sans', sans-serif;
@@ -83,7 +84,7 @@
 		}
 	}
 </style>
-<form class="form-horizontal" role="form" id="ticketForm" asp-action="Edit" enctype="multipart/form-data">
+<form class="form-horizontal" role="form" id="ticketForm" asp-action="Edit" enctype="multipart/form-data" >
 	@if (!string.IsNullOrEmpty(@ViewBag.Resultado))
 	{
 		<div class="alert alert-success" role="alert">
@@ -95,7 +96,7 @@
 		<div class="row">
 			<div class="col-xs-4">
 				<!--Ticket ID -->
-				<input type="hidden" asp-for="Id" />
+				<input type="hidden" asp-for="Id" ng-model="Id" />
 				<label asp-for="Numero_Ticket" class="input-sm"></label>
 				<input type="hidden" asp-for="Numero_Ticket" />
 				<span class="input-sm"> @Model.Numero_Ticket </span>
@@ -384,8 +385,10 @@
 					</div>
 					<div class="row">
 						<label class="control-label col-xs-2 col-md-2 col-lg-2"></label>
-						<div class="col-xs-12 col-md-12 col-lg-12">
-							<ul>
+						<div class="col-xs-12 col-md-12 col-lg-12" ng-controller="SeguimientoTicketController as scope">
+							<button type="button" ng-click="loadSegTicketController()">Prueba</button>
+							<input type="hidden" asp-for="Id" ng-model="IdTicket" />
+							<ul id="lista_seguimiento">
 								@if (Model.Lista_Actividades != null)
 								{
 									@foreach (var item in Model.Lista_Actividades)
@@ -421,10 +424,10 @@
 												<div class="row" style="margin-top: 2px">
 													<span class="col-md-10 input-sm"> <b>Campos Afectados</b> </span>
 													<div class="col-md-10">
-														<label class="input-sm">@{ @item.CampoCambiado}:</label> 
-														<span> @{ @item.ValorActual} </span> 
-														 <label class="input-sm"> <b> valor anterior: </b></label>
-														<span>@{ @item.ValorAnterior}</span>	
+														<label class="input-sm">@{ @item.CampoCambiado}:</label>
+														<span> @{ @item.ValorActual} </span>
+														<label class="input-sm"> <b> valor anterior: </b></label>
+														<span>@{ @item.ValorAnterior}</span>
 													</div>
 												</div>
 											</li>
@@ -434,6 +437,63 @@
 							</ul>
 						</div>
 					</div>
+
+
+
+					<!--Se comentara para usar angular-->
+					<!--
+					<div class="row">
+						<label class="control-label col-xs-2 col-md-2 col-lg-2"></label>
+						<div class="col-xs-12 col-md-12 col-lg-12">
+							<ul id="lista_seguimiento">
+								@if (Model.Lista_Actividades != null)
+								{
+									@foreach (var item in Model.Lista_Actividades)
+									{
+										@if (item.CampoCambiado == "NotasTrabajo" && item.NotasTrabajo != "")
+										{
+											<li class="h-card">
+												<div class="row">
+													<div class="col-xs-12 input-sm">
+														<div style="float:left">
+															<span><i class="fa fa-user-circle"></i> <b> @{ @item.UsuarioId } </b> </span>
+														</div>
+														<div style="float:right">
+															<span><b>Fecha de modificion:</b> @{ @item.Fecha }</span>
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<span class="col-md-10  input-sm"><b>@{ @item.CampoCambiado}: </b></span>
+													<span class="col-md-10"> @{ @item.NotasTrabajo} </span>
+												</div>
+											</li>
+										}
+										else
+										{
+											<li class="h-card">
+												<div class="row">
+													<div class="col-xs-12 input-sm">
+														<div style="float:left"> <span><i class="fa fa-user-circle"></i> <b> @{ @item.UsuarioId } </b></span> </div>
+														<div style="float:right"> <span><b>Fecha de modificion:</b>@{ @item.Fecha }</span> </div>
+													</div>
+												</div>
+												<div class="row" style="margin-top: 2px">
+													<span class="col-md-10 input-sm"> <b>Campos Afectados</b> </span>
+													<div class="col-md-10">
+														<label class="input-sm">@{ @item.CampoCambiado}:</label>
+														<span> @{ @item.ValorActual} </span>
+														<label class="input-sm"> <b> valor anterior: </b></label>
+														<span>@{ @item.ValorAnterior}</span>
+													</div>
+												</div>
+											</li>
+										}
+									}
+								}
+							</ul>
+						</div>
+					</div>-->
 				</div>
 				<div id="tab02" class="tab-contents">
 					<div class="row">
@@ -522,3 +582,4 @@
 
 
 }
+

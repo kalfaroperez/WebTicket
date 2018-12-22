@@ -63,7 +63,7 @@ function cargar_Usuario(_Id, urlAction) {
             dataType: "json",
             data: JSON.stringify(usuario),
             success: function (item) {
-                console.log(item);
+                
                 if (item.Operador_Id == null) {
                     $("#Operador_Id").val(item.id);
                     $("#Operador_UserName").val(item.userName);
@@ -88,3 +88,28 @@ function cargar_Usuario(_Id, urlAction) {
     }
 
 }
+
+angular.module("webticket", [])
+    .controller("SeguimientoTicketController", ['$scope', '$http', function ($scope, $http) {
+        $scope.loadSegTicketController = function () {
+            console.log($("#Id").val());
+            // Simple GET request example:
+            var req = {
+                method: 'POST',
+                url: '/Tickets/GetSeguimientoTicket_NG',
+                headers: {
+                    'Content-Type': undefined
+                },
+                data: { id_ticket: $("#Id").val() }
+            }
+
+            $http(req).then(function successCallback(response) {
+                // this callback will be called asynchronously
+                // when the response is available
+                console.log(response);
+            }, function errorCallback(response) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+            });
+        }
+    }]);

@@ -204,18 +204,18 @@ namespace WebTickets.Controllers
             }
             if (ModelState.IsValid)
             {
-                
+
                 using (var transaction = _context.Database.BeginTransaction())
                 {
                     try
                     {
-                        
+
                         InsertSeguimientoTicket(tvm);
                         //Ticket Comparer Compara los cambios
                         Ticket ticket = Fill_TicketModel(tvm);
                         _context.Update(ticket);
                         await _context.SaveChangesAsync();
-                        
+
                         //Una vez guardo el registro, Tomo el ID y lo envio para crear la carpeta 
                         //con el nombre del ID y guardar el Adjunto.
                         await UploadFiles(
@@ -248,6 +248,8 @@ namespace WebTickets.Controllers
             List<string> camposCambiados = new List<string>();
             var ticket = _context.Ticket.AsNoTracking().FirstOrDefault(t => t.Id == tvm.Id);
             var cambioNumeroSeg = _context.SigoTicket.AsNoTracking().Where(s => s.SeqTicketId == Convert.ToInt32(tvm.Id)).GroupBy(s => s.CambioNumero).Count();
+            cambioNumeroSeg = cambioNumeroSeg + 1;
+
             //Comparare los campos de la bd con los de 
             //la aplicacion para saber cual fue actualizado.
             if (!string.IsNullOrEmpty(tvm.NotasTrabajo))
@@ -279,7 +281,7 @@ namespace WebTickets.Controllers
                     CampoCambiado = "Operador",
                     CambioNumero = cambioNumeroSeg,
                     ValorAnterior = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Operador_Id).FullName,
-                    ValorActual = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t=> t.Id == tvm.Operador_Id).FullName,
+                    ValorActual = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == tvm.Operador_Id).FullName,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -351,7 +353,7 @@ namespace WebTickets.Controllers
                     CampoCambiado = "Asignado_A",
                     CambioNumero = cambioNumeroSeg,
                     ValorAnterior = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Asignado_A).FullName,
-                    ValorActual =  _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == tvm.Asignado_A).FullName,
+                    ValorActual = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == tvm.Asignado_A).FullName,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -404,7 +406,7 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "EquipoPrincipal",
                     CambioNumero = cambioNumeroSeg,
-                    ValorAnterior = _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(ep =>ep.Id == ticket.Id_EquipoPrinc).Nombre,
+                    ValorAnterior = _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(ep => ep.Id == ticket.Id_EquipoPrinc).Nombre,
                     ValorActual = _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(ep => ep.Id == tvm.EquipoPrincipal).Nombre,
                     InsertDatetime = DateTime.Now
                 };
@@ -422,7 +424,7 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "EquipoSecundario",
                     CambioNumero = cambioNumeroSeg,
-                    ValorAnterior = _context.EquipoSecundario.AsNoTracking().SingleOrDefault(es=> es.Id == ticket.Id_EquipoSec).Nombre,
+                    ValorAnterior = _context.EquipoSecundario.AsNoTracking().SingleOrDefault(es => es.Id == ticket.Id_EquipoSec).Nombre,
                     ValorActual = _context.EquipoSecundario.AsNoTracking().SingleOrDefault(es => es.Id == tvm.EquipoSecundario).Nombre,
                     InsertDatetime = DateTime.Now
                 };
@@ -776,6 +778,7 @@ namespace WebTickets.Controllers
         {
             List<SigoTicketViewModel> lista_seg = new List<SigoTicketViewModel>();
             var lista = _context.SigoTicket.ToList().Where(st => st.SeqTicketId == id_ticket).ToList();
+            
             foreach (var item in lista)
             {
                 var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
@@ -800,6 +803,107 @@ namespace WebTickets.Controllers
             }
 
             return lista_seg;
+        }
+
+        [HttpPost]
+        public IActionResult  GetSeguimientoTicket_NG(int id_ticket)
+        {
+            List<SigoTicketViewModel> lista_seg = new List<SigoTicketViewModel>();
+            var lista = _context.SigoTicket.ToList().Where(st => st.SeqTicketId == id_ticket).ToList();
+            foreach (var item in lista)
+            {
+                var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
+                var usuario = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
+                SigoTicketViewModel stvm = new SigoTicketViewModel
+                {
+                    Id = item.SeqSigoTicketId.ToString(),
+                    OperadorId = operador,
+                    UsuarioId = usuario,
+                    NotasTrabajo = item.NotasTrabajo,
+                    ValorActual = item.ValorActual,
+                    ValorAnterior = item.ValorAnterior,
+                    Visible = item.Visible,
+                    Fecha = item.Fecha,
+                    Comentario = item.Comentario,
+                    NombreAdjunto = item.NombreAdjunto,
+                    TipoAdjunto = item.TipoAdjunto,
+                    CampoCambiado = item.CampoCambiado,
+                    InsertDatetime = item.InsertDatetime
+                };
+                lista_seg.Add(stvm);
+            }
+
+            /*
+
+            var cambios = from st in _context.SigoTicket
+                      where st.SeqTicketId == Convert.ToInt32(id_ticket)
+                      group st by st.CambioNumero into stGr
+                      select new { cambioNumero = stGr.Key, cantidadCambios = stGr.Count() };
+            
+            //Cantidad de Cambios
+            foreach (var cambio in cambios)
+            {
+                //Cambio sobre un unico campo que no sea nota de trabajo
+                var lista_cambios = _context.SigoTicket.Where(s => s.CambioNumero == cambio.cambioNumero && s.SeqTicketId == Convert.ToInt32(id_ticket)).ToList();
+                if (cambio.cantidadCambios == 1)
+                {
+                    foreach (var item in lista_cambios)
+                    {
+                        var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
+                        var usuario = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
+                        SigoTicketViewModel stvm = new SigoTicketViewModel
+                        {
+                            Id = item.SeqSigoTicketId.ToString(),
+                            OperadorId = operador,
+                            UsuarioId = usuario,
+                            NotasTrabajo = item.NotasTrabajo,
+                            ValorActual = item.ValorActual,
+                            ValorAnterior = item.ValorAnterior,
+                            Visible = item.Visible,
+                            Fecha = item.Fecha,
+                            Comentario = item.Comentario,
+                            NombreAdjunto = item.NombreAdjunto,
+                            TipoAdjunto = item.TipoAdjunto,
+                            CampoCambiado = item.CampoCambiado,
+                            InsertDatetime = item.InsertDatetime
+                        };
+                        lista_seg.Add(stvm);
+                    }
+                }
+
+                //Cambios realizados en una misma fecha y hora sobre un ticket
+                if (cambio.cantidadCambios > 1)
+                {
+                    List<SigoTicketViewModel> seguimientos_agrupados = new List<SigoTicketViewModel>();
+                    foreach (var item in lista_cambios)
+                    {
+                        var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
+                        var usuario = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
+                        SigoTicketViewModel stvm = new SigoTicketViewModel
+                        {
+                            Id = item.SeqSigoTicketId.ToString(),
+                            OperadorId = operador,
+                            UsuarioId = usuario,
+                            NotasTrabajo = item.NotasTrabajo,
+                            ValorActual = item.ValorActual,
+                            ValorAnterior = item.ValorAnterior,
+                            Visible = item.Visible,
+                            Fecha = item.Fecha,
+                            Comentario = item.Comentario,
+                            NombreAdjunto = item.NombreAdjunto,
+                            TipoAdjunto = item.TipoAdjunto,
+                            CampoCambiado = item.CampoCambiado,
+                            InsertDatetime = item.InsertDatetime
+                        };
+                        seguimientos_agrupados.Add(stvm);
+                    }
+                    lista_seg.AddRange(seguimientos_agrupados);
+                }
+            }
+
+            */
+
+            return Json(lista_seg);
         }
 
         private List<SigoTicket> Get_SeguimientoTicket()
