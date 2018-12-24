@@ -544,6 +544,8 @@ namespace Persistence.DatabaseContext.Migrations
 
                     b.Property<byte[]>("Adjunto");
 
+                    b.Property<int>("CambioNumero");
+
                     b.Property<string>("CampoCambiado");
 
                     b.Property<string>("Comentario");
@@ -558,9 +560,11 @@ namespace Persistence.DatabaseContext.Migrations
 
                     b.Property<string>("NombreAdjunto");
 
+                    b.Property<string>("NotasTrabajo");
+
                     b.Property<string>("OperadorId");
 
-                    b.Property<uint>("SeqTicketId");
+                    b.Property<int>("SeqTicketId");
 
                     b.Property<string>("TipoAdjunto");
 
@@ -584,7 +588,7 @@ namespace Persistence.DatabaseContext.Migrations
 
                     b.Property<byte[]>("Adjunto");
 
-                    b.Property<string>("Area_Id");
+                    b.Property<int>("Area_Id");
 
                     b.Property<string>("Asignado_A");
 
@@ -592,23 +596,25 @@ namespace Persistence.DatabaseContext.Migrations
 
                     b.Property<string>("Calificacion");
 
+                    b.Property<string>("Comentarios");
+
                     b.Property<string>("EMail");
 
-                    b.Property<string>("Estado");
+                    b.Property<int>("Estado");
 
                     b.Property<DateTime>("Fecha");
 
-                    b.Property<DateTime?>("Fecha_Entrega");
+                    b.Property<DateTime>("Fecha_Entrega");
 
                     b.Property<DateTime>("Fecha_Ultimo_Estado");
 
-                    b.Property<string>("Id_Componente");
+                    b.Property<int>("Id_Componente");
 
-                    b.Property<string>("Id_EquipoPrinc");
+                    b.Property<int>("Id_EquipoPrinc");
 
-                    b.Property<string>("Id_EquipoSec");
+                    b.Property<int>("Id_EquipoSec");
 
-                    b.Property<string>("Id_Planta");
+                    b.Property<int>("Id_Planta");
 
                     b.Property<string>("Incidente");
 
@@ -628,13 +634,11 @@ namespace Persistence.DatabaseContext.Migrations
 
                     b.Property<string>("Operador_Ultimo_Estado");
 
-                    b.Property<string>("Piso");
-
-                    b.Property<byte>("Prioridad");
+                    b.Property<int>("Prioridad");
 
                     b.Property<int>("Privado");
 
-                    b.Property<string>("Proceso");
+                    b.Property<int>("Proceso");
 
                     b.Property<string>("Ruta_Adjunto");
 
@@ -642,7 +646,9 @@ namespace Persistence.DatabaseContext.Migrations
 
                     b.Property<string>("Tipo_Adjunto");
 
-                    b.Property<string>("Tipo_Trabajo");
+                    b.Property<int>("Tipo_Trabajo");
+
+                    b.Property<string>("Ubicacion");
 
                     b.Property<DateTime>("Update_Datetime");
 
@@ -720,8 +726,7 @@ namespace Persistence.DatabaseContext.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("Area")
-                        .IsRequired();
+                    b.Property<int>("Area");
 
                     b.Property<string>("Extension");
 
