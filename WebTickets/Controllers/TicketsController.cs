@@ -806,10 +806,10 @@ namespace WebTickets.Controllers
         }
 
         [HttpPost]
-        public IActionResult  GetSeguimientoTicket_NG(int id_ticket)
+        public IActionResult  GetSeguimientoTicket_NG([FromBody]SigoTicketViewModel sigo)
         {
             List<SigoTicketViewModel> lista_seg = new List<SigoTicketViewModel>();
-            var lista = _context.SigoTicket.ToList().Where(st => st.SeqTicketId == id_ticket).ToList();
+            var lista = _context.SigoTicket.ToList().Where(st => st.SeqTicketId == Convert.ToInt32(sigo.Id)).ToList();
             foreach (var item in lista)
             {
                 var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
@@ -828,6 +828,7 @@ namespace WebTickets.Controllers
                     NombreAdjunto = item.NombreAdjunto,
                     TipoAdjunto = item.TipoAdjunto,
                     CampoCambiado = item.CampoCambiado,
+                    CambioNumero = item.CambioNumero,
                     InsertDatetime = item.InsertDatetime
                 };
                 lista_seg.Add(stvm);
