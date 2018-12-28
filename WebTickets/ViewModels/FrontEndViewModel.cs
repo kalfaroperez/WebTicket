@@ -183,7 +183,7 @@ namespace WebTickets.ViewModels
 
         [Display(Name = "Notas Cierre Servicio")]
         public string NotaCierreServicio { get; set; }
-        
+
         public string Error { get; set; }
         public string Exito { get; set; }
     }
@@ -233,6 +233,14 @@ namespace WebTickets.ViewModels
         public string InsertOper { get; set; }
         public string InsertUser { get; set; }
         public DateTime InsertDatetime { get; set; }
+    }
+
+    public class SeguimientoViewModel
+    {
+        public string UsuarioId { get; set; }
+        public DateTime Fecha { get; set; }
+        public int CambioNumero { get; set; }
+        public List<SigoTicketViewModel> Cambios { get; set; } = new List<SigoTicketViewModel>();
     }
 
     public class UsuarioViewModel {

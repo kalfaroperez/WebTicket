@@ -13,6 +13,8 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Model.Auth;
 using Model.DB_Model;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Persistence.DatabaseContext;
 using WebTickets.Helpers;
 using WebTickets.ViewModels;
@@ -808,8 +810,10 @@ namespace WebTickets.Controllers
         [HttpPost]
         public IActionResult  GetSeguimientoTicket_NG([FromBody]SigoTicketViewModel sigo)
         {
-            List<SigoTicketViewModel> lista_seg = new List<SigoTicketViewModel>();
-            var lista = _context.SigoTicket.ToList().Where(st => st.SeqTicketId == Convert.ToInt32(sigo.Id)).ToList();
+            #region Comentados
+            /*
+             List<SigoTicketViewModel> lista_seg = new List<SigoTicketViewModel>();
+             var lista = _context.SigoTicket.ToList().Where(st => st.SeqTicketId == Convert.ToInt32(sigo.Id)).ToList();
             foreach (var item in lista)
             {
                 var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
@@ -832,15 +836,23 @@ namespace WebTickets.Controllers
                     InsertDatetime = item.InsertDatetime
                 };
                 lista_seg.Add(stvm);
-            }
+            }*/
+            #endregion
 
-            /*
+
+            List<SeguimientoViewModel> lista_seg = new List<SeguimientoViewModel>();
+            var id_ticket = sigo.Id;
 
             var cambios = from st in _context.SigoTicket
-                      where st.SeqTicketId == Convert.ToInt32(id_ticket)
-                      group st by st.CambioNumero into stGr
-                      select new { cambioNumero = stGr.Key, cantidadCambios = stGr.Count() };
-            
+                          join us in _context.ApplicationUser on st.UsuarioId equals us.Id
+                          where st.SeqTicketId == Convert.ToInt32(id_ticket)
+                          group new {st.Fecha, us.FullName, st.CambioNumero }  by st.CambioNumero into stGr
+                          select new {
+                              cambioNumero = stGr.Key,
+                              cantidadCambios = stGr.Count()
+                          };
+
+            List<SeguimientoViewModel> seguimientos = new List<SeguimientoViewModel>();
             //Cantidad de Cambios
             foreach (var cambio in cambios)
             {
@@ -848,15 +860,18 @@ namespace WebTickets.Controllers
                 var lista_cambios = _context.SigoTicket.Where(s => s.CambioNumero == cambio.cambioNumero && s.SeqTicketId == Convert.ToInt32(id_ticket)).ToList();
                 if (cambio.cantidadCambios == 1)
                 {
+                    SeguimientoViewModel seg = new SeguimientoViewModel();
                     foreach (var item in lista_cambios)
                     {
+                        seg.CambioNumero = cambio.cambioNumero;
+                        seg.Fecha = item.Fecha;
+                        seg.UsuarioId = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
+
                         var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
-                        var usuario = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
                         SigoTicketViewModel stvm = new SigoTicketViewModel
                         {
                             Id = item.SeqSigoTicketId.ToString(),
                             OperadorId = operador,
-                            UsuarioId = usuario,
                             NotasTrabajo = item.NotasTrabajo,
                             ValorActual = item.ValorActual,
                             ValorAnterior = item.ValorAnterior,
@@ -868,23 +883,26 @@ namespace WebTickets.Controllers
                             CampoCambiado = item.CampoCambiado,
                             InsertDatetime = item.InsertDatetime
                         };
-                        lista_seg.Add(stvm);
+                        seg.Cambios.Add(stvm);
                     }
+                    seguimientos.Add(seg);
                 }
 
                 //Cambios realizados en una misma fecha y hora sobre un ticket
                 if (cambio.cantidadCambios > 1)
                 {
-                    List<SigoTicketViewModel> seguimientos_agrupados = new List<SigoTicketViewModel>();
+                    SeguimientoViewModel seg = new SeguimientoViewModel();
                     foreach (var item in lista_cambios)
                     {
+                        seg.CambioNumero = cambio.cambioNumero;
+                        seg.Fecha = item.Fecha;
+                        seg.UsuarioId = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
+
                         var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
-                        var usuario = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
                         SigoTicketViewModel stvm = new SigoTicketViewModel
                         {
                             Id = item.SeqSigoTicketId.ToString(),
                             OperadorId = operador,
-                            UsuarioId = usuario,
                             NotasTrabajo = item.NotasTrabajo,
                             ValorActual = item.ValorActual,
                             ValorAnterior = item.ValorAnterior,
@@ -896,13 +914,23 @@ namespace WebTickets.Controllers
                             CampoCambiado = item.CampoCambiado,
                             InsertDatetime = item.InsertDatetime
                         };
-                        seguimientos_agrupados.Add(stvm);
+                        seg.Cambios.Add(stvm);
                     }
-                    lista_seg.AddRange(seguimientos_agrupados);
+                    seguimientos.Add(seg);
                 }
             }
 
-            */
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.Converters.Add(new JavaScriptDateTimeConverter());
+            serializer.NullValueHandling = NullValueHandling.Ignore;
+
+            using (StreamWriter sw = new StreamWriter(@"d:\json.txt"))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, seguimientos);
+                // {"ExpiryDate":new Date(1230375600000),"Price":0}
+            }
+
 
             return Json(lista_seg);
         }

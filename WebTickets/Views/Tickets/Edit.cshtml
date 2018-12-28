@@ -388,20 +388,25 @@
 						<div class="col-xs-12 col-md-12 col-lg-12" ng-controller="SeguimientoTicketController as scope" ng-init="loadSegTicketController(@Model.Id )">
 							<ul id="lista_seguimiento">
 								<li class="h-card" ng-repeat="item in lista_seg">
-									<div class="row">
-										<div class="col-xs-12 input-sm">
-											<div style="float:left">
-												<span><i class="fa fa-user-circle"></i> {{ item.usuarioId }} </span>
-											</div>
-											<div style="float:right">
-												<span><b>Fecha de modificion:</b> {{ item.fecha }}</span>
+										<div class="row">
+											<div class="col-xs-12 input-sm">
+												<div style="float:left">
+													<span><i class="fa fa-user-circle"></i> {{ item.usuarioId }} </span>
+												</div>
+												<div style="float:right">
+													<span><b>Fecha de modificion:</b> {{ item.fecha }}</span>
+												</div>
 											</div>
 										</div>
-									</div>
-									<div class="row">
-										<span class="col-md-10  input-sm"><b>{{ item.campoCambiado }}: </b></span>
-										<span class="col-md-10"> {{ item.notasTrabajo }} </span>
-									</div>
+										<div class="row">
+											<ul>
+												<li ng-repeat="x in item.cambios">
+													<span class="col-md-10  input-sm"><b>{{ x.campoCambiado }}: </b></span>
+													<span class="col-md-10"> {{ x.valorActual }} </span>
+												</li>
+											</ul>
+											
+										</div>
 								</li>
 							</ul>
 						</div>
