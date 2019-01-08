@@ -13,9 +13,12 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Model.Auth;
 using Model.DB_Model;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Persistence.DatabaseContext;
 using WebTickets.Helpers;
 using WebTickets.ViewModels;
+using PagedList;
 using static WebTickets.Helpers.FileHelpers;
 
 namespace WebTickets.Controllers
@@ -49,7 +52,7 @@ namespace WebTickets.Controllers
         }
 
         // GET: Tickets
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page)
         {
 
             var result = new List<TicketListViewModel>();
@@ -76,8 +79,42 @@ namespace WebTickets.Controllers
 
                 _logger.LogError(e.Message);
             }
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            return View(result.ToPagedList(pageNumber, pageSize));
+        }
 
-            return View(result);
+        // GET: Tickets
+        [HttpPost]
+        public IActionResult Lista()
+        {
+
+            var result = new List<TicketListViewModel>();
+            try
+            {
+
+                var lista = _context.Ticket.AsNoTracking().ToList();
+                result = lista.Select(x => new TicketListViewModel
+                {
+                    Id = x.Id.ToString(),
+                    Numero_Ticket = x.Numero_Ticket,
+                    Username = _context.ApplicationUser.Find(x.Usuario_Id).UserName,
+                    Operador_Nombre_Completo = _context.ApplicationUser.Find(x.Usuario_Id).FullName,
+                    Prioridad = _context.Prioridad.Find(x.Prioridad).Nombre_Prioridad,
+                    Asignado_A = _context.ApplicationUser.Find(x.Asignado_A).UserName,
+                    Fecha = x.Fecha,
+                    Fecha_Entrega = x.Fecha_Entrega,
+                    EstadoServicio = _context.EstadoServicio.Find(x.Estado).Nombre,
+                }).ToList();
+
+            }
+            catch (Exception e)
+            {
+
+                _logger.LogError(e.Message);
+            }
+
+            return Json(result);
         }
 
         // GET: Tickets/Details/5
@@ -263,6 +300,7 @@ namespace WebTickets.Controllers
                     CampoCambiado = "NotasTrabajo",
                     CambioNumero = cambioNumeroSeg,
                     NotasTrabajo = tvm.NotasTrabajo,
+                    ValorActual = tvm.NotasTrabajo,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -686,8 +724,6 @@ namespace WebTickets.Controllers
 
             //Selector Componentes
             tvm.Lista_Estados = Get_Estados_Servicio();
-
-            tvm.Lista_Usuarios = Get_Usuarios();
             return tvm;
         }
 
@@ -760,87 +796,34 @@ namespace WebTickets.Controllers
 
             tvm.Fecha_Entrega = ticket.Fecha_Entrega;
             tvm.Fecha_Ultimo_Estado = ticket.Fecha_Ultimo_Estado;
-            tvm.Lista_Usuarios = Get_Usuarios();
-            tvm.Lista_Actividades = Get_SeguimientoTicket(Convert.ToInt32(ticket.Id));
-            //tvm.Lista_Actividades = Get_SeguimientoTicket();
-
 
             return tvm;
         }
 
-        private List<ApplicationUser> Get_Usuarios()
+        [HttpPost]
+        public IActionResult GetUsuarios()
         {
             var usuarios = _context.ApplicationUser.ToList();
-            return usuarios;
-        }
-
-        private List<SigoTicketViewModel> Get_SeguimientoTicket(int id_ticket)
-        {
-            List<SigoTicketViewModel> lista_seg = new List<SigoTicketViewModel>();
-            var lista = _context.SigoTicket.ToList().Where(st => st.SeqTicketId == id_ticket).ToList();
-            
-            foreach (var item in lista)
-            {
-                var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
-                var usuario = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
-                SigoTicketViewModel stvm = new SigoTicketViewModel
-                {
-                    Id = item.SeqSigoTicketId.ToString(),
-                    OperadorId = operador,
-                    UsuarioId = usuario,
-                    NotasTrabajo = item.NotasTrabajo,
-                    ValorActual = item.ValorActual,
-                    ValorAnterior = item.ValorAnterior,
-                    Visible = item.Visible,
-                    Fecha = item.Fecha,
-                    Comentario = item.Comentario,
-                    NombreAdjunto = item.NombreAdjunto,
-                    TipoAdjunto = item.TipoAdjunto,
-                    CampoCambiado = item.CampoCambiado,
-                    InsertDatetime = item.InsertDatetime
-                };
-                lista_seg.Add(stvm);
-            }
-
-            return lista_seg;
+            return Json(usuarios);
         }
 
         [HttpPost]
         public IActionResult  GetSeguimientoTicket_NG([FromBody]SigoTicketViewModel sigo)
         {
-            List<SigoTicketViewModel> lista_seg = new List<SigoTicketViewModel>();
-            var lista = _context.SigoTicket.ToList().Where(st => st.SeqTicketId == Convert.ToInt32(sigo.Id)).ToList();
-            foreach (var item in lista)
-            {
-                var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
-                var usuario = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
-                SigoTicketViewModel stvm = new SigoTicketViewModel
-                {
-                    Id = item.SeqSigoTicketId.ToString(),
-                    OperadorId = operador,
-                    UsuarioId = usuario,
-                    NotasTrabajo = item.NotasTrabajo,
-                    ValorActual = item.ValorActual,
-                    ValorAnterior = item.ValorAnterior,
-                    Visible = item.Visible,
-                    Fecha = item.Fecha,
-                    Comentario = item.Comentario,
-                    NombreAdjunto = item.NombreAdjunto,
-                    TipoAdjunto = item.TipoAdjunto,
-                    CampoCambiado = item.CampoCambiado,
-                    CambioNumero = item.CambioNumero,
-                    InsertDatetime = item.InsertDatetime
-                };
-                lista_seg.Add(stvm);
-            }
 
-            /*
+            List<SeguimientoViewModel> lista_seg = new List<SeguimientoViewModel>();
+            var id_ticket = sigo.Id;
 
             var cambios = from st in _context.SigoTicket
-                      where st.SeqTicketId == Convert.ToInt32(id_ticket)
-                      group st by st.CambioNumero into stGr
-                      select new { cambioNumero = stGr.Key, cantidadCambios = stGr.Count() };
-            
+                          join us in _context.ApplicationUser on st.UsuarioId equals us.Id
+                          where st.SeqTicketId == Convert.ToInt32(id_ticket)
+                          group new {st.Fecha, us.FullName, st.CambioNumero }  by st.CambioNumero into stGr
+                          select new {
+                              cambioNumero = stGr.Key,
+                              cantidadCambios = stGr.Count()
+                          };
+
+            List<SeguimientoViewModel> seguimientos = new List<SeguimientoViewModel>();
             //Cantidad de Cambios
             foreach (var cambio in cambios)
             {
@@ -848,15 +831,18 @@ namespace WebTickets.Controllers
                 var lista_cambios = _context.SigoTicket.Where(s => s.CambioNumero == cambio.cambioNumero && s.SeqTicketId == Convert.ToInt32(id_ticket)).ToList();
                 if (cambio.cantidadCambios == 1)
                 {
+                    SeguimientoViewModel seg = new SeguimientoViewModel();
                     foreach (var item in lista_cambios)
                     {
+                        seg.CambioNumero = cambio.cambioNumero;
+                        seg.Fecha = item.Fecha;
+                        seg.UsuarioId = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
+
                         var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
-                        var usuario = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
                         SigoTicketViewModel stvm = new SigoTicketViewModel
                         {
                             Id = item.SeqSigoTicketId.ToString(),
                             OperadorId = operador,
-                            UsuarioId = usuario,
                             NotasTrabajo = item.NotasTrabajo,
                             ValorActual = item.ValorActual,
                             ValorAnterior = item.ValorAnterior,
@@ -868,23 +854,26 @@ namespace WebTickets.Controllers
                             CampoCambiado = item.CampoCambiado,
                             InsertDatetime = item.InsertDatetime
                         };
-                        lista_seg.Add(stvm);
+                        seg.Cambios.Add(stvm);
                     }
+                    seguimientos.Add(seg);
                 }
 
                 //Cambios realizados en una misma fecha y hora sobre un ticket
                 if (cambio.cantidadCambios > 1)
                 {
-                    List<SigoTicketViewModel> seguimientos_agrupados = new List<SigoTicketViewModel>();
+                    SeguimientoViewModel seg = new SeguimientoViewModel();
                     foreach (var item in lista_cambios)
                     {
+                        seg.CambioNumero = cambio.cambioNumero;
+                        seg.Fecha = item.Fecha;
+                        seg.UsuarioId = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
+
                         var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
-                        var usuario = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
                         SigoTicketViewModel stvm = new SigoTicketViewModel
                         {
                             Id = item.SeqSigoTicketId.ToString(),
                             OperadorId = operador,
-                            UsuarioId = usuario,
                             NotasTrabajo = item.NotasTrabajo,
                             ValorActual = item.ValorActual,
                             ValorAnterior = item.ValorAnterior,
@@ -896,15 +885,13 @@ namespace WebTickets.Controllers
                             CampoCambiado = item.CampoCambiado,
                             InsertDatetime = item.InsertDatetime
                         };
-                        seguimientos_agrupados.Add(stvm);
+                        seg.Cambios.Add(stvm);
                     }
-                    lista_seg.AddRange(seguimientos_agrupados);
+                    seguimientos.Add(seg);
                 }
             }
-
-            */
-
-            return Json(lista_seg);
+            
+            return Json(seguimientos);
         }
 
         private List<SigoTicket> Get_SeguimientoTicket()

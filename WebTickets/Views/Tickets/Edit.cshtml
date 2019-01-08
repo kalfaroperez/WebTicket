@@ -84,393 +84,359 @@
 		}
 	}
 </style>
-<form class="form-horizontal" role="form" id="ticketForm" asp-action="Edit" enctype="multipart/form-data">
-	@if (!string.IsNullOrEmpty(@ViewBag.Resultado))
-	{
-		<div class="alert alert-success" role="alert">
-			@ViewBag.Resultado
-		</div>
-	}
+
+<div ng-controller="TicketCtrl">
+	<form class="form-horizontal" role="form" id="ticketForm" asp-action="Edit" enctype="multipart/form-data">
+		@if (!string.IsNullOrEmpty(@ViewBag.Resultado))
+		{
+			<div class="alert alert-success" role="alert">
+				@ViewBag.Resultado
+			</div>
+		}
+		<!--Url para usar funcion generica para las listas -->
+		<div id="div_url" urlLista="/Tickets/GetUsuarios"></div>
+		<!---->
 
 	<div class="panel panel-primary margen-top">
 		<div class="row">
 			<div class="col-xs-4">
 				<!--Ticket ID -->
-				<input type="hidden" asp-for="Id" />
-				<label asp-for="Numero_Ticket" class="input-sm"></label>
-				<input type="hidden" asp-for="Numero_Ticket" />
-				<span class="input-sm"> @Model.Numero_Ticket </span>
-			</div>
-			<div class="col-xs-4">
-				<label asp-for="Fecha" class="input-sm">Fecha: </label>
-				<span class="input-sm"> @Model.Fecha </span>
-			</div>
-			<div class="col-xs-4">
-				<label asp-for="Username" class="input-sm"></label>
-				<input type="hidden" asp-for="Username" />
-				<input type="hidden" asp-for="Nombre_completo" />
-				<label asp-for="Username" class="input-sm">@Model.Username - @Model.Nombre_completo </label>
-			</div>
-		</div>
-	</div>
-	<div class="panel panel-default margen-top">
-		<div class="panel-heading input-sm">
-			<div class="col-xs-4">
-				<span class="input-sm">  <b>Datos del Usuario </b> </span><b></b>
-				<input type="hidden" asp-for="Operador_Id" />
-				<input type="hidden" asp-for="Usuario_Id" />
+		<input type="hidden" asp-for="Id" />
+		<label asp-for="Numero_Ticket" class="input-sm"></label>
+		<input type="hidden" asp-for="Numero_Ticket" />
+		<span class="input-sm"> @Model.Numero_Ticket </span>
+</div>
+				<div class="col-xs-4">
+					<label asp-for="Fecha" class="input-sm">Fecha: </label>
+					<span class="input-sm"> @Model.Fecha </span>
+				</div>
+				<div class="col-xs-4">
+					<label asp-for="Username" class="input-sm"></label>
+					<input type="hidden" asp-for="Username" />
+					<input type="hidden" asp-for="Nombre_completo" />
+					<label asp-for="Username" class="input-sm">@Model.Username - @Model.Nombre_completo </label>
+				</div>
 			</div>
 		</div>
-		<div class="panel-body">
-			<div class="row">
-				<div class="col-xs-5">
-					<div class="form-group-sm">
-						<label asp-for="Operador_UserName" class="input-sm col-xs-4">Usuario </label>
-						<div class="controls col-sm-6">
-							<input asp-for="Operador_UserName" class="form-control input-sm" />
-						</div>
-						<div class="col-xs-1">
-							<button type="button" data-toggle="modal" data-target="#modalUsuario">
-								<span class="font-size: 48px; ">
-									<i class="fa fa-search"></i>
-								</span>
-							</button>
-						</div>
+		<div class="panel panel-default margen-top">
+			<div class="panel-heading input-sm">
+				<div class="col-xs-4">
+					<span class="input-sm">  <b>Datos del Usuario </b> </span><b></b>
+					<input type="hidden" asp-for="Operador_Id" />
+					<input type="hidden" asp-for="Usuario_Id" />
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-xs-5">
+						<div class="form-group-sm">
+							<label asp-for="Operador_UserName"  class="input-sm col-xs-4">Usuario </label>
+							<div class="controls col-sm-6">
+								<input asp-for="Operador_UserName" class="form-control input-sm" />
+							</div>
+							<div class="col-xs-1">
+								<button type="button" data-toggle="modal" data-target="#modalUsuario" >
+									<span class="font-size: 48px; ">
+										<i class="fa fa-search"></i>
+									</span>
+								</button>
+							</div>
 
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-5">
-					<label asp-for="Operador_Nombre_completo" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<input asp-for="Operador_Nombre_completo" class="form-control input-sm" />
+				<div class="row">
+					<div class="col-xs-5">
+						<label asp-for="Operador_Nombre_completo" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<input asp-for="Operador_Nombre_completo"  class="form-control input-sm" />
+						</div>
+					</div>
+					<div class="col-xs-5">
+						<label asp-for="Area" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<input asp-for="Area" class="form-control input-sm" />
+							<input type="hidden" asp-for="Area_Id"  />
+						</div>
 					</div>
 				</div>
-				<div class="col-xs-5">
-					<label asp-for="Area" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<input asp-for="Area" class="form-control input-sm" />
-						<input type="hidden" asp-for="Area_Id" />
+				<div class="row">
+					<div class="col-xs-5">
+						<label asp-for="Email" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<input asp-for="Email" class="form-control input-sm" />
+						</div>
 					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-5">
-					<label asp-for="Email" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<input asp-for="Email" class="form-control input-sm" />
-					</div>
-				</div>
-				<div class="col-xs-5">
-					<label asp-for="Ubicacion" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<input asp-for="Ubicacion" class="form-control input-sm" />
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="panel panel-default margen-top">
-		<div class="panel-heading input-sm">
-			<div class="col-xs-4">
-				<span class="input-sm">  <b>Informacion Ticket </b> </span>
-			</div>
-			<div class="col-xs-4">
-				<span class="input-sm"> <b> </b></span>
-				<span class="input-sm"> </span>
-			</div>
-			<div class="col-xs-4">
-				<span class="input-sm"> <b>Fecha Ultimo Estado: </b></span>
-				<span class="input-sm"> @Model.Fecha_Ultimo_Estado </span>
-			</div>
-		</div>
-		<div class="panel-body">
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="form-group-sm">
-						<label asp-for="Incidente" class="input-sm col-xs-1"></label>
-						<div class="controls col-sm-10">
-							<textarea asp-for="Incidente" rows="1" cols="40" class="form-control input-sm"></textarea>
+					<div class="col-xs-5">
+						<label asp-for="Ubicacion" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<input asp-for="Ubicacion" class="form-control input-sm" />
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="form-group-sm">
-						<label asp-for="Comentarios" class="input-sm col-xs-1"></label>
-						<div class="controls col-sm-10">
-							<textarea asp-for="Comentarios" rows="3" cols="40" class="form-control input-sm"></textarea>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-5">
-					<label asp-for="FileUpload" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<input asp-for="FileUpload" type="file" class="controls input-sm " multiple />
-						<span asp-validation-for="FileUpload" class="text-danger"></span>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="col-md-10">
-						<ul class="list-group">
-							@foreach (var file in Model.Files)
-							{
-								<li class="list-group-item input-sm">
-									<i class="fa fa-file-archive-o" aria-hidden="true"></i>
-									<input type="hidden" name="fileName" value="fileName" />
-									<a asp-action="Download" asp-route-filename="@Model.Numero_Ticket---@file.Name">
-										@file.Name
-									</a>
-									-
-									@file.Fecha_modificacion
-								</li>
-							}
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-5">
-					<label asp-for="Prioridad" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<select class="combobox input-sm" asp-for="Prioridad" asp-items="@Model.Lista_Prioridades"></select>
-						<span asp-validation-for="Prioridad" class=" text-danger"></span>
-					</div>
-				</div>
-				<div class="col-xs-5">
-					<label asp-for="Asignado_A" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<select class="combobox input-sm" asp-for="Asignado_A" asp-items="@Model.Lista_Asignados_A"></select>
-						<span asp-validation-for="Asignado_A" class=" text-danger"></span>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-5">
-					<label asp-for="Proceso" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<select class="combobox input-sm" asp-for="Proceso" asp-items="@Model.Lista_Procesos"></select>
-						<span asp-validation-for="Proceso" class=" text-danger"></span>
-					</div>
-				</div>
-				<div class="col-xs-5">
-					<label asp-for="Tipo_Trabajo" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<select class="combobox input-sm" asp-for="Tipo_Trabajo" asp-items="@Model.Lista_Tipo_Trabajos">
-							<option>Seleccione...</option>
-						</select>
-						<span asp-validation-for="Tipo_Trabajo" class=" text-danger"></span>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-5">
-					<label asp-for="Planta" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<select class="combobox input-sm" asp-for="Planta" asp-items="@Model.Lista_Plantas">
-							<option>Seleccione...</option>
-						</select>
-						<span asp-validation-for="Planta" class=" text-danger"></span>
-					</div>
-				</div>
-				<div class="col-xs-5">
-					<label asp-for="EquipoPrincipal" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<select class="combobox input-sm" asp-for="EquipoPrincipal" asp-items="@Model.Lista_Equipos_princ">
-							<option>Seleccione...</option>
-						</select>
-						<span asp-validation-for="EquipoPrincipal" class=" text-danger"></span>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-5">
-					<label asp-for="EquipoSecundario" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<select class="combobox input-sm" asp-for="EquipoSecundario" asp-items="@Model.Lista_Equipos_sec">
-							<option>Seleccione...</option>
-						</select>
-						<span asp-validation-for="EquipoSecundario" class=" text-danger"></span>
-					</div>
-				</div>
-				<div class="col-xs-5">
-					<label asp-for="Componente" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<select class="combobox input-sm" asp-for="Componente" asp-items="@Model.Lista_Componentes">
-							<option>Seleccione...</option>
-						</select>
-						<span asp-validation-for="Componente" class=" text-danger"></span>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-5">
-					<label asp-for="Estado" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<select class="combobox input-sm" asp-for="Estado" asp-items="@Model.Lista_Estados">
-							<option>Seleccione...</option>
-						</select>
-						<span asp-validation-for="Estado" class=" text-danger"></span>
-					</div>
-				</div>
-				<div class="col-xs-5">
-					<label asp-for="Fecha_Entrega" class="input-sm col-xs-4"></label>
-					<div class="controls col-sm-8">
-						<input asp-for="Fecha_Entrega" class="form-control input-sm" />
-						<span asp-validation-for="Fecha_Entrega" class=" text-danger"></span>
-					</div>
-				</div>
-			</div>
 		</div>
-	</div>
-
-
-	<div class="panel panel-default margen-top">
-		<div class="panel-heading input-sm">
-			<div class="col-xs-4">
-				<span class="input-sm">  <b>Seguimiento Ticket</b> </span>
-			</div>
-			<div class="col-xs-4">
-				<span class="input-sm"> <b> </b></span>
-				<span class="input-sm"> </span>
-			</div>
-			<div class="col-xs-4">
-				<span class="input-sm"> <b>Fecha Ultimo Estado: </b></span>
-				<span class="input-sm"> @Model.Fecha_Ultimo_Estado </span>
-			</div>
-		</div>
-		<div class="panel-body">
-			<!-- Tab panes -->
-			<div class="tabs">
-				<div class="tab-button-outer">
-					<ul id="tab-button">
-						<li><a href="#tab01">Seguimiento Ticket</a></li>
-						<li><a href="#tab02">Informaci&oacute;n de Cierre</a></li>
-					</ul>
+		<div class="panel panel-default margen-top">
+			<div class="panel-heading input-sm">
+				<div class="col-xs-4">
+					<span class="input-sm">  <b>Informacion Ticket </b> </span>
 				</div>
-				<div class="tab-select-outer">
-					<select id="tab-select">
-						<option value="#tab01">Seguimiento Ticket</option>
-						<option value="#tab02">Informaci&oacute;n de Cierre</option>
-					</select>
+				<div class="col-xs-4">
+					<span class="input-sm"> <b> </b></span>
+					<span class="input-sm"> </span>
 				</div>
-				<div id="tab01" class="tab-contents">
-					<div class="row">
-						<div class="col-xs-12">
-							<div class="form-group-sm">
-								<label asp-for="NotasTrabajo" class="input-sm col-xs-2"></label>
-								<div class="controls col-xs-10">
-									<textarea asp-for="NotasTrabajo" rows="3" cols="40" class="form-control input-sm"></textarea>
-								</div>
+				<div class="col-xs-4">
+					<span class="input-sm"> <b>Fecha Ultimo Estado: </b></span>
+					<span class="input-sm"> @Model.Fecha_Ultimo_Estado </span>
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group-sm">
+							<label asp-for="Incidente" class="input-sm col-xs-1"></label>
+							<div class="controls col-sm-10">
+								<textarea asp-for="Incidente" rows="1" cols="40" class="form-control input-sm"></textarea>
 							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-xs-12">
-							<hr />
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-xs-2 col-md-2">
-							<div class="controls col-sm-10 input-sm">
-								<b>Activadades</b>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group-sm">
+							<label asp-for="Comentarios" class="input-sm col-xs-1"></label>
+							<div class="controls col-sm-10">
+								<textarea asp-for="Comentarios" rows="3" cols="40" class="form-control input-sm"></textarea>
 							</div>
 						</div>
 					</div>
-					<div class="row">
-						<label class="control-label col-xs-2 col-md-2 col-lg-2"></label>
-						<div class="col-xs-12 col-md-12 col-lg-12" ng-controller="SeguimientoTicketController as scope" ng-init="loadSegTicketController(@Model.Id )">
-							<ul id="lista_seguimiento">
-								<li class="h-card" ng-repeat="item in lista_seg">
-									<div class="row">
-										<div class="col-xs-12 input-sm">
-											<div style="float:left">
-												<span><i class="fa fa-user-circle"></i> {{ item.usuarioId }} </span>
-											</div>
-											<div style="float:right">
-												<span><b>Fecha de modificion:</b> {{ item.fecha }}</span>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<span class="col-md-10  input-sm"><b>{{ item.campoCambiado }}: </b></span>
-										<span class="col-md-10"> {{ item.notasTrabajo }} </span>
-									</div>
-								</li>
-							</ul>
+				</div>
+				<div class="row">
+					<div class="col-xs-5">
+						<label asp-for="FileUpload" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<input asp-for="FileUpload" type="file" class="controls input-sm " multiple />
+							<span asp-validation-for="FileUpload" class="text-danger"></span>
 						</div>
 					</div>
-
-
-
-					<!--Se comentara para usar angular-->
-					<!--
-					<div class="row">
-						<label class="control-label col-xs-2 col-md-2 col-lg-2"></label>
-						<div class="col-xs-12 col-md-12 col-lg-12">
-							<ul id="lista_seguimiento">
-								@if (Model.Lista_Actividades != null)
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="col-md-10">
+							<ul class="list-group">
+								@foreach (var file in Model.Files)
 								{
-									@foreach (var item in Model.Lista_Actividades)
-									{
-										@if (item.CampoCambiado == "NotasTrabajo" && item.NotasTrabajo != "")
-										{
-											<li class="h-card">
-												<div class="row">
-													<div class="col-xs-12 input-sm">
-														<div style="float:left">
-															<span><i class="fa fa-user-circle"></i> <b> @{ @item.UsuarioId } </b> </span>
-														</div>
-														<div style="float:right">
-															<span><b>Fecha de modificion:</b> @{ @item.Fecha }</span>
-														</div>
-													</div>
-												</div>
-												<div class="row">
-													<span class="col-md-10  input-sm"><b>@{ @item.CampoCambiado}: </b></span>
-													<span class="col-md-10"> @{ @item.NotasTrabajo} </span>
-												</div>
-											</li>
-										}
-										else
-										{
-											<li class="h-card">
-												<div class="row">
-													<div class="col-xs-12 input-sm">
-														<div style="float:left"> <span><i class="fa fa-user-circle"></i> <b> @{ @item.UsuarioId } </b></span> </div>
-														<div style="float:right"> <span><b>Fecha de modificion:</b>@{ @item.Fecha }</span> </div>
-													</div>
-												</div>
-												<div class="row" style="margin-top: 2px">
-													<span class="col-md-10 input-sm"> <b>Campos Afectados</b> </span>
-													<div class="col-md-10">
-														<label class="input-sm">@{ @item.CampoCambiado}:</label>
-														<span> @{ @item.ValorActual} </span>
-														<label class="input-sm"> <b> valor anterior: </b></label>
-														<span>@{ @item.ValorAnterior}</span>
-													</div>
-												</div>
-											</li>
-										}
-									}
+									<li class="list-group-item input-sm">
+										<i class="fa fa-file-archive-o" aria-hidden="true"></i>
+										<input type="hidden" name="fileName" value="fileName" />
+										<a asp-action="Download" asp-route-filename="@Model.Numero_Ticket---@file.Name">
+											@file.Name
+										</a>
+										-
+										@file.Fecha_modificacion
+									</li>
 								}
 							</ul>
 						</div>
-					</div>-->
+					</div>
 				</div>
-				<div id="tab02" class="tab-contents">
-					<div class="row">
-						<div class="col-xs-12">
-							<div class="form-group-sm">
-								<label asp-for="NotaCierreServicio" class="input-sm col-xs-1"></label>
-								<div class="controls col-sm-10">
-									<textarea asp-for="NotaCierreServicio" rows="3" cols="40" class="form-control input-sm"></textarea>
+				<div class="row">
+					<div class="col-xs-5">
+						<label asp-for="Prioridad" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<select class="combobox input-sm" asp-for="Prioridad" asp-items="@Model.Lista_Prioridades"></select>
+							<span asp-validation-for="Prioridad" class=" text-danger"></span>
+						</div>
+					</div>
+					<div class="col-xs-5">
+						<label asp-for="Asignado_A" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<select class="combobox input-sm" asp-for="Asignado_A" asp-items="@Model.Lista_Asignados_A"></select>
+							<span asp-validation-for="Asignado_A" class=" text-danger"></span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-5">
+						<label asp-for="Proceso" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<select class="combobox input-sm" asp-for="Proceso" asp-items="@Model.Lista_Procesos"></select>
+							<span asp-validation-for="Proceso" class=" text-danger"></span>
+						</div>
+					</div>
+					<div class="col-xs-5">
+						<label asp-for="Tipo_Trabajo" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<select class="combobox input-sm" asp-for="Tipo_Trabajo" asp-items="@Model.Lista_Tipo_Trabajos">
+								<option>Seleccione...</option>
+							</select>
+							<span asp-validation-for="Tipo_Trabajo" class=" text-danger"></span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-5">
+						<label asp-for="Planta" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<select class="combobox input-sm" asp-for="Planta" asp-items="@Model.Lista_Plantas">
+								<option>Seleccione...</option>
+							</select>
+							<span asp-validation-for="Planta" class=" text-danger"></span>
+						</div>
+					</div>
+					<div class="col-xs-5">
+						<label asp-for="EquipoPrincipal" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<select class="combobox input-sm" asp-for="EquipoPrincipal" asp-items="@Model.Lista_Equipos_princ">
+								<option>Seleccione...</option>
+							</select>
+							<span asp-validation-for="EquipoPrincipal" class=" text-danger"></span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-5">
+						<label asp-for="EquipoSecundario" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<select class="combobox input-sm" asp-for="EquipoSecundario" asp-items="@Model.Lista_Equipos_sec">
+								<option>Seleccione...</option>
+							</select>
+							<span asp-validation-for="EquipoSecundario" class=" text-danger"></span>
+						</div>
+					</div>
+					<div class="col-xs-5">
+						<label asp-for="Componente" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<select class="combobox input-sm" asp-for="Componente" asp-items="@Model.Lista_Componentes">
+								<option>Seleccione...</option>
+							</select>
+							<span asp-validation-for="Componente" class=" text-danger"></span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-5">
+						<label asp-for="Estado" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<select class="combobox input-sm" asp-for="Estado" asp-items="@Model.Lista_Estados">
+								<option>Seleccione...</option>
+							</select>
+							<span asp-validation-for="Estado" class=" text-danger"></span>
+						</div>
+					</div>
+					<div class="col-xs-5">
+						<label asp-for="Fecha_Entrega" class="input-sm col-xs-4"></label>
+						<div class="controls col-sm-8">
+							<input asp-for="Fecha_Entrega" class="form-control input-sm" />
+							<span asp-validation-for="Fecha_Entrega" class=" text-danger"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="panel panel-default margen-top">
+			<div class="panel-heading input-sm">
+				<div class="col-xs-4">
+					<span class="input-sm">  <b>Seguimiento Ticket</b> </span>
+				</div>
+				<div class="col-xs-4">
+					<span class="input-sm"> <b> </b></span>
+					<span class="input-sm"> </span>
+				</div>
+				<div class="col-xs-4">
+					<span class="input-sm"> <b>Fecha Ultimo Estado: </b></span>
+					<span class="input-sm"> @Model.Fecha_Ultimo_Estado </span>
+				</div>
+			</div>
+			<div class="panel-body">
+				<!-- Tab panes -->
+				<div class="tabs">
+					<div class="tab-button-outer">
+						<ul id="tab-button">
+							<li><a href="#tab01">Seguimiento Ticket</a></li>
+							<li><a href="#tab02">Informaci&oacute;n de Cierre</a></li>
+						</ul>
+					</div>
+					<div class="tab-select-outer">
+						<select id="tab-select">
+							<option value="#tab01">Seguimiento Ticket</option>
+							<option value="#tab02">Informaci&oacute;n de Cierre</option>
+						</select>
+					</div>
+					<div id="tab01" class="tab-contents">
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="form-group-sm">
+									<label asp-for="NotasTrabajo" class="input-sm col-xs-2"></label>
+									<div class="controls col-xs-10">
+										<textarea asp-for="NotasTrabajo" rows="3" cols="40" class="form-control input-sm"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<hr />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-2 col-md-2">
+								<div class="controls col-sm-10 input-sm">
+									<b>Activadades</b>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<label class="control-label col-xs-2 col-md-2 col-lg-2"></label>
+							<div class="col-xs-12 col-md-12 col-lg-12">
+								<ul id="lista_seguimiento">
+									<li class="h-card" ng-repeat="item in lista_seg">
+										<div class="row">
+											<div class="col-xs-12 input-sm">
+												<div style="float:left">
+													<span><i class="fa fa-user-circle"></i> {{ item.usuarioId }} </span>
+												</div>
+												<div style="float:right">
+													<span><b>Fecha de modifición:</b> {{ item.fecha | date: 'short' }}</span>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-12">
+												<table class="table table-striped input-sm">
+													<thead>
+														<tr>
+															<th>Campos Afectados</th>
+															<th>Valor Actual </th>
+															<th>Valor Anterior</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr ng-repeat="x in item.cambios">
+															<td><b> {{ x.campoCambiado }}: </b></td>
+															<td>{{ x.valorActual  }}</td>
+															<td>{{ x.valorAnterior  }}</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div id="tab02" class="tab-contents">
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="form-group-sm">
+									<label asp-for="NotaCierreServicio" class="input-sm col-xs-1"></label>
+									<div class="controls col-sm-10">
+										<textarea asp-for="NotaCierreServicio" rows="3" cols="40" class="form-control input-sm"></textarea>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -478,74 +444,80 @@
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="panel panel-default">
-		<div class="row">
-			<div class="col-md-12">
-				<center>
-					<input type="submit" value="Guardar" class="btn btn-default" />
-				</center>
+		<div class="panel panel-default">
+			<div class="row">
+				<div class="col-md-12">
+					<center>
+						<input type="submit" value="Guardar" class="btn btn-default" />
+					</center>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<!-- Modal -->
+	<div class="modal fade" id="modalUsuario" tabindex="-1" role="dialog" aria-labelledby="modalUsuarioTitle" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalUsuarioTitle">Usuario - Operador</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<table class="table">
+						<thead class="thead-dark">
+							<tr>
+								<th>
+									<span class="font-size: 48px;">
+										<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+									</span>
+								</th>
+								<th>Nombre Completo</th>
+								<th>Area</th>
+							</tr>
+						</thead>
+						<tbody>
+
+							<tr ng-repeat="row in datos.slice(((currentPage-1)*itemsPerPage), ((currentPage)*itemsPerPage))">
+								<td>
+									<button class="user_in_list" ng-click="CargarUsuario(row.id)">
+										<span class="font-size: 48px;">
+											<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+										</span>
+									</button>
+								</td>
+								<td>{{ row.fullName }}</td>
+								<td>{{ row.area }}</td>
+							</tr>
+
+						</tbody>
+					</table>
+					View <select ng-model="viewby" ng-change="setItemsPerPage(viewby)">
+						<option>3</option>
+						<option>5</option>
+						<option>10</option>
+						<option>20</option>
+						<option>30</option>
+						<option>40</option>
+						<option>50</option>
+					</select> records at a time.
+
+					<pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" class="pagination-sm" items-per-page="itemsPerPage"></pagination>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
+				</div>
 			</div>
 		</div>
 	</div>
-</form>
-
-<!-- Modal -->
-<div class="modal fade" id="modalUsuario" tabindex="-1" role="dialog" aria-labelledby="modalUsuarioTitle" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="modalUsuarioTitle">Usuario - Operador</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<table class="table">
-					<thead class="thead-dark">
-						<tr>
-							<th>
-								<span class="font-size: 48px;">
-									<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-								</span>
-							</th>
-							<th>Nombre Completo</th>
-							<th>Area</th>
-						</tr>
-					</thead>
-					<tbody>
-						@if (Model.Lista_Usuarios != null)
-						{
-							@foreach (var item in Model.Lista_Usuarios)
-							{
-								<tr>
-									<td>
-										<button class="user_in_list" onclick="cargar_Usuario('@{ @item.Id }', '@Url.Action("GetUsuario", "Tickets")' );">
-											<span class="font-size: 48px;">
-												<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-											</span>
-										</button>
-									</td>
-									<td>@item.FullName</td>
-									<td>@item.Area</td>
-								</tr>
-							}
-						}
-					</tbody>
-				</table>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Save changes</button>
-			</div>
-		</div>
+	<div>
+		<a asp-action="Index">Back to List</a>
 	</div>
 </div>
-<div>
-	<a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
 	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 

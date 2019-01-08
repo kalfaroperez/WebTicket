@@ -188,7 +188,6 @@ D:\Users\Administrador\source\repos\Ticket\WebTickets\obj\Debug\netcoreapp2.1\Ra
 D:\Users\Administrador\source\repos\Ticket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\RegistroEquipo\Details.g.cshtml.cs
 D:\Users\Administrador\source\repos\Ticket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\RegistroEquipo\Edit.g.cshtml.cs
 D:\Users\Administrador\source\repos\Ticket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\RegistroEquipo\Index.g.cshtml.cs
-D:\Users\Administrador\source\repos\Ticket\WebTickets\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs
 D:\Users\kalfaro\source\repos\Ticket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\CalificacionServicio\Create.g.cshtml.cs
 D:\Users\kalfaro\source\repos\Ticket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\CalificacionServicio\Delete.g.cshtml.cs
 D:\Users\kalfaro\source\repos\Ticket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\CalificacionServicio\Details.g.cshtml.cs
@@ -337,3 +336,4 @@ D:\Users\kalfaro\source\repos\kalfaroperez\webticket\WebTickets\obj\Debug\netcor
 D:\Users\kalfaro\source\repos\kalfaroperez\webticket\WebTickets\obj\Debug\netcoreapp2.1\WebTickets.csproj.CopyComplete
 D:\Users\kalfaro\source\repos\kalfaroperez\webticket\WebTickets\obj\Debug\netcoreapp2.1\WebTickets.dll
 D:\Users\kalfaro\source\repos\kalfaroperez\webticket\WebTickets\obj\Debug\netcoreapp2.1\WebTickets.pdb
+D:\Users\Administrador\source\repos\Ticket\WebTickets\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs

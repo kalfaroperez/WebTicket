@@ -9,7 +9,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-
+using Persistence.DatabaseContext;
 
 namespace WebTickets.Controllers
 {
@@ -19,15 +19,15 @@ namespace WebTickets.Controllers
 
         private readonly IUserService _userService;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ApplicationRoleManager _roleManager;
+        private readonly ApplicationDbContext _context;
         public UsersController(
             IUserService userService, 
-            UserManager<ApplicationUser> userManager, 
-            ApplicationRoleManager roleManager )
+            UserManager<ApplicationUser> userManager,
+            ApplicationDbContext context)
         {
             _userService = userService;
             _userManager = userManager;
-            _roleManager = roleManager;
+            _context = context;
         }
 
 
@@ -43,8 +43,8 @@ namespace WebTickets.Controllers
         public async Task<ActionResult> Get(string id)
         {
             var model = await _userManager.FindByIdAsync(id);
-            ViewBag.Roles = _roleManager.Roles.OrderBy(x => x.Name).ToList();
-
+            ViewBag.Roles = _context.UserRoles.Where(x=> x.UserId == id).ToList();
+            
             return View(model);
         }
 
