@@ -81,7 +81,7 @@ namespace WebTickets.Controllers
             }
             int pageSize = 3;
             int pageNumber = (page ?? 1);
-            return View(result.ToPagedList(pageNumber, pageSize));
+            return View(result);
         }
 
         // GET: Tickets

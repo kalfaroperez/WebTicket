@@ -11723,11 +11723,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Users\\Administrador\\source\\repos\\Ticket\\Commons\\Model\\Model.csproj",
+      "projectUniqueName": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj",
       "projectName": "Model",
-      "projectPath": "D:\\Users\\Administrador\\source\\repos\\Ticket\\Commons\\Model\\Model.csproj",
+      "projectPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj",
       "packagesPath": "D:\\Users\\Administrador\\.nuget\\packages\\",
-      "outputPath": "D:\\Users\\Administrador\\source\\repos\\Ticket\\Commons\\Model\\obj\\",
+      "outputPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Model\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -11746,8 +11746,8 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
-            "D:\\Users\\Administrador\\source\\repos\\Ticket\\Commons\\Common\\Common.csproj": {
-              "projectPath": "D:\\Users\\Administrador\\source\\repos\\Ticket\\Commons\\Common\\Common.csproj"
+            "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Common\\Common.csproj": {
+              "projectPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Common\\Common.csproj"
             }
           }
         }

@@ -11744,11 +11744,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Users\\Administrador\\source\\repos\\Ticket\\Persistence\\Persitence.DatabaseContext\\Persistence.DatabaseContext.csproj",
+      "projectUniqueName": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Persistence\\Persitence.DatabaseContext\\Persistence.DatabaseContext.csproj",
       "projectName": "Persistence.DatabaseContext",
-      "projectPath": "D:\\Users\\Administrador\\source\\repos\\Ticket\\Persistence\\Persitence.DatabaseContext\\Persistence.DatabaseContext.csproj",
+      "projectPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Persistence\\Persitence.DatabaseContext\\Persistence.DatabaseContext.csproj",
       "packagesPath": "D:\\Users\\Administrador\\.nuget\\packages\\",
-      "outputPath": "D:\\Users\\Administrador\\source\\repos\\Ticket\\Persistence\\Persitence.DatabaseContext\\obj\\",
+      "outputPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Persistence\\Persitence.DatabaseContext\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -11767,8 +11767,8 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
-            "D:\\Users\\Administrador\\source\\repos\\Ticket\\Commons\\Model\\Model.csproj": {
-              "projectPath": "D:\\Users\\Administrador\\source\\repos\\Ticket\\Commons\\Model\\Model.csproj"
+            "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj": {
+              "projectPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj"
             }
           }
         }

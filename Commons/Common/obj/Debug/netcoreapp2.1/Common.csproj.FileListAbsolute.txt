@@ -19,3 +19,10 @@ D:\Users\kalfaro\source\repos\kalfaroperez\webticket\Commons\Common\obj\Debug\ne
 D:\Users\kalfaro\source\repos\kalfaroperez\webticket\Commons\Common\obj\Debug\netcoreapp2.1\Common.csproj.CoreCompileInputs.cache
 D:\Users\kalfaro\source\repos\kalfaroperez\webticket\Commons\Common\obj\Debug\netcoreapp2.1\Common.dll
 D:\Users\kalfaro\source\repos\kalfaroperez\webticket\Commons\Common\obj\Debug\netcoreapp2.1\Common.pdb
+D:\Users\Administrador\source\repos\WebTicket\Commons\Common\bin\Debug\netcoreapp2.1\Common.deps.json
+D:\Users\Administrador\source\repos\WebTicket\Commons\Common\bin\Debug\netcoreapp2.1\Common.dll
+D:\Users\Administrador\source\repos\WebTicket\Commons\Common\bin\Debug\netcoreapp2.1\Common.pdb
+D:\Users\Administrador\source\repos\WebTicket\Commons\Common\obj\Debug\netcoreapp2.1\Common.csprojAssemblyReference.cache
+D:\Users\Administrador\source\repos\WebTicket\Commons\Common\obj\Debug\netcoreapp2.1\Common.csproj.CoreCompileInputs.cache
+D:\Users\Administrador\source\repos\WebTicket\Commons\Common\obj\Debug\netcoreapp2.1\Common.dll
+D:\Users\Administrador\source\repos\WebTicket\Commons\Common\obj\Debug\netcoreapp2.1\Common.pdb

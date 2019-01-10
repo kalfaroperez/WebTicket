@@ -4024,11 +4024,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Users\\Administrador\\source\\repos\\Ticket\\Commons\\Common\\Common.csproj",
+      "projectUniqueName": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Common\\Common.csproj",
       "projectName": "Common",
-      "projectPath": "D:\\Users\\Administrador\\source\\repos\\Ticket\\Commons\\Common\\Common.csproj",
+      "projectPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Common\\Common.csproj",
       "packagesPath": "D:\\Users\\Administrador\\.nuget\\packages\\",
-      "outputPath": "D:\\Users\\Administrador\\source\\repos\\Ticket\\Commons\\Common\\obj\\",
+      "outputPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Common\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
