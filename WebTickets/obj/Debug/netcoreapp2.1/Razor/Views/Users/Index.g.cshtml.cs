@@ -94,7 +94,7 @@ using Model.Custom;
             WriteLiteral("</h2>\r\n");
             EndContext();
             BeginContext(114, 457, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "a292bd0ad8514b8da7cf9edb80e3243e", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "c18cc2db18f14cabb055903ac36df21c", async() => {
                 BeginContext(151, 152, true);
                 WriteLiteral("\r\n\t<table class=\"table table-striped\">\r\n\t\t<thead>\r\n\t\t\t<tr>\r\n\t\t\t\t<th>#</th>\r\n\t\t\t\t<th>Username</th>\r\n\t\t\t\t<th>Email</th>\r\n\t\t\t</tr>\r\n\t\t</thead>\r\n\t\t<tbody>\r\n");
                 EndContext();
@@ -137,7 +137,7 @@ using Model.Custom;
                 WriteLiteral("</td>\r\n\t\t\t\t\t<td>");
                 EndContext();
                 BeginContext(441, 76, false);
-                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "f0ba3db3d4dd4ddf9ca7a4bb7251022b", async() => {
+                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "e1aad5f4795b4d2d8b03c0d8c1929338", async() => {
                     BeginContext(506, 7, false);
 #line 24 "D:\Users\Administrador\source\repos\WebTicket\WebTickets\Views\Users\Index.cshtml"
                                                                                    Write(m.Email);
