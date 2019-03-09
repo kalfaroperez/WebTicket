@@ -6,41 +6,81 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebTickets.Helpers
 {
+    
     public class PaginatedList<T> : List<T>
     {
-        public int PageIndex { get; private set; }
-        public int TotalPages { get; private set; }
-
-        public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
+        private PaginatedList(List<T> items, int count, int pageIndex, int pageSize, int countOfPageIndexesToDisplay)
         {
             PageIndex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
 
-            this.AddRange(items);
+            SetPageIndexesToDisplay(pageIndex, countOfPageIndexesToDisplay);
+
+            AddRange(items);
         }
 
-        public bool HasPreviousPage
+        public int PageIndex { get; }
+
+        public int TotalPages { get; }
+
+        public bool HasPreviousPage => (PageIndex > 1);
+
+        public bool HasNextPage => (PageIndex < TotalPages);
+
+        public List<PageIndex> PageIndexesToDisplay { get; private set; }
+
+        public static PaginatedList<T> Create(
+            IEnumerable<T> source, int pageIndex, int pageSize, int countOfPageIndexesToDisplay = 3)
         {
-            get
+            var list = source.ToList();
+            var count = list.Count;
+            var items = list
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize).ToList();
+            return new PaginatedList<T>(items, count, pageIndex, pageSize, countOfPageIndexesToDisplay);
+        }
+
+        private void SetPageIndexesToDisplay(int pageIndex, int countOfPageIndexesToDisplay)
+        {
+            PageIndexesToDisplay = new List<PageIndex>();
+            if (pageIndex > TotalPages - countOfPageIndexesToDisplay + Math.Floor(countOfPageIndexesToDisplay / 2.0m))
             {
-                return (PageIndex > 1);
+                for (var i = Math.Max(TotalPages - countOfPageIndexesToDisplay + 1, 0); i <= TotalPages; i++)
+                {
+                    PageIndexesToDisplay.Add(new PageIndex(i, i == pageIndex));
+                }
             }
-        }
-
-        public bool HasNextPage
-        {
-            get
+            else if (pageIndex < countOfPageIndexesToDisplay - Math.Floor(countOfPageIndexesToDisplay / 2.0m))
             {
-                return (PageIndex < TotalPages);
+                for (var i = 1; i <= Math.Min(countOfPageIndexesToDisplay, TotalPages); i++)
+                {
+                    PageIndexesToDisplay.Add(new PageIndex(i, i == pageIndex));
+                }
             }
+            else
+            {
+                var startIndex = pageIndex - (int)Math.Floor(countOfPageIndexesToDisplay / 2.0m);
+                for (var i = startIndex; i <= startIndex + countOfPageIndexesToDisplay - 1; i++)
+                {
+                    PageIndexesToDisplay.Add(new PageIndex(i, i == pageIndex));
+                }
+            }
+
         }
 
-        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
+    }
+
+    public class PageIndex
+    {
+        public PageIndex(int index, bool isActive)
         {
-            var count = await source.CountAsync();
-            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
-            return new PaginatedList<T>(items, count, pageIndex, pageSize);
+            Index = index;
+            IsActive = isActive;
         }
+
+        public int Index { get; }
+
+        public bool IsActive { get; }
     }
 }
 

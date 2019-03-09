@@ -81,7 +81,8 @@ namespace WebTickets.ViewModels
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public DateTime Fecha { get => DateTime.Now; set => _fecha = value; }
 
-        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Display(Name = "Usuario")]
+        [Required(ErrorMessage = "El campo '{0}' es requerido")]
         public string Operador_UserName { get; set; }
 
         [Display(Name = "Nombre Completo")]
@@ -89,7 +90,7 @@ namespace WebTickets.ViewModels
         public string Operador_Id { get; set; }
 
         [Display(Name = "Usuario")]
-        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Required(ErrorMessage = "El campo '{0}' es requerido")]
         public string Username { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
@@ -120,6 +121,7 @@ namespace WebTickets.ViewModels
 
         public string Asignado_A_Sector { get; set; }
 
+        [Required(ErrorMessage = "El campo {0} es requerido")]
         public int Prioridad { get; set; }
         public List<SelectListItem> Lista_Prioridades { get; set; }
 
@@ -174,6 +176,7 @@ namespace WebTickets.ViewModels
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public DateTime Fecha_Ultimo_Estado { get; set; }
 
+        private DateTime _fecha_e;
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public DateTime Fecha_Entrega { get; set; }
 

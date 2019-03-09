@@ -93,19 +93,22 @@
 				@ViewBag.Resultado
 			</div>
 		}
-		<!--Url para usar funcion generica para las listas -->
-		<div id="div_url" urlLista="/Tickets/GetUsuarios"></div>
-		<!---->
+		@if (!string.IsNullOrEmpty(Model.Error))
+		{
+			<div class="alert alert-danger" role="alert">
+				@Model.Error
+			</div>
+		}
 
-	<div class="panel panel-primary margen-top">
-		<div class="row">
-			<div class="col-xs-4">
-				<!--Ticket ID -->
-		<input type="hidden" asp-for="Id" />
-		<label asp-for="Numero_Ticket" class="input-sm"></label>
-		<input type="hidden" asp-for="Numero_Ticket" />
-		<span class="input-sm"> @Model.Numero_Ticket </span>
-</div>
+		<div class="panel panel-primary margen-top">
+			<div class="row">
+				<div class="col-xs-4">
+					<!--Ticket ID -->
+					<input type="hidden" asp-for="Id" />
+					<label asp-for="Numero_Ticket" class="input-sm"></label>
+					<input type="hidden" asp-for="Numero_Ticket" />
+					<span class="input-sm"> @Model.Numero_Ticket </span>
+				</div>
 				<div class="col-xs-4">
 					<label asp-for="Fecha" class="input-sm">Fecha: </label>
 					<span class="input-sm"> @Model.Fecha </span>
@@ -130,12 +133,12 @@
 				<div class="row">
 					<div class="col-xs-5">
 						<div class="form-group-sm">
-							<label asp-for="Operador_UserName"  class="input-sm col-xs-4">Usuario </label>
+							<label asp-for="Operador_UserName" class="input-sm col-xs-4">Usuario </label>
 							<div class="controls col-sm-6">
 								<input asp-for="Operador_UserName" class="form-control input-sm" />
 							</div>
 							<div class="col-xs-1">
-								<button type="button" data-toggle="modal" data-target="#modalUsuario" >
+								<button type="button" data-toggle="modal" data-target="#modalUsuario">
 									<span class="font-size: 48px; ">
 										<i class="fa fa-search"></i>
 									</span>
@@ -149,14 +152,15 @@
 					<div class="col-xs-5">
 						<label asp-for="Operador_Nombre_completo" class="input-sm col-xs-4"></label>
 						<div class="controls col-sm-8">
-							<input asp-for="Operador_Nombre_completo"  class="form-control input-sm" />
+							<input asp-for="Operador_Nombre_completo" class="form-control input-sm" />
+							<span asp-validation-for="Operador_UserName" class="text-danger"> </span>
 						</div>
 					</div>
 					<div class="col-xs-5">
 						<label asp-for="Area" class="input-sm col-xs-4"></label>
 						<div class="controls col-sm-8">
 							<input asp-for="Area" class="form-control input-sm" />
-							<input type="hidden" asp-for="Area_Id"  />
+							<input type="hidden" asp-for="Area_Id" />
 						</div>
 					</div>
 				</div>
@@ -244,14 +248,18 @@
 					<div class="col-xs-5">
 						<label asp-for="Prioridad" class="input-sm col-xs-4"></label>
 						<div class="controls col-sm-8">
-							<select class="combobox input-sm" asp-for="Prioridad" asp-items="@Model.Lista_Prioridades"></select>
+							<select class="cbx combobox input-sm" asp-for="Prioridad" url_accion="/Tickets/GetPrioridades_Ajax" asp-items="@Model.Lista_Prioridades">
+								<option value="0">Seleccione...</option>
+							</select>
 							<span asp-validation-for="Prioridad" class=" text-danger"></span>
 						</div>
 					</div>
 					<div class="col-xs-5">
 						<label asp-for="Asignado_A" class="input-sm col-xs-4"></label>
 						<div class="controls col-sm-8">
-							<select class="combobox input-sm" asp-for="Asignado_A" asp-items="@Model.Lista_Asignados_A"></select>
+							<select class="cbx combobox input-sm" asp-for="Asignado_A" url_accion="/Tickets/GetAsignadoAjax" asp-items="@Model.Lista_Asignados_A">
+								<option value="0">Seleccione...</option>
+							</select>
 							<span asp-validation-for="Asignado_A" class=" text-danger"></span>
 						</div>
 					</div>
@@ -260,15 +268,17 @@
 					<div class="col-xs-5">
 						<label asp-for="Proceso" class="input-sm col-xs-4"></label>
 						<div class="controls col-sm-8">
-							<select class="combobox input-sm" asp-for="Proceso" asp-items="@Model.Lista_Procesos"></select>
+							<select class="cbx combobox input-sm" asp-for="Proceso" url_accion="/Tickets/GetProcesos_Ajax" asp-items="@Model.Lista_Procesos">
+								<option value="0">Seleccione...</option>
+							</select>
 							<span asp-validation-for="Proceso" class=" text-danger"></span>
 						</div>
 					</div>
 					<div class="col-xs-5">
 						<label asp-for="Tipo_Trabajo" class="input-sm col-xs-4"></label>
 						<div class="controls col-sm-8">
-							<select class="combobox input-sm" asp-for="Tipo_Trabajo" asp-items="@Model.Lista_Tipo_Trabajos">
-								<option>Seleccione...</option>
+							<select class="cbx combobox input-sm" asp-for="Tipo_Trabajo" url_accion="/Tickets/GetTipoTrabajoAjax" asp-items="@Model.Lista_Tipo_Trabajos">
+								<option value="0">Seleccione...</option>
 							</select>
 							<span asp-validation-for="Tipo_Trabajo" class=" text-danger"></span>
 						</div>
@@ -278,8 +288,8 @@
 					<div class="col-xs-5">
 						<label asp-for="Planta" class="input-sm col-xs-4"></label>
 						<div class="controls col-sm-8">
-							<select class="combobox input-sm" asp-for="Planta" asp-items="@Model.Lista_Plantas">
-								<option>Seleccione...</option>
+							<select id="cbxPlanta" class="combobox input-sm" asp-for="Planta" asp-items="@Model.Lista_Plantas">
+								<option value="0">Seleccione...</option>
 							</select>
 							<span asp-validation-for="Planta" class=" text-danger"></span>
 						</div>
@@ -287,8 +297,8 @@
 					<div class="col-xs-5">
 						<label asp-for="EquipoPrincipal" class="input-sm col-xs-4"></label>
 						<div class="controls col-sm-8">
-							<select class="combobox input-sm" asp-for="EquipoPrincipal" asp-items="@Model.Lista_Equipos_princ">
-								<option>Seleccione...</option>
+							<select id='cbxEquipoPrincipal' class="combobox input-sm" asp-for="EquipoPrincipal" asp-items="@Model.Lista_Equipos_princ">
+								<option value="0">Seleccione...</option>
 							</select>
 							<span asp-validation-for="EquipoPrincipal" class=" text-danger"></span>
 						</div>
@@ -298,17 +308,18 @@
 					<div class="col-xs-5">
 						<label asp-for="EquipoSecundario" class="input-sm col-xs-4"></label>
 						<div class="controls col-sm-8">
-							<select class="combobox input-sm" asp-for="EquipoSecundario" asp-items="@Model.Lista_Equipos_sec">
-								<option>Seleccione...</option>
+							<select id='cbxEquipoSecundario' class="cbx combobox input-sm" asp-for="EquipoSecundario" asp-items="@Model.Lista_Equipos_sec">
+								<option value="0">Seleccione...</option>
 							</select>
-							<span asp-validation-for="EquipoSecundario" class=" text-danger"></span>
+							<span asp-validation-for="EquipoSecundario" class="text-danger"></span>
 						</div>
 					</div>
 					<div class="col-xs-5">
 						<label asp-for="Componente" class="input-sm col-xs-4"></label>
 						<div class="controls col-sm-8">
-							<select class="combobox input-sm" asp-for="Componente" asp-items="@Model.Lista_Componentes">
-								<option>Seleccione...</option>
+							<select id='cbxComponente' class="cbx combobox input-sm" asp-for="Componente" asp-items="@Model.Lista_Componentes">
+								
+								<option value="0">Seleccione...</option>
 							</select>
 							<span asp-validation-for="Componente" class=" text-danger"></span>
 						</div>
@@ -318,8 +329,8 @@
 					<div class="col-xs-5">
 						<label asp-for="Estado" class="input-sm col-xs-4"></label>
 						<div class="controls col-sm-8">
-							<select class="combobox input-sm" asp-for="Estado" asp-items="@Model.Lista_Estados">
-								<option>Seleccione...</option>
+							<select class="cbx combobox input-sm" asp-for="Estado" url_accion="/Tickets/GetEstadosServicioAjax" asp-items="@Model.Lista_Estados">
+								<option value="0">Seleccione...</option>
 							</select>
 							<span asp-validation-for="Estado" class=" text-danger"></span>
 						</div>
@@ -435,7 +446,7 @@
 								<div class="form-group-sm">
 									<label asp-for="NotaCierreServicio" class="input-sm col-xs-1"></label>
 									<div class="controls col-sm-10">
-										<textarea asp-for="NotaCierreServicio" rows="3" cols="40" class="form-control input-sm"></textarea>
+										<textarea asp-for="NotaCierreServicio" rows="3" cols="40" class="form-control input-sm" required></textarea>
 									</div>
 								</div>
 							</div>
@@ -449,7 +460,8 @@
 			<div class="row">
 				<div class="col-md-12">
 					<center>
-						<input type="submit" value="Guardar" class="btn btn-default" />
+						<a class="button btn btn-default" asp-action="Index">Cancelar</a>
+						<input type="submit" value="Guardar" class="btn btn-info" />
 					</center>
 				</div>
 			</div>
@@ -457,6 +469,9 @@
 	</form>
 
 	<!-- Modal -->
+	<!--Url para usar funcion generica para las listas -->
+	<div id="div_url" urlLista="/Tickets/GetUsuarios"></div>
+	<!---->
 	<div class="modal fade" id="modalUsuario" tabindex="-1" role="dialog" aria-labelledby="modalUsuarioTitle" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
@@ -467,6 +482,20 @@
 					</button>
 				</div>
 				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-6">
+						</div>
+						<div class="col-md-6">
+							<table style="float:right">
+								<tr>
+									<td>Filtrar:</td>
+									<td>
+										<input type="text" class="input-sm" ng-model="searchText" placeholder="Ingrese texto a buscar" />
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
 					<table class="table">
 						<thead class="thead-dark">
 							<tr>
@@ -480,8 +509,7 @@
 							</tr>
 						</thead>
 						<tbody>
-
-							<tr ng-repeat="row in datos.slice(((currentPage-1)*itemsPerPage), ((currentPage)*itemsPerPage))">
+							<tr ng-repeat="row in datos.slice(((currentPage-1)*itemsPerPage), ((currentPage)*itemsPerPage)) | filter:searchText">
 								<td>
 									<button class="user_in_list" ng-click="CargarUsuario(row.id)">
 										<span class="font-size: 48px;">

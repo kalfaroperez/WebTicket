@@ -13,8 +13,6 @@
     <Content Remove="Views\Account\ConfirmEmail.cshtml" />
     <Content Remove="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Remove="Views\Account\ExternalLoginFailure.cshtml" />
-    <Content Remove="Views\Account\ForgotPassword.cshtml" />
-    <Content Remove="Views\Account\ForgotPasswordConfirmation.cshtml" />
     <Content Remove="Views\Account\SendCode.cshtml" />
     <Content Remove="Views\Account\VerifyCode.cshtml" />
     <Content Remove="Views\Account\_ExternalLoginsListPartial.cshtml" />
