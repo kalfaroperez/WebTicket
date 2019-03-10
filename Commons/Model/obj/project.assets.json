@@ -5315,7 +5315,7 @@
       ]
     },
     "Microsoft.AspNetCore.Razor.Design/2.1.1": {
-      "sha512": "f8PKGcxiezL1RVqmnmrazj24Mj4KCTSXqwdotl7Lc+82h8iLV7ItxEIShTJakG7M9iw0ZuCocM0J/IhYesdQrg==",
+      "sha512": "BOK5fckW9v7xWjpEI6bPGwkjw10OPVASZcAa8HoWJo/0Mmg4Azddj92v8noU+YgvD/6zNZ9o/RiRXXKxk5rYwQ==",
       "type": "package",
       "path": "microsoft.aspnetcore.razor.design/2.1.1",
       "files": [
@@ -11717,23 +11717,23 @@
     ]
   },
   "packageFolders": {
-    "D:\\Users\\kalfaro\\.nuget\\packages\\": {},
+    "D:\\Users\\Administrador\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj",
+      "projectUniqueName": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj",
       "projectName": "Model",
-      "projectPath": "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj",
-      "packagesPath": "D:\\Users\\kalfaro\\.nuget\\packages\\",
-      "outputPath": "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\Commons\\Model\\obj\\",
+      "projectPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj",
+      "packagesPath": "D:\\Users\\Administrador\\.nuget\\packages\\",
+      "outputPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Model\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "D:\\Users\\kalfaro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "D:\\Users\\Administrador\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -11746,8 +11746,8 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
-            "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\Commons\\Common\\Common.csproj": {
-              "projectPath": "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\Commons\\Common\\Common.csproj"
+            "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Common\\Common.csproj": {
+              "projectPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Common\\Common.csproj"
             }
           }
         }

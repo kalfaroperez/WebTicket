@@ -156,7 +156,7 @@ namespace WebTickets.Controllers
         }
 
         // GET: Tickets
-        [HttpPost]
+        [HttpGet]
         public IActionResult Lista()
         {
 

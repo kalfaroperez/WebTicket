@@ -1,0 +1,16 @@
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\bin\Release\netcoreapp2.1\Auth.Service.deps.json
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\bin\Release\netcoreapp2.1\Auth.Service.dll
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\bin\Release\netcoreapp2.1\Auth.Service.pdb
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\bin\Release\netcoreapp2.1\Common.dll
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\bin\Release\netcoreapp2.1\Model.dll
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\bin\Release\netcoreapp2.1\Persistence.DatabaseContext.dll
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\bin\Release\netcoreapp2.1\Model.pdb
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\bin\Release\netcoreapp2.1\Persistence.DatabaseContext.pdb
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\bin\Release\netcoreapp2.1\Common.pdb
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\obj\Release\netcoreapp2.1\Auth.Service.csprojAssemblyReference.cache
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\obj\Release\netcoreapp2.1\Auth.Service.csproj.CoreCompileInputs.cache
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\obj\Release\netcoreapp2.1\Auth.Service.AssemblyInfoInputs.cache
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\obj\Release\netcoreapp2.1\Auth.Service.AssemblyInfo.cs
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\obj\Release\netcoreapp2.1\Auth.Service.csproj.CopyComplete
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\obj\Release\netcoreapp2.1\Auth.Service.dll
+D:\Users\Administrador\source\repos\WebTicket\Auth.Service\obj\Release\netcoreapp2.1\Auth.Service.pdb

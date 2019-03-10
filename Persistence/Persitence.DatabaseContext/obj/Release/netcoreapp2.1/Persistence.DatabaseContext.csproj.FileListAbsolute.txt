@@ -1,0 +1,16 @@
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\bin\Release\netcoreapp2.1\Persistence.DatabaseContext.deps.json
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\bin\Release\netcoreapp2.1\Persistence.DatabaseContext.runtimeconfig.json
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\bin\Release\netcoreapp2.1\Persistence.DatabaseContext.runtimeconfig.dev.json
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\bin\Release\netcoreapp2.1\Persistence.DatabaseContext.dll
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\bin\Release\netcoreapp2.1\Persistence.DatabaseContext.pdb
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\bin\Release\netcoreapp2.1\Common.dll
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\bin\Release\netcoreapp2.1\Model.dll
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\bin\Release\netcoreapp2.1\Model.pdb
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\bin\Release\netcoreapp2.1\Common.pdb
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\obj\Release\netcoreapp2.1\Persistence.DatabaseContext.csprojAssemblyReference.cache
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\obj\Release\netcoreapp2.1\Persistence.DatabaseContext.csproj.CoreCompileInputs.cache
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\obj\Release\netcoreapp2.1\Persistence.DatabaseContext.AssemblyInfoInputs.cache
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\obj\Release\netcoreapp2.1\Persistence.DatabaseContext.AssemblyInfo.cs
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\obj\Release\netcoreapp2.1\Persistence.DatabaseContext.csproj.CopyComplete
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\obj\Release\netcoreapp2.1\Persistence.DatabaseContext.dll
+D:\Users\Administrador\source\repos\WebTicket\Persistence\Persitence.DatabaseContext\obj\Release\netcoreapp2.1\Persistence.DatabaseContext.pdb

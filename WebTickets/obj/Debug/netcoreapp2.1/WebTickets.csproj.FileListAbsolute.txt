@@ -565,3 +565,5 @@ D:\Users\kalfaro\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\WebTi
 D:\Users\kalfaro\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\WebTickets.pdb
 D:\Users\kalfaro\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\Account\ForgotPassword.g.cshtml.cs
 D:\Users\kalfaro\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\Account\ForgotPasswordConfirmation.g.cshtml.cs
+D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\Account\ForgotPassword.g.cshtml.cs
+D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\Account\ForgotPasswordConfirmation.g.cshtml.cs
