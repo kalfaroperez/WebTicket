@@ -585,7 +585,3 @@ function autocomplete_Componente(id_planta, id_equipo_princ, id_equipo_sec) {
     });
 
 }
-
-
-
-

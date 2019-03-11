@@ -44,124 +44,131 @@
 
 				Tip 2: you can also add an image using data-image tag
 			-->
+
 			<div class="logo">
 				<a href="/Home/Index" class="simple-text logo-normal">
-					<img src="~/images/logo-png-full128x128.png" alt="Real SA"  />
+					<img src="~/images/logo-png-full128x128.png" alt="Real SA" />
 				</a>
 			</div>
 			<div class="sidebar-wrapper">
 				<ul class="nav">
-					<li class="nav-item active  ">
-						<a class="nav-link" href="/Home/Index">
-							<i class="material-icons">dashboard</i>
-							<p>Dashboard</p>
-						</a>
-					</li>
-					<li class="nav-item ">
-						<a class="nav-link" href="/Tickets/Create">
-							<i class="material-icons">person</i>
-							<p>Nuevo Ticket</p>
-						</a>
-					</li>
-					<li class="nav-item ">
-						<a class="nav-link" asp-controller="Tickets" asp-action="Index" >
-							<i class="material-icons">content_paste</i>
-							<p>Consultas</p>
-						</a>
-					</li>
-					<li class="nav-item ">
-						<a class="nav-link" data-toggle="collapse" data-target="#administracion">
-							<i class="material-icons">library_books</i>
-							<p>
-								Administracion
-								<b class="caret"></b>
-							</p>
+					@if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
+					{
+						<li class="nav-item active  ">
+							<a class="nav-link" href="/Home/Index">
+								<i class="material-icons">dashboard</i>
+								<p>Dashboard</p>
+							</a>
+						</li>
+						<li class="nav-item ">
+							<a class="nav-link" href="/Tickets/Create">
+								<i class="material-icons">person</i>
+								<p>Nuevo Ticket</p>
+							</a>
+						</li>
+						<li class="nav-item ">
+							<a class="nav-link" asp-controller="Tickets" asp-action="Index">
+								<i class="material-icons">content_paste</i>
+								<p>Consultas</p>
+							</a>
+						</li>
+					}
+					@if (User.IsInRole("Administrador"))
+					{
+						<li class="nav-item ">
+							<a class="nav-link" data-toggle="collapse" data-target="#administracion">
+								<i class="material-icons">library_books</i>
+								<p>
+									Administracion
+									<b class="caret"></b>
+								</p>
 
-						</a>
-						<div class="collapse" id="administracion" style="">
-							<ul class="nav">
-								<li class="nav-item ">
-									<a class="nav-link" href="/Plantas/Index">
-										<span class="sidebar-mini"> AP </span>
-										<span class="sidebar-normal"> Area Equipos </span>
-									</a>
-								</li>
-								<li class="nav-item ">
-									<a class="nav-link" href="/EquipoPrincipal/Index">
-										<span class="sidebar-mini"> EP </span>
-										<span class="sidebar-normal"> Equipo Principal </span>
-									</a>
-								</li>
-								<li class="nav-item ">
-									<a class="nav-link" href="/EquipoSecundario/Index">
-										<span class="sidebar-mini"> ES </span>
-										<span class="sidebar-normal"> Equipo Secundario </span>
-									</a>
-								</li>
-								<li class="nav-item ">
-									<a class="nav-link" href="/Componentes/Index">
-										<span class="sidebar-mini"> C </span>
-										<span class="sidebar-normal"> Componentes </span>
-									</a>
-								</li>
-								<li class="nav-item ">
-									<a class="nav-link" href="/RegistroEquipo/Index">
-										<span class="sidebar-mini"> CE </span>
-										<span class="sidebar-normal"> Clasificación Equipos </span>
-									</a>
-								</li>
-								<li class="nav-item ">
-									<a class="nav-link" href="/Users/Index">
-										<span class="sidebar-mini"> <i class="material-icons">person</i></span>
-										<span class="sidebar-normal"> Maestro - Usuarios </span>
-									</a>
-								</li>
-								<li class="nav-item ">
-									<a class="nav-link" href="/TipoTrabajo/Index">
-										<span class="sidebar-mini"> TT </span>
-										<span class="sidebar-normal"> Maestro - Tipo Trabajos </span>
-									</a>
-								</li>
-								<li class="nav-item ">
-									<a class="nav-link" href="/Parametros/Index">
-										<span class="sidebar-mini"> P </span>
-										<span class="sidebar-normal">Maestro - Parametros </span>
-									</a>
-								</li>
-								<li class="nav-item ">
-									<a class="nav-link" href="/Prioridad/Index">
-										<span class="sidebar-mini"> Pr </span>
-										<span class="sidebar-normal">Maestro - Prioridades </span>
-									</a>
-								</li>
-								<li class="nav-item ">
-									<a class="nav-link" href="/Procesos/Index">
-										<span class="sidebar-mini"> Pro </span>
-										<span class="sidebar-normal">Maestro - Procesos </span>
-									</a>
-								</li>
+							</a>
+							<div class="collapse" id="administracion" style="">
+								<ul class="nav">
+									<li class="nav-item ">
+										<a class="nav-link" href="/Plantas/Index">
+											<span class="sidebar-mini"> AP </span>
+											<span class="sidebar-normal"> Area Equipos </span>
+										</a>
+									</li>
+									<li class="nav-item ">
+										<a class="nav-link" href="/EquipoPrincipal/Index">
+											<span class="sidebar-mini"> EP </span>
+											<span class="sidebar-normal"> Equipo Principal </span>
+										</a>
+									</li>
+									<li class="nav-item ">
+										<a class="nav-link" href="/EquipoSecundario/Index">
+											<span class="sidebar-mini"> ES </span>
+											<span class="sidebar-normal"> Equipo Secundario </span>
+										</a>
+									</li>
+									<li class="nav-item ">
+										<a class="nav-link" href="/Componentes/Index">
+											<span class="sidebar-mini"> C </span>
+											<span class="sidebar-normal"> Componentes </span>
+										</a>
+									</li>
+									<li class="nav-item ">
+										<a class="nav-link" href="/RegistroEquipo/Index">
+											<span class="sidebar-mini"> CE </span>
+											<span class="sidebar-normal"> Clasificación Equipos </span>
+										</a>
+									</li>
+									<li class="nav-item ">
+										<a class="nav-link" href="/Users/Index">
+											<span class="sidebar-mini"> <i class="material-icons">person</i></span>
+											<span class="sidebar-normal"> Maestro - Usuarios </span>
+										</a>
+									</li>
+									<li class="nav-item ">
+										<a class="nav-link" href="/TipoTrabajo/Index">
+											<span class="sidebar-mini"> TT </span>
+											<span class="sidebar-normal"> Maestro - Tipo Trabajos </span>
+										</a>
+									</li>
+									<li class="nav-item ">
+										<a class="nav-link" href="/Parametros/Index">
+											<span class="sidebar-mini"> P </span>
+											<span class="sidebar-normal">Maestro - Parametros </span>
+										</a>
+									</li>
+									<li class="nav-item ">
+										<a class="nav-link" href="/Prioridad/Index">
+											<span class="sidebar-mini"> Pr </span>
+											<span class="sidebar-normal">Maestro - Prioridades </span>
+										</a>
+									</li>
+									<li class="nav-item ">
+										<a class="nav-link" href="/Procesos/Index">
+											<span class="sidebar-mini"> Pro </span>
+											<span class="sidebar-normal">Maestro - Procesos </span>
+										</a>
+									</li>
 
-								<li class="nav-item ">
-									<a class="nav-link" href="/EstadoServicio/Index">
-										<span class="sidebar-mini"> E </span>
-										<span class="sidebar-normal">Maestro - Estado Servicios </span>
-									</a>
-								</li>
-								<li class="nav-item ">
-									<a class="nav-link" href="/CalificacionServicio/Index">
-										<span class="sidebar-mini"> P </span>
-										<span class="sidebar-normal">Maestro - Calificacion Servicios</span>
-									</a>
-								</li>
-							</ul>
-						</div>
-					</li>
+									<li class="nav-item ">
+										<a class="nav-link" href="/EstadoServicio/Index">
+											<span class="sidebar-mini"> E </span>
+											<span class="sidebar-normal">Maestro - Estado Servicios </span>
+										</a>
+									</li>
+									<li class="nav-item ">
+										<a class="nav-link" href="/CalificacionServicio/Index">
+											<span class="sidebar-mini"> P </span>
+											<span class="sidebar-normal">Maestro - Calificacion Servicios</span>
+										</a>
+									</li>
+
+								</ul>
+							</div>
+						</li>
+					}
 				</ul>
+				
 			</div>
 		</div>
 		<div class="main-panel">
-			@if (SignInManager.IsSignedIn(User))
-			{
 				<!-- Navbar -->
 				<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
 					<div class="container-fluid">
@@ -220,7 +227,7 @@
 										<a class="dropdown-item" href="#">Profile</a>
 										<a class="dropdown-item" href="#">Settings</a>
 										<div class="dropdown-divider"></div>
-										<a class="dropdown-item" href="#">Log out</a>
+										<a class="dropdown-item" href="/Account/Logout">Log out</a>
 									</div>
 								</li>
 							</ul>
@@ -228,14 +235,14 @@
 					</div>
 				</nav>
 				<!-- End Navbar -->
-			}
+			
 			<!-- Content Body-->
-				<div class="content">
-					<div class="container-fluid">
-						<div id="loader" data-loading> </div>
-						@RenderBody()
-					</div>
+			<div class="content">
+				<div class="container-fluid">
+					<div id="loader" data-loading> </div>
+					@RenderBody()
 				</div>
+			</div>
 			<footer class="footer">
 				<div class="container-fluid">
 					<nav class="float-left">
@@ -365,7 +372,7 @@
 		<script src="~/lib/material-dashboard/assets/js/material-dashboard.js?v=2.1.1" type="text/javascript"></script>
 
 		<script src="~/js/site.js" asp-append-version="true"></script>
-		
+
 	</environment>
 	<environment exclude="Prodution">
 		<script src="~/lib/material-dashboard/assets/js/core/jquery.min.js"></script>

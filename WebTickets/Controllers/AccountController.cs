@@ -85,8 +85,8 @@ namespace WebTickets.Controllers
         }
 
         //
-        // POST: /Account/LogOff
-        [HttpPost]
+        // GET: /Account/LogOff
+        [HttpGet]
         [AllowAnonymous]
         public ActionResult Logout()
         {
