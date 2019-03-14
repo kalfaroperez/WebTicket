@@ -226,12 +226,12 @@
 				</div>
 				@if (User.IsInRole("Operador"))
 				{
-					<p>Hola</p>
-					<div class="row ocultar_div">
+				
+					<div class="row ">
 						<div class="col-lg-6">
 							<label asp-for="Prioridad" class="input-sm col-lg-4"></label>
 							<div class="controls col-sm-8">
-								<select disabled class="cbx combobox input-sm" asp-for="Prioridad" asp-items="@Model.Lista_Prioridades">
+								<select readonly class="cbx combobox input-sm" asp-for="Prioridad" asp-items="@Model.Lista_Prioridades">
 									<option>Seleccione...</option>
 								</select>
 								<span asp-validation-for="Prioridad" class="text-danger"> </span>
@@ -240,14 +240,14 @@
 						<div class="col-lg-6">
 							<label asp-for="Asignado_A" class="input-sm col-lg-4"></label>
 							<div class="controls col-sm-8">
-								<select disabled class="cbx combobox input-sm" asp-for="Asignado_A" asp-items="@Model.Lista_Asignados_A">
+								<select readonly class="cbx combobox input-sm" asp-for="Asignado_A" asp-items="@Model.Lista_Asignados_A">
 									<option value="0">Seleccione...</option>
 								</select>
 								<span asp-validation-for="Asignado_A" class=" text-danger"></span>
 							</div>
 						</div>
 					</div>
-					<div class="row ocultar_div">
+					<div class="row ">
 						<div class="col-lg-6">
 							<label asp-for="Proceso" class="input-sm col-lg-4"></label>
 							<div class="controls col-sm-8">
@@ -260,18 +260,18 @@
 						<div class="col-lg-6">
 							<label asp-for="Tipo_Trabajo" class="input-sm col-lg-4"></label>
 							<div class="controls col-sm-8">
-								<select disabled class="cbx combobox input-sm" asp-for="Tipo_Trabajo" asp-items="@Model.Lista_Tipo_Trabajos">
+								<select readonly class="cbx combobox input-sm" asp-for="Tipo_Trabajo" asp-items="@Model.Lista_Tipo_Trabajos">
 									<option>Seleccione...</option>
 								</select>
 								<span asp-validation-for="Tipo_Trabajo" class=" text-danger"></span>
 							</div>
 						</div>
 					</div>
-					<div class="row ocultar_div">
+					<div class="row ">
 						<div class="col-lg-6">
 							<label asp-for="Planta" class="input-sm col-lg-4"></label>
 							<div class="controls col-sm-8">
-								<select disabled id="cbxPlanta" class="combobox input-sm" asp-for="Planta" asp-items="@Model.Lista_Plantas">
+								<select readonly id="cbxPlanta" class="combobox input-sm" asp-for="Planta" asp-items="@Model.Lista_Plantas">
 									<option>Seleccione...</option>
 								</select>
 								<span asp-validation-for="Planta" class=" text-danger"></span>
@@ -280,18 +280,18 @@
 						<div class="col-lg-6">
 							<label asp-for="EquipoPrincipal" class="input-sm col-lg-4"></label>
 							<div class="controls col-sm-8">
-								<select disabled id='cbxEquipoPrincipal' class="combobox input-sm" asp-for="EquipoPrincipal" asp-items="@Model.Lista_Equipos_princ">
+								<select readonly id='cbxEquipoPrincipal' class="combobox input-sm" asp-for="EquipoPrincipal" asp-items="@Model.Lista_Equipos_princ">
 									<option>Seleccione...</option>
 								</select>
 								<span asp-validation-for="EquipoPrincipal" class="text-danger"></span>
 							</div>
 						</div>
 					</div>
-					<div class="row ocultar_div">
+					<div class="row ">
 						<div class="col-lg-6">
 							<label asp-for="EquipoSecundario" class="input-sm col-lg-4"></label>
 							<div class="controls col-sm-8">
-								<select disabled id='cbxEquipoSecundario' class="combobox input-sm" asp-for="EquipoSecundario" asp-items="@Model.Lista_Equipos_sec">
+								<select readonly id='cbxEquipoSecundario' class="combobox input-sm" asp-for="EquipoSecundario" asp-items="@Model.Lista_Equipos_sec">
 									<option value="0">Seleccione...</option>
 								</select>
 								<!--<span asp-validation-for="EquipoSecundario" class=" text-danger"></span>-->
@@ -300,18 +300,18 @@
 						<div class="col-lg-6">
 							<label asp-for="Componente" class="input-sm col-lg-4"></label>
 							<div class="controls col-sm-8">
-								<select disabled id='cbxComponente' class="combobox input-sm" asp-for="Componente" asp-items="@Model.Lista_Componentes">
+								<select readonly id='cbxComponente' class="combobox input-sm" asp-for="Componente" asp-items="@Model.Lista_Componentes">
 									<option value="0">Seleccione...</option>
 								</select>
 								<!--<span asp-validation-for="Componente" class=" text-danger"></span>-->
 							</div>
 						</div>
 					</div>
-					<div class="row ocultar_div">
+					<div class="row ">
 						<div class="col-lg-6">
 							<label asp-for="Estado" class="input-sm col-lg-4"></label>
 							<div class="controls col-sm-8">
-								<select disabled class="cbx combobox input-sm" asp-for="Estado" asp-items="@Model.Lista_Estados">
+								<select readonly class="cbx combobox input-sm" asp-for="Estado" asp-items="@Model.Lista_Estados">
 									<option>Seleccione...</option>
 								</select>
 								<span asp-validation-for="Estado" class=" text-danger"></span>
@@ -320,7 +320,7 @@
 						<div class="col-lg-6">
 							<label asp-for="Fecha_Entrega" class="input-sm col-lg-4"></label>
 							<div class="controls col-sm-8">
-								<input disabled asp-for="Fecha_Entrega" class="form-control input-sm" />
+								<input readonly asp-for="Fecha_Entrega" class="form-control input-sm" />
 								<span asp-validation-for="Fecha_Entrega" class=" text-danger"></span>
 							</div>
 						</div>
@@ -431,8 +431,7 @@
 				}
 			</div>
 		</div>
-		<!--EstadoServicio en la Base de datos debe ser 3 el ID que es igual a Estado = TERMINADO 
-			Crear un Enum que se llame EstadoServicioEnum-->
+		
 		@if (User.IsInRole("Operador") && Model.Estado == 3)
 		{
 			<div class="card">
@@ -746,7 +745,7 @@
 </div>
 @section Scripts {
 	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
+	
 
 }
 

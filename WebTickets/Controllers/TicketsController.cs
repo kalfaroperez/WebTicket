@@ -383,8 +383,8 @@ namespace WebTickets.Controllers
                         tvm.Error = "No se ha podido guardar el registro. Ha ocurrido un error "
                                             + ex.Message + ex.InnerException;
                         var ticket = _context.Ticket.AsNoTracking().FirstOrDefault(t => t.Id == tvm.Id);
-                        CargarFormulario_Tickets(ticket);
-                        return View(tvm);
+                        TicketViewModel tvm2 = CargarFormulario_Tickets(ticket);
+                        return View(tvm2);
                     }
 
                 }
@@ -1035,7 +1035,7 @@ namespace WebTickets.Controllers
             tvm.Numero_Ticket = numero;
 
             //Selector Prioridades
-            tvm.Lista_Prioridades = GetPrioridades();
+            tvm.Lista_Prioridades = GetPrioridades(tvm.Prioridad);
 
             //Selector Procesos
             tvm.Lista_Procesos = GetProcesos();
@@ -1056,7 +1056,7 @@ namespace WebTickets.Controllers
             tvm.Lista_Equipos_sec = Get_Equipos_Secundarios();
 
             //Selector Componentes
-            tvm.Lista_Componentes = Get_Componentes();
+            tvm.Lista_Componentes = Get_Componentes(tvm.Componente);
 
             //Selector EstadoServicio
             tvm.Lista_Estados = Get_Estados_Servicio();
@@ -1098,7 +1098,7 @@ namespace WebTickets.Controllers
             tvm.Comentarios = ticket.Comentarios;
 
             //Selector Prioridades
-            tvm.Lista_Prioridades = GetPrioridades();
+            tvm.Lista_Prioridades = GetPrioridades(ticket.Prioridad);
             tvm.Prioridad = ticket.Prioridad;
 
             //Selector Procesos
@@ -1126,15 +1126,16 @@ namespace WebTickets.Controllers
             tvm.EquipoSecundario = ticket.Id_EquipoSec;
 
             //Selector Componentes
-            tvm.Lista_Componentes = Get_Componentes();
+            tvm.Lista_Componentes = Get_Componentes(ticket.Id_Componente);
             tvm.Componente = ticket.Id_Componente;
 
             //Selector Estados
             tvm.Lista_Estados = Get_Estados_Servicio();
             tvm.Estado = ticket.Estado;
 
-            //Selector EstadoServicio
+            //Selector CalificacionServicio
             tvm.Lista_Calificaion = Get_Calificacion_Servicios_List();
+            tvm.Calificacion = ticket.Calificacion;
 
             tvm.Fecha_Entrega = ticket.Fecha_Entrega;
             tvm.Fecha_Ultimo_Estado = ticket.Fecha_Ultimo_Estado;
@@ -1253,18 +1254,18 @@ namespace WebTickets.Controllers
         /// Obtiene los registros de la entidad "Prioridad"
         /// </summary>
         /// <returns>Devuelve la Lista de Prioridades para ser cargadas en un selector</returns>
-        private List<SelectListItem> GetPrioridades()
+        private List<SelectListItem> GetPrioridades(int Id_Prioridad)
         {
             var prioridades = _context.Prioridad.ToList();
             List<SelectListItem> lista_prioridades = new List<SelectListItem>();
-            RegisterViewModel rvm = new RegisterViewModel();
             foreach (var item in prioridades)
             {
                 lista_prioridades.Add(
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre_Prioridad)
+                        Text = string.Format("{0}", item.Nombre_Prioridad),
+                        Disabled = (item.Id == Id_Prioridad) ? false : true
                     });
 
             }
@@ -1677,7 +1678,7 @@ namespace WebTickets.Controllers
         /// Obtiene los registros de la entidad "Planta"
         /// </summary>
         /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
-        private List<SelectListItem> Get_Componentes()
+        private List<SelectListItem> Get_Componentes(int Id_Componente)
         {
             var componentes = _context.Componentes.ToList();
             List<SelectListItem> lista = new List<SelectListItem>();
@@ -1688,7 +1689,8 @@ namespace WebTickets.Controllers
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre)
+                        Text = string.Format("{0}", item.Nombre),
+                        Disabled = (item.Id == Id_Componente) ? false : true
                     });
 
             }
