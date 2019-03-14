@@ -186,6 +186,7 @@ namespace WebTickets.ViewModels
         [Display(Name = "Notas Cierre Servicio")]
         public string NotaCierreServicio { get; set; }
 
+
         public string Error { get; set; }
         public string Exito { get; set; }
     }

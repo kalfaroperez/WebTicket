@@ -224,200 +224,336 @@
 						</ul>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-lg-6 col-md-6 col-sm-12">
-						<label asp-for="Prioridad" class="input-sm col-sm-4"></label>
-						<div class="controls col-sm-8">
-							<select class="cbx combobox input-sm" asp-for="Prioridad" url_accion="/Tickets/GetPrioridades_Ajax" asp-items="@Model.Lista_Prioridades">
-								<option value="0">Seleccione...</option>
-							</select>
-							<span asp-validation-for="Prioridad" class=" text-danger"></span>
+				@if (User.IsInRole("Operador"))
+				{
+					<p>Hola</p>
+					<div class="row ocultar_div">
+						<div class="col-lg-6">
+							<label asp-for="Prioridad" class="input-sm col-lg-4"></label>
+							<div class="controls col-sm-8">
+								<select disabled class="cbx combobox input-sm" asp-for="Prioridad" asp-items="@Model.Lista_Prioridades">
+									<option>Seleccione...</option>
+								</select>
+								<span asp-validation-for="Prioridad" class="text-danger"> </span>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<label asp-for="Asignado_A" class="input-sm col-lg-4"></label>
+							<div class="controls col-sm-8">
+								<select disabled class="cbx combobox input-sm" asp-for="Asignado_A" asp-items="@Model.Lista_Asignados_A">
+									<option value="0">Seleccione...</option>
+								</select>
+								<span asp-validation-for="Asignado_A" class=" text-danger"></span>
+							</div>
 						</div>
 					</div>
-					<div class="col-lg-6 col-md-6 col-sm-12">
-						<label asp-for="Asignado_A" class="input-sm col-sm-4"></label>
-						<div class="controls col-sm-8">
-							<select class="cbx combobox input-sm" asp-for="Asignado_A" url_accion="/Tickets/GetAsignadoAjax" asp-items="@Model.Lista_Asignados_A">
-								<option value="0">Seleccione...</option>
-							</select>
-							<span asp-validation-for="Asignado_A" class=" text-danger"></span>
+					<div class="row ocultar_div">
+						<div class="col-lg-6">
+							<label asp-for="Proceso" class="input-sm col-lg-4"></label>
+							<div class="controls col-sm-8">
+								<select readonly class="cbx combobox input-sm" asp-for="Proceso" asp-items="@Model.Lista_Procesos">
+									<option value="0">Seleccione...</option>
+								</select>
+								<span asp-validation-for="Proceso" class=" text-danger"></span>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<label asp-for="Tipo_Trabajo" class="input-sm col-lg-4"></label>
+							<div class="controls col-sm-8">
+								<select disabled class="cbx combobox input-sm" asp-for="Tipo_Trabajo" asp-items="@Model.Lista_Tipo_Trabajos">
+									<option>Seleccione...</option>
+								</select>
+								<span asp-validation-for="Tipo_Trabajo" class=" text-danger"></span>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-6 col-md-6 col-sm-12">
-						<label asp-for="Proceso" class="input-sm col-sm-4"></label>
-						<div class="controls col-sm-8">
-							<select class="cbx combobox input-sm" asp-for="Proceso" url_accion="/Tickets/GetProcesos_Ajax" asp-items="@Model.Lista_Procesos">
-								<option value="0">Seleccione...</option>
-							</select>
-							<span asp-validation-for="Proceso" class=" text-danger"></span>
+					<div class="row ocultar_div">
+						<div class="col-lg-6">
+							<label asp-for="Planta" class="input-sm col-lg-4"></label>
+							<div class="controls col-sm-8">
+								<select disabled id="cbxPlanta" class="combobox input-sm" asp-for="Planta" asp-items="@Model.Lista_Plantas">
+									<option>Seleccione...</option>
+								</select>
+								<span asp-validation-for="Planta" class=" text-danger"></span>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<label asp-for="EquipoPrincipal" class="input-sm col-lg-4"></label>
+							<div class="controls col-sm-8">
+								<select disabled id='cbxEquipoPrincipal' class="combobox input-sm" asp-for="EquipoPrincipal" asp-items="@Model.Lista_Equipos_princ">
+									<option>Seleccione...</option>
+								</select>
+								<span asp-validation-for="EquipoPrincipal" class="text-danger"></span>
+							</div>
 						</div>
 					</div>
-					<div class="col-lg-6 col-md-6 col-sm-12">
-						<label asp-for="Tipo_Trabajo" class="input-sm col-sm-4"></label>
-						<div class="controls col-sm-8">
-							<select class="cbx combobox input-sm" asp-for="Tipo_Trabajo" url_accion="/Tickets/GetTipoTrabajoAjax" asp-items="@Model.Lista_Tipo_Trabajos">
-								<option value="0">Seleccione...</option>
-							</select>
-							<span asp-validation-for="Tipo_Trabajo" class=" text-danger"></span>
+					<div class="row ocultar_div">
+						<div class="col-lg-6">
+							<label asp-for="EquipoSecundario" class="input-sm col-lg-4"></label>
+							<div class="controls col-sm-8">
+								<select disabled id='cbxEquipoSecundario' class="combobox input-sm" asp-for="EquipoSecundario" asp-items="@Model.Lista_Equipos_sec">
+									<option value="0">Seleccione...</option>
+								</select>
+								<!--<span asp-validation-for="EquipoSecundario" class=" text-danger"></span>-->
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<label asp-for="Componente" class="input-sm col-lg-4"></label>
+							<div class="controls col-sm-8">
+								<select disabled id='cbxComponente' class="combobox input-sm" asp-for="Componente" asp-items="@Model.Lista_Componentes">
+									<option value="0">Seleccione...</option>
+								</select>
+								<!--<span asp-validation-for="Componente" class=" text-danger"></span>-->
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-6 col-md-6 col-sm-12">
-						<label asp-for="Planta" class="input-sm col-sm-4"></label>
-						<div class="controls col-sm-8">
-							<select id="cbxPlanta" class="combobox input-sm" asp-for="Planta" asp-items="@Model.Lista_Plantas">
-								<option value="0">Seleccione...</option>
-							</select>
-							<span asp-validation-for="Planta" class=" text-danger"></span>
+					<div class="row ocultar_div">
+						<div class="col-lg-6">
+							<label asp-for="Estado" class="input-sm col-lg-4"></label>
+							<div class="controls col-sm-8">
+								<select disabled class="cbx combobox input-sm" asp-for="Estado" asp-items="@Model.Lista_Estados">
+									<option>Seleccione...</option>
+								</select>
+								<span asp-validation-for="Estado" class=" text-danger"></span>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<label asp-for="Fecha_Entrega" class="input-sm col-lg-4"></label>
+							<div class="controls col-sm-8">
+								<input disabled asp-for="Fecha_Entrega" class="form-control input-sm" />
+								<span asp-validation-for="Fecha_Entrega" class=" text-danger"></span>
+							</div>
 						</div>
 					</div>
-					<div class="col-lg-6 col-md-6 col-sm-12">
-						<label asp-for="EquipoPrincipal" class="input-sm col-sm-4"></label>
-						<div class="controls col-sm-8">
-							<select id='cbxEquipoPrincipal' class="combobox input-sm" asp-for="EquipoPrincipal" asp-items="@Model.Lista_Equipos_princ">
-								<option value="0">Seleccione...</option>
-							</select>
-							<span asp-validation-for="EquipoPrincipal" class=" text-danger"></span>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-6 col-md-6 col-sm-12">
-						<label asp-for="EquipoSecundario" class="input-sm col-sm-4"></label>
-						<div class="controls col-sm-8">
-							<select id='cbxEquipoSecundario' class="cbx combobox input-sm" asp-for="EquipoSecundario" asp-items="@Model.Lista_Equipos_sec">
-								<option value="0">Seleccione...</option>
-							</select>
-							<span asp-validation-for="EquipoSecundario" class="text-danger"></span>
-						</div>
-					</div>
-					<div class="col-lg-6 col-md-6 col-sm-12">
-						<label asp-for="Componente" class="input-sm col-sm-4"></label>
-						<div class="controls col-sm-8">
-							<select id='cbxComponente' class="cbx combobox input-sm" asp-for="Componente" asp-items="@Model.Lista_Componentes">
 
-								<option value="0">Seleccione...</option>
-							</select>
-							<span asp-validation-for="Componente" class=" text-danger"></span>
+				}
+				else if (User.IsInRole("Administrador"))
+				{
+					<div class="row">
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label asp-for="Prioridad" class="input-sm col-sm-4"></label>
+							<div class="controls col-sm-8">
+								<select class="cbx combobox input-sm" asp-for="Prioridad" url_accion="/Tickets/GetPrioridades_Ajax" asp-items="@Model.Lista_Prioridades">
+									<option value="0">Seleccione...</option>
+								</select>
+								<span asp-validation-for="Prioridad" class=" text-danger"></span>
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label asp-for="Asignado_A" class="input-sm col-sm-4"></label>
+							<div class="controls col-sm-8">
+								<select class="cbx combobox input-sm" asp-for="Asignado_A" url_accion="/Tickets/GetAsignadoAjax" asp-items="@Model.Lista_Asignados_A">
+									<option value="0">Seleccione...</option>
+								</select>
+								<span asp-validation-for="Asignado_A" class=" text-danger"></span>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-6 col-md-6 col-sm-12">
-						<label asp-for="Estado" class="input-sm col-sm-4"></label>
-						<div class="controls col-sm-8">
-							<select class="cbx combobox input-sm" asp-for="Estado" url_accion="/Tickets/GetEstadosServicioAjax" asp-items="@Model.Lista_Estados">
-								<option value="0">Seleccione...</option>
-							</select>
-							<span asp-validation-for="Estado" class=" text-danger"></span>
+					<div class="row">
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label asp-for="Proceso" class="input-sm col-sm-4"></label>
+							<div class="controls col-sm-8">
+								<select class="cbx combobox input-sm" asp-for="Proceso" url_accion="/Tickets/GetProcesos_Ajax" asp-items="@Model.Lista_Procesos">
+									<option value="0">Seleccione...</option>
+								</select>
+								<span asp-validation-for="Proceso" class=" text-danger"></span>
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label asp-for="Tipo_Trabajo" class="input-sm col-sm-4"></label>
+							<div class="controls col-sm-8">
+								<select class="cbx combobox input-sm" asp-for="Tipo_Trabajo" url_accion="/Tickets/GetTipoTrabajoAjax" asp-items="@Model.Lista_Tipo_Trabajos">
+									<option value="0">Seleccione...</option>
+								</select>
+								<span asp-validation-for="Tipo_Trabajo" class=" text-danger"></span>
+							</div>
 						</div>
 					</div>
-					<div class="col-lg-6 col-md-6 col-sm-12">
-						<label asp-for="Fecha_Entrega" class="input-sm col-sm-4"></label>
-						<div class="controls col-sm-8">
-							<input asp-for="Fecha_Entrega" class="form-control input-sm" />
-							<span asp-validation-for="Fecha_Entrega" class=" text-danger"></span>
+					<div class="row">
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label asp-for="Planta" class="input-sm col-sm-4"></label>
+							<div class="controls col-sm-8">
+								<select id="cbxPlanta" class="combobox input-sm" asp-for="Planta" asp-items="@Model.Lista_Plantas">
+									<option value="0">Seleccione...</option>
+								</select>
+								<span asp-validation-for="Planta" class=" text-danger"></span>
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label asp-for="EquipoPrincipal" class="input-sm col-sm-4"></label>
+							<div class="controls col-sm-8">
+								<select id='cbxEquipoPrincipal' class="combobox input-sm" asp-for="EquipoPrincipal" asp-items="@Model.Lista_Equipos_princ">
+									<option value="0">Seleccione...</option>
+								</select>
+								<span asp-validation-for="EquipoPrincipal" class=" text-danger"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label asp-for="EquipoSecundario" class="input-sm col-sm-4"></label>
+							<div class="controls col-sm-8">
+								<select id='cbxEquipoSecundario' class="cbx combobox input-sm" asp-for="EquipoSecundario" asp-items="@Model.Lista_Equipos_sec">
+									<option value="0">Seleccione...</option>
+								</select>
+								<span asp-validation-for="EquipoSecundario" class="text-danger"></span>
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label asp-for="Componente" class="input-sm col-sm-4"></label>
+							<div class="controls col-sm-8">
+								<select id='cbxComponente' class="cbx combobox input-sm" asp-for="Componente" asp-items="@Model.Lista_Componentes">
+
+									<option value="0">Seleccione...</option>
+								</select>
+								<span asp-validation-for="Componente" class=" text-danger"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label asp-for="Estado" class="input-sm col-sm-4"></label>
+							<div class="controls col-sm-8">
+								<select class="cbx combobox input-sm" asp-for="Estado" url_accion="/Tickets/GetEstadosServicioAjax" asp-items="@Model.Lista_Estados">
+									<option value="0">Seleccione...</option>
+								</select>
+								<span asp-validation-for="Estado" class=" text-danger"></span>
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label asp-for="Fecha_Entrega" class="input-sm col-sm-4"></label>
+							<div class="controls col-sm-8">
+								<input asp-for="Fecha_Entrega" class="form-control input-sm" />
+								<span asp-validation-for="Fecha_Entrega" class=" text-danger"></span>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+		<!--EstadoServicio en la Base de datos debe ser 3 el ID que es igual a Estado = TERMINADO 
+			Crear un Enum que se llame EstadoServicioEnum-->
+		@if (User.IsInRole("Operador") && Model.Estado == 3)
+		{
+			<div class="card">
+				<a data-toggle="collapse" href="#calificacion_ticket" aria-expanded="true" aria-controls="calificacion_ticket">
+					<div class="card-header card-header-text  card-header-success">
+						<div class="card-text">
+							<h6 class="card-title">Calificación del Servicio Ticket</h6>
+						</div>
+					</div>
+				</a>
+				<div class="card-body collapse show" id="calificacion_ticket">
+					<div class="row">
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<label asp-for="Calificacion" class="input-sm col-sm-4"></label>
+							<div class="controls col-sm-8">
+								<select id='cbxCalificacion' class="cbx combobox" url_accion="/Tickets/GetCalificacionServicioAjax" asp-for="Calificacion" asp-items="@Model.Lista_Calificaion">
+									<option value="0">Seleccione...</option>
+								</select>
+								<span asp-validation-for="Calificacion" class=" text-danger"></span>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="card">
-			<a data-toggle="collapse" href="#seg_ticket" aria-expanded="true" aria-controls="seg_ticket">
-				<div class="card-header card-header-text  card-header-success">
-					<div class="card-text">
-						<h6 class="card-title">Seguimiento Ticket</h6>
+		}
+		@if (User.IsInRole("Administrador"))
+		{
+			<div class="card">
+				<a data-toggle="collapse" href="#seg_ticket" aria-expanded="true" aria-controls="seg_ticket">
+					<div class="card-header card-header-text  card-header-success">
+						<div class="card-text">
+							<h6 class="card-title">Seguimiento Ticket</h6>
+						</div>
 					</div>
-				</div>
-			</a>
-			<div class="card-body collapse show" id="seg_ticket">
-				<!-- Tab panes -->
-				<div class="tabs">
-					<div class="tab-button-outer">
-						<ul id="tab-button">
-							<li><a href="#tab01">Seguimiento Ticket</a></li>
-							<li><a href="#tab02">Informaci&oacute;n de Cierre</a></li>
-						</ul>
-					</div>
-					<div class="tab-select-outer">
-						<select id="tab-select">
-							<option value="#tab01">Seguimiento Ticket</option>
-							<option value="#tab02">Informaci&oacute;n de Cierre</option>
-						</select>
-					</div>
-					<div id="tab01" class="tab-contents">
-						<div class="row">
-							<div class="col-lg-12 col-md-12 col-sm-12">
-								<div class="form-group-sm">
-									<label asp-for="NotasTrabajo" class="input-sm col-sm-2"></label>
-									<div class="controls col-sm-12">
-										<textarea asp-for="NotasTrabajo" rows="3" cols="40" class="form-control" placeholder="Añada sus notas aqui" required></textarea>
+				</a>
+				<div class="card-body collapse show" id="seg_ticket">
+					<!-- Tab panes -->
+					<div class="tabs">
+						<div class="tab-button-outer">
+							<ul id="tab-button">
+								<li><a href="#tab01">Seguimiento Ticket</a></li>
+								<li><a href="#tab02">Informaci&oacute;n de Cierre</a></li>
+							</ul>
+						</div>
+						<div class="tab-select-outer">
+							<select id="tab-select">
+								<option value="#tab01">Seguimiento Ticket</option>
+								<option value="#tab02">Informaci&oacute;n de Cierre</option>
+							</select>
+						</div>
+						<div id="tab01" class="tab-contents">
+							<div class="row">
+								<div class="col-lg-12 col-md-12 col-sm-12">
+									<div class="form-group-sm">
+										<label asp-for="NotasTrabajo" class="input-sm col-sm-2"></label>
+										<div class="controls col-sm-12">
+											<textarea asp-for="NotasTrabajo" rows="3" cols="40" class="form-control" placeholder="Añada sus notas aqui" required></textarea>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						
-						<div class="card">
-							<div class="card-header card-header-text card-header-success ">
-								<div class="card-text">
-									<h6 class="card-title">Actividades</h6>
-								</div>
-							</div>
-							<div class="card-body">
-								<div class="row">
-									
-									<div class="col-sm-12 col-md-12 col-lg-12">
-										<ul id="lista_seguimiento">
-											<li class="h-card" ng-repeat="item in lista_seg">
-												<div class="row">
-													<div class="col-sm-12">
-														<div style="float:left">
-															<span><i class="fa fa-user-circle"></i> {{ item.usuarioId }} </span>
-														</div>
-														<div style="float:right">
-															<span><b>Fecha de modifición:</b> {{ item.fecha | date: 'short' }}</span>
-														</div>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-sm-12 col-md-12 col-lg-12">
-														<table class="table table-striped table-no-bordered table-hover dataTable dtr-inline">
-															<thead class="text-primary">
-																<tr>
-																	<td>Campos Afectados</td>
-																	<td>Valor Actual </td>
-																	<td>Valor Anterior</td>
-																</tr>
-															</thead>
-															<tbody>
-																<tr ng-repeat="x in item.cambios">
-																	<td><b> {{ x.campoCambiado }}: </b></td>
-																	<td>{{ x.valorActual  }}</td>
-																	<td>{{ x.valorAnterior  }}</td>
-																</tr>
-															</tbody>
-														</table>
-													</div>
 
-												</div>
-											</li>
-										</ul>
+							<div class="card">
+								<div class="card-header card-header-text card-header-success ">
+									<div class="card-text">
+										<h6 class="card-title">Actividades</h6>
+									</div>
+								</div>
+								<div class="card-body">
+									<div class="row">
+
+										<div class="col-sm-12 col-md-12 col-lg-12">
+											<ul id="lista_seguimiento">
+												<li class="h-card" ng-repeat="item in lista_seg">
+													<div class="row">
+														<div class="col-sm-12">
+															<div style="float:left">
+																<span><i class="fa fa-user-circle"></i> {{ item.usuarioId }} </span>
+															</div>
+															<div style="float:right">
+																<span><b>Fecha de modifición:</b> {{ item.fecha | date: 'short' }}</span>
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-sm-12 col-md-12 col-lg-12">
+															<table class="table table-striped table-no-bordered table-hover dataTable dtr-inline">
+																<thead class="text-primary">
+																	<tr>
+																		<td>Campos Afectados</td>
+																		<td>Valor Actual </td>
+																		<td>Valor Anterior</td>
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr ng-repeat="x in item.cambios">
+																		<td><b> {{ x.campoCambiado }}: </b></td>
+																		<td>{{ x.valorActual  }}</td>
+																		<td>{{ x.valorAnterior  }}</td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+
+													</div>
+												</li>
+											</ul>
+										</div>
 									</div>
 								</div>
 							</div>
+
 						</div>
-						
-					</div>
-					<div id="tab02" class="tab-contents">
-						<div class="row">
-							<div class="col-sm-12">
-								<div class="form-group-sm">
-									<label asp-for="NotaCierreServicio" class="input-sm col-sm-2"></label>
-									<div class="controls col-sm-12">
-										<textarea asp-for="NotaCierreServicio" rows="3" cols="40" class="form-control input-sm" required></textarea>
+						<div id="tab02" class="tab-contents">
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="form-group-sm">
+										<label asp-for="NotaCierreServicio" class="input-sm col-sm-2"></label>
+										<div class="controls col-sm-12">
+											<textarea asp-for="NotaCierreServicio" rows="3" cols="40" class="form-control input-sm" required></textarea>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -425,7 +561,101 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		}
+		else if (User.IsInRole("Operador"))
+		{
+			<div class="card">
+				<a data-toggle="collapse" href="#seg_ticket" aria-expanded="true" aria-controls="seg_ticket">
+					<div class="card-header card-header-text  card-header-success">
+						<div class="card-text">
+							<h6 class="card-title">Seguimiento Ticket</h6>
+						</div>
+					</div>
+				</a>
+				<div class="card-body collapse show" id="seg_ticket">
+					<!-- Tab panes -->
+					<div class="tabs">
+						<div class="tab-button-outer">
+							<ul id="tab-button">
+								<li><a href="#tab01">Seguimiento Ticket</a></li>
+								<li><a href="#tab02">Informaci&oacute;n de Cierre</a></li>
+							</ul>
+						</div>
+						<div class="tab-select-outer">
+							<select id="tab-select">
+								<option value="#tab01">Seguimiento Ticket</option>
+								<option value="#tab02">Informaci&oacute;n de Cierre</option>
+							</select>
+						</div>
+						<div id="tab01" class="tab-contents">
+							<!--Eliminamos el campo Nota para que el usuario operador no lo pueda ver-->
+							<div class="card">
+								<div class="card-header card-header-text card-header-success ">
+									<div class="card-text">
+										<h6 class="card-title">Actividades</h6>
+									</div>
+								</div>
+								<div class="card-body">
+									<div class="row">
+
+										<div class="col-sm-12 col-md-12 col-lg-12">
+											<ul id="lista_seguimiento">
+												<li class="h-card" ng-repeat="item in lista_seg">
+													<div class="row">
+														<div class="col-sm-12">
+															<div style="float:left">
+																<span><i class="fa fa-user-circle"></i> {{ item.usuarioId }} </span>
+															</div>
+															<div style="float:right">
+																<span><b>Fecha de modifición:</b> {{ item.fecha | date: 'short' }}</span>
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-sm-12 col-md-12 col-lg-12">
+															<table class="table table-striped table-no-bordered table-hover dataTable dtr-inline">
+																<thead class="text-primary">
+																	<tr>
+																		<td>Campos Afectados</td>
+																		<td>Valor Actual </td>
+																		<td>Valor Anterior</td>
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr ng-repeat="x in item.cambios">
+																		<td><b> {{ x.campoCambiado }}: </b></td>
+																		<td>{{ x.valorActual  }}</td>
+																		<td>{{ x.valorAnterior  }}</td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+
+													</div>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+						<div id="tab02" class="tab-contents">
+							<div class="row ">
+								<div class="col-sm-12">
+									<div class="form-group-sm">
+										<label asp-for="NotaCierreServicio" class="input-sm col-sm-2"></label>
+										<div class="controls col-sm-12">
+											<textarea disabled asp-for="NotaCierreServicio" rows="3" cols="40" class="form-control input-sm" required></textarea>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		}
 		<div class="card">
 			<div class="card-body">
 				<center>

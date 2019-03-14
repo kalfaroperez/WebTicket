@@ -4,15 +4,20 @@
 // Write your JavaScript code.
 
 $(document).ready(function () {
-
+    
     $('#modalUsuario').on('shown.bs.modal', function () {
         //$('#myInput').trigger('focus')
     })
-    window.setTimeout(function () {
-        $(".alert").fadeTo(1000, 0).slideUp(1000, function () {
-            $(this).remove();
-        });
-    }, 15000);
+
+    $(".menu_link").click(function () {
+        $("#panel_contenido").load($(this).attr("href"));
+    });
+
+    //window.setTimeout(function () {
+    //    $(".alert").fadeTo(1000, 0).slideUp(1000, function () {
+    //        $(this).remove();
+    //    });
+    //}, 15000);
 
     initTabs();
 
@@ -30,25 +35,25 @@ $(document).ready(function () {
 
     window_width = $(window).width();
 
-    fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
+    //fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
 
-    if (window_width > 767 && fixed_plugin_open == 'Dashboard') {
-        if ($('.fixed-plugin .dropdown').hasClass('show-dropdown')) {
-            $('.fixed-plugin .dropdown').addClass('open');
-        }
+    //if (window_width > 767 && fixed_plugin_open == 'Dashboard') {
+    //    if ($('.fixed-plugin .dropdown').hasClass('show-dropdown')) {
+    //        $('.fixed-plugin .dropdown').addClass('open');
+    //    }
 
-    }
+    //}
 
-    $('.fixed-plugin a').click(function (event) {
-        // Alex if we click on switch, stop propagation of the event, so the dropdown will not be hide, otherwise we set the  section active
-        if ($(this).hasClass('switch-trigger')) {
-            if (event.stopPropagation) {
-                event.stopPropagation();
-            } else if (window.event) {
-                window.event.cancelBubble = true;
-            }
-        }
-    });
+    //$('.fixed-plugin a').click(function (event) {
+    //    // Alex if we click on switch, stop propagation of the event, so the dropdown will not be hide, otherwise we set the  section active
+    //    if ($(this).hasClass('switch-trigger')) {
+    //        if (event.stopPropagation) {
+    //            event.stopPropagation();
+    //        } else if (window.event) {
+    //            window.event.cancelBubble = true;
+    //        }
+    //    }
+    //});
 
     $('.fixed-plugin .active-color span').click(function () {
         $full_page_background = $('.full-page-background');
@@ -175,16 +180,20 @@ $(document).ready(function () {
         }
 
         // we simulate the window Resize so the charts will get updated in realtime.
-        var simulateWindowResize = setInterval(function () {
-            window.dispatchEvent(new Event('resize'));
-        }, 180);
+        //var simulateWindowResize = setInterval(function () {
+        //    window.dispatchEvent(new Event('resize'));
+        //}, 180);
 
-        // we stop the simulation of Window Resize after the animations are completed
-        setTimeout(function () {
-            clearInterval(simulateWindowResize);
-        }, 1000);
+        //// we stop the simulation of Window Resize after the animations are completed
+        //setTimeout(function () {
+        //    clearInterval(simulateWindowResize);
+        //}, 1000);
 
     });
+
+    
+    
+    
 });
 
 
@@ -583,5 +592,7 @@ function autocomplete_Componente(id_planta, id_equipo_princ, id_equipo_sec) {
         var id_componente = e.params.data.id;
         $("#sel_componente").attr("value", id_componente);
     });
+
+    
 
 }

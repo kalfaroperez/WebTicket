@@ -12762,23 +12762,23 @@
     ]
   },
   "packageFolders": {
-    "D:\\Users\\Administrador\\.nuget\\packages\\": {},
+    "D:\\Users\\kalfaro\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\WebTickets\\WebTickets.csproj",
+      "projectUniqueName": "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\WebTickets\\WebTickets.csproj",
       "projectName": "WebTickets",
-      "projectPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\WebTickets\\WebTickets.csproj",
-      "packagesPath": "D:\\Users\\Administrador\\.nuget\\packages\\",
-      "outputPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\WebTickets\\obj\\",
+      "projectPath": "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\WebTickets\\WebTickets.csproj",
+      "packagesPath": "D:\\Users\\kalfaro\\.nuget\\packages\\",
+      "outputPath": "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\WebTickets\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "D:\\Users\\Administrador\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "D:\\Users\\kalfaro\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -12791,17 +12791,17 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
-            "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Auth.Service\\Auth.Service.csproj": {
-              "projectPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Auth.Service\\Auth.Service.csproj"
+            "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\Auth.Service\\Auth.Service.csproj": {
+              "projectPath": "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\Auth.Service\\Auth.Service.csproj"
             },
-            "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj": {
-              "projectPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj"
+            "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj": {
+              "projectPath": "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj"
             },
-            "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Persistence\\Persitence.DatabaseContext\\Persistence.DatabaseContext.csproj": {
-              "projectPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Persistence\\Persitence.DatabaseContext\\Persistence.DatabaseContext.csproj"
+            "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\Persistence\\Persitence.DatabaseContext\\Persistence.DatabaseContext.csproj": {
+              "projectPath": "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\Persistence\\Persitence.DatabaseContext\\Persistence.DatabaseContext.csproj"
             },
-            "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Service\\Service.csproj": {
-              "projectPath": "D:\\Users\\Administrador\\source\\repos\\WebTicket\\Service\\Service.csproj"
+            "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\Service\\Service.csproj": {
+              "projectPath": "D:\\Users\\kalfaro\\source\\repos\\WebTicket\\Service\\Service.csproj"
             }
           }
         }
