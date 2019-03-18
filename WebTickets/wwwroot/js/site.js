@@ -9,10 +9,6 @@ $(document).ready(function () {
         //$('#myInput').trigger('focus')
     })
 
-    $(".menu_link").click(function () {
-        $("#panel_contenido").load($(this).attr("href"));
-    });
-
     //window.setTimeout(function () {
     //    $(".alert").fadeTo(1000, 0).slideUp(1000, function () {
     //        $(this).remove();
@@ -24,6 +20,8 @@ $(document).ready(function () {
     autocomplete_planta();
     autocomplete_comboBox();
 
+    //Inicializa selectores para dar estilo Select2
+    cbxSelect2();
 
     $sidebar = $('.sidebar');
 
@@ -489,6 +487,11 @@ function autocomplete_planta() {
     });
 
 }
+
+function cbxSelect2() {
+    $('.combobox_select2').select2();
+}
+
 
 function autocomplete_comboBox() {
     $('.cbx').select2({

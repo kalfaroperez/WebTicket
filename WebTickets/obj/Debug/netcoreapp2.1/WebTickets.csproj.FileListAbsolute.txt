@@ -359,7 +359,6 @@ D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1
 D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\WebTickets.csproj.CoreCompileInputs.cache
 D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\WebTickets.RazorAssemblyInfo.cache
 D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\WebTickets.RazorAssemblyInfo.cs
-D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs
 D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\WebTickets.AssemblyInfoInputs.cache
 D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\WebTickets.AssemblyInfo.cs
 D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\WebTickets.TagHelpers.input.cache
@@ -567,3 +566,7 @@ D:\Users\kalfaro\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\Razor
 D:\Users\kalfaro\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\Account\ForgotPasswordConfirmation.g.cshtml.cs
 D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\Account\ForgotPassword.g.cshtml.cs
 D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\Account\ForgotPasswordConfirmation.g.cshtml.cs
+D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\Shared\_navbar_top.g.cshtml.cs
+D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\Shared\_sidebar-nav.g.cshtml.cs
+D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\Shared\_modales.g.cshtml.cs
+D:\Users\Administrador\source\repos\WebTicket\WebTickets\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs

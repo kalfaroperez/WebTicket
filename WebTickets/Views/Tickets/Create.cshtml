@@ -4,13 +4,9 @@
 	ViewData["Title"] = "Nuevo Ticket";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<style>
-	.content {
-		padding: 0px 10px 2px 10px !important
-	}
-</style>
+
 <div ng-controller="TicketCtrl">
-	<form class="form-horizontal" role="form" id="ticketForm"  asp-action="Create" enctype="multipart/form-data">
+	<form class="form-horizontal" role="form" id="ticketForm" asp-action="Create" enctype="multipart/form-data">
 		@if (!string.IsNullOrEmpty(@ViewBag.Resultado))
 		{
 			<div class="alert alert-success" role="alert">
@@ -235,7 +231,7 @@
 						</div>
 					</div>
 				}
-				
+
 			</div>
 		</div>
 		<div class="card">
@@ -252,84 +248,8 @@
 		</div>
 
 	</form>
-
 	<!-- Modal -->
-	<!--Url para usar funcion generica para las listas -->
-	<div id="div_url" urlLista="/Tickets/GetUsuarios"></div>
-	<!---->
-	<div class="modal fade" id="modalUsuario" tabindex="-1" role="dialog" aria-labelledby="modalUsuarioTitle" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="modalUsuarioTitle">Usuario - Operador</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-md-6">
-						</div>
-						<div class="col-md-6">
-							<table style="float:right">
-								<tr>
-									<td>Filtrar:</td>
-									<td>
-										<input type="text" class="input-sm" ng-model="searchText" placeholder="Ingrese texto a buscar" />
-									</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-					<table class="table">
-						<thead class="thead-dark">
-							<tr>
-								<th>
-									<span class="font-size: 48px;">
-										<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-									</span>
-								</th>
-								<th>Nombre Completo</th>
-								<th>Area</th>
-							</tr>
-						</thead>
-						<tbody>
-
-							<tr ng-repeat="row in datos.slice(((currentPage-1)*itemsPerPage), ((currentPage)*itemsPerPage)) | filter:searchText ">
-
-								<td>
-									<button class="user_in_list" ng-click="CargarUsuario(row)">
-
-										<span class="font-size: 48px;">
-											<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-										</span>
-									</button>
-								</td>
-								<td>{{ row.fullName }}</td>
-								<td>{{ row.area }}</td>
-							</tr>
-
-						</tbody>
-					</table>
-					View <select ng-model="viewby" ng-change="setItemsPerPage(viewby)">
-						<option>3</option>
-						<option>5</option>
-						<option>10</option>
-						<option>20</option>
-						<option>30</option>
-						<option>40</option>
-						<option>50</option>
-					</select> records at a time.
-
-					<pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" class="pagination-sm" items-per-page="itemsPerPage"></pagination>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
-				</div>
-			</div>
-		</div>
-	</div>
+	<partial name="_modales" />
 	<div>
 		<a asp-action="Index">Back to List</a>
 	</div>

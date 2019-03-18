@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using System.Threading.Tasks;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using MimeKit;
+using MimeKit.Text;
 using Model.Auth;
+using Model.Custom;
 using Model.DB_Model;
 using Persistence.DatabaseContext;
 using WebTickets.Helpers;
@@ -26,6 +31,7 @@ namespace WebTickets.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IFileProvider _fileProvider;
         private readonly ILogger _logger;
+        private readonly IEmailConfiguration _emailConfiguration;
 
         //Esta variable me servirá como bandera para confirmar si la peticion tuvo exito o no
         private static bool exito = false;
@@ -36,6 +42,7 @@ namespace WebTickets.Controllers
             SignInManager<ApplicationUser> signInManager,
             ILoggerFactory loggerFactory,
             IFileProvider fileProvider,
+            IEmailConfiguration emailConfiguration,
             ApplicationDbContext context)
         {
             _context = context;
@@ -43,6 +50,7 @@ namespace WebTickets.Controllers
             _userManager = userManager;
             _logger = loggerFactory.CreateLogger<TicketsController>();
             _fileProvider = fileProvider;
+            _emailConfiguration = emailConfiguration;
 
         }
 
@@ -267,6 +275,14 @@ namespace WebTickets.Controllers
                     await _context.SaveChangesAsync();
                     exito = true;
                     ticket_numero = ticket.Numero_Ticket;
+                    EmailAdreess desde = new EmailAdreess { Address = "kalfaroperez@gmail.com", Name = "SOLMA" };
+                    EmailAdreess para = new EmailAdreess { Address = tvm.Email, Name = tvm.Operador_Nombre_completo };
+                    EmailMessage email = new EmailMessage();
+                    email.FromAddresses.Add(desde);
+                    email.ToAddresses.Add(para);
+                    email.Subject = string.Format("Creacion del Ticket {0}", tvm.Numero_Ticket);
+                    email.Content = string.Format("Se creado el ticket {0}. ", tvm.Numero_Ticket);
+                    Send(email);
                     return RedirectToAction(nameof(Create), ViewBag.Resultado);
                 }
                 else if (User.IsInRole("Administrador"))
@@ -1038,28 +1054,28 @@ namespace WebTickets.Controllers
             tvm.Lista_Prioridades = GetPrioridades(tvm.Prioridad);
 
             //Selector Procesos
-            tvm.Lista_Procesos = GetProcesos();
+            tvm.Lista_Procesos = GetProcesos(tvm.Proceso);
 
             //Selector Asignados_A
-            tvm.Lista_Asignados_A = Get_Lista_Asignado_A();
+            tvm.Lista_Asignados_A = Get_Lista_Asignado_A(tvm.Asignado_A);
 
             //Selector Tipo Trabajos
-            tvm.Lista_Tipo_Trabajos = Get_Tipo_Trabajos();
+            tvm.Lista_Tipo_Trabajos = Get_Tipo_Trabajos(tvm.Tipo_Trabajo);
 
             //Selector Plantas
-            tvm.Lista_Plantas = Get_Plantas();
+            tvm.Lista_Plantas = Get_Plantas(tvm.Planta);
 
             //Selector Equipos_princ
-            tvm.Lista_Equipos_princ = Get_Equipos_principales();
+            tvm.Lista_Equipos_princ = Get_Equipos_principales(tvm.EquipoPrincipal);
 
             //Selector Equipos_sec
-            tvm.Lista_Equipos_sec = Get_Equipos_Secundarios();
+            tvm.Lista_Equipos_sec = Get_Equipos_Secundarios(tvm.EquipoSecundario);
 
             //Selector Componentes
             tvm.Lista_Componentes = Get_Componentes(tvm.Componente);
 
             //Selector EstadoServicio
-            tvm.Lista_Estados = Get_Estados_Servicio();
+            tvm.Lista_Estados = Get_Estados_Servicio(tvm.Estado);
 
             //Selector EstadoServicio
             tvm.Lista_Calificaion = Get_Calificacion_Servicios_List();
@@ -1098,41 +1114,52 @@ namespace WebTickets.Controllers
             tvm.Comentarios = ticket.Comentarios;
 
             //Selector Prioridades
-            tvm.Lista_Prioridades = GetPrioridades(ticket.Prioridad);
+            //tvm.Lista_Prioridades = GetPrioridades(ticket.Prioridad);
             tvm.Prioridad = ticket.Prioridad;
+            tvm.Prioridad_Text = (ticket.Prioridad == 0) ? "" : 
+                _context.Prioridad.AsNoTracking().First(q => q.Id == ticket.Prioridad).Nombre_Prioridad;
 
             //Selector Procesos
-            tvm.Lista_Procesos = GetProcesos();
+            //tvm.Lista_Procesos = GetProcesos(ticket.Proceso);
             tvm.Proceso = ticket.Proceso;
+            tvm.Proceso_Text = (ticket.Proceso == 0) ? "" : 
+                _context.Procesos.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Proceso).Nombre_Proceso;
 
             //Selector Asignados_A
-            tvm.Lista_Asignados_A = Get_Lista_Asignado_A();
+            //tvm.Lista_Asignados_A = Get_Lista_Asignado_A(ticket.Asignado_A);
             tvm.Asignado_A = ticket.Asignado_A;
-
+            tvm.Asignado_A_Text = (ticket.Asignado_A == "0") ? "" :
+                _context.ApplicationUser.AsNoTracking().First(q => q.Id == ticket.Asignado_A).FullName;
             //Selector Tipo Trabajos
-            tvm.Lista_Tipo_Trabajos = Get_Tipo_Trabajos();
+            //tvm.Lista_Tipo_Trabajos = Get_Tipo_Trabajos(ticket.Tipo_Trabajo);
             tvm.Tipo_Trabajo = ticket.Tipo_Trabajo;
-
+            tvm.Tipo_Trabajo_Text = (ticket.Tipo_Trabajo == 0) ? "" :
+                    _context.TipoTrabajo.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Tipo_Trabajo).Nombre;
             //Selector Plantas
-            tvm.Lista_Plantas = Get_Plantas();
+            //tvm.Lista_Plantas = Get_Plantas(ticket.Id_Planta);
             tvm.Planta = ticket.Id_Planta;
-
+            tvm.Planta_Text = (ticket.Id_Planta == 0) ? "" :
+                    _context.Planta.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_Planta).Nombre;
             //Selector Equipos_princ
-            tvm.Lista_Equipos_princ = Get_Equipos_principales();
+            //tvm.Lista_Equipos_princ = Get_Equipos_principales(ticket.Id_EquipoPrinc);
             tvm.EquipoPrincipal = ticket.Id_EquipoPrinc;
-
+            tvm.EquipoPrincipal_Text = (ticket.Id_EquipoPrinc == 0) ? "" :
+                    _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_EquipoPrinc).Nombre;
             //Selector Equipos_sec
-            tvm.Lista_Equipos_sec = Get_Equipos_Secundarios();
+            //tvm.Lista_Equipos_sec = Get_Equipos_Secundarios(ticket.Id_EquipoSec);
             tvm.EquipoSecundario = ticket.Id_EquipoSec;
-
+            tvm.EquipoSecundario_Text = (ticket.Id_EquipoSec == 0) ? "" :
+                    _context.EquipoSecundario.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_EquipoSec).Nombre;
             //Selector Componentes
-            tvm.Lista_Componentes = Get_Componentes(ticket.Id_Componente);
+            //tvm.Lista_Componentes = Get_Componentes(ticket.Id_Componente);
             tvm.Componente = ticket.Id_Componente;
-
+            tvm.Componente_Text = (ticket.Id_Componente == 0) ? "" :
+                    _context.Componentes.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_Componente).Nombre;
             //Selector Estados
-            tvm.Lista_Estados = Get_Estados_Servicio();
+            //tvm.Lista_Estados = Get_Estados_Servicio(ticket.Estado);
             tvm.Estado = ticket.Estado;
-
+            tvm.Estado_Text = (ticket.Estado == 0) ? "" :
+                    _context.EstadoServicio.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Estado).Nombre;
             //Selector CalificacionServicio
             tvm.Lista_Calificaion = Get_Calificacion_Servicios_List();
             tvm.Calificacion = ticket.Calificacion;
@@ -1305,7 +1332,7 @@ namespace WebTickets.Controllers
         /// Obtiene los registros de la entidad "Procesos"
         /// </summary>
         /// <returns>Devuelve la Lista de Procesos para ser cargadas en un selector</returns>
-        private List<SelectListItem> GetProcesos()
+        private List<SelectListItem> GetProcesos(int Id)
         {
             var procesos = _context.Procesos.ToList();
             List<SelectListItem> lista_procesos = new List<SelectListItem>();
@@ -1316,7 +1343,8 @@ namespace WebTickets.Controllers
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre_Proceso)
+                        Text = string.Format("{0}", item.Nombre_Proceso),
+                        Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1354,7 +1382,7 @@ namespace WebTickets.Controllers
         /// Obtiene los registros de la entidad "Tipo_Trabajo"
         /// </summary>
         /// <returns>Devuelve la Lista de Tipos de Trabajo para ser cargadas en un selector</returns>
-        private List<SelectListItem> Get_Tipo_Trabajos()
+        private List<SelectListItem> Get_Tipo_Trabajos(int? Id)
         {
             var tipoTrabajos = _context.TipoTrabajo.ToList();
             List<SelectListItem> lista_tipo_trabajos = new List<SelectListItem>();
@@ -1364,7 +1392,8 @@ namespace WebTickets.Controllers
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre)
+                        Text = string.Format("{0}", item.Nombre),
+                        Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1403,7 +1432,7 @@ namespace WebTickets.Controllers
         /// Obtiene los registros de la entidad "Asignado_A"
         /// </summary>
         /// <returns>Devuelve la Lista de Asignado_A para ser cargadas en un selector</returns>
-        private List<SelectListItem> Get_Lista_Asignado_A()
+        private List<SelectListItem> Get_Lista_Asignado_A(string Id)
         {
             var asignado_a_tabla = _context.ApplicationUser.Where(a => a.Area == 1).ToList();
             List<SelectListItem> lista_asignado_a = new List<SelectListItem>();
@@ -1413,7 +1442,8 @@ namespace WebTickets.Controllers
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0} - {1} / {2}", item.UserName, item.FullName, item.Area)
+                        Text = string.Format("{0} - {1} / {2}", item.UserName, item.FullName, item.Area),
+                        Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1511,7 +1541,7 @@ namespace WebTickets.Controllers
         /// Obtiene los registros de la entidad "Planta"
         /// </summary>
         /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
-        private List<SelectListItem> Get_Plantas()
+        private List<SelectListItem> Get_Plantas(int Id)
         {
             var plantas = _context.Planta.ToList();
             List<SelectListItem> lista_plantas = new List<SelectListItem>();
@@ -1521,7 +1551,8 @@ namespace WebTickets.Controllers
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre)
+                        Text = string.Format("{0}", item.Nombre),
+                        Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1533,7 +1564,7 @@ namespace WebTickets.Controllers
         /// Obtiene los registros de la entidad "Planta"
         /// </summary>
         /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
-        private List<SelectListItem> Get_Equipos_principales()
+        private List<SelectListItem> Get_Equipos_principales(int Id)
         {
             var equipoPrincipals = _context.EquipoPrincipal.ToList();
             List<SelectListItem> lista = new List<SelectListItem>();
@@ -1544,7 +1575,8 @@ namespace WebTickets.Controllers
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre)
+                        Text = string.Format("{0}", item.Nombre),
+                        Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1605,7 +1637,7 @@ namespace WebTickets.Controllers
         /// Obtiene los registros de la entidad "Planta"
         /// </summary>
         /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
-        private List<SelectListItem> Get_Equipos_Secundarios()
+        private List<SelectListItem> Get_Equipos_Secundarios(int Id)
         {
             var equipoSecundarios = _context.EquipoSecundario.ToList();
             List<SelectListItem> lista = new List<SelectListItem>();
@@ -1616,7 +1648,8 @@ namespace WebTickets.Controllers
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre)
+                        Text = string.Format("{0}", item.Nombre),
+                        Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1753,7 +1786,7 @@ namespace WebTickets.Controllers
         /// Obtiene los registros de la entidad "Planta"
         /// </summary>
         /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
-        private List<SelectListItem> Get_Estados_Servicio()
+        private List<SelectListItem> Get_Estados_Servicio(int Id)
         {
             var estado_servicios = _context.EstadoServicio.ToList();
             List<SelectListItem> lista = new List<SelectListItem>();
@@ -1763,7 +1796,8 @@ namespace WebTickets.Controllers
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre)
+                        Text = string.Format("{0}", item.Nombre),
+                        Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1853,6 +1887,36 @@ namespace WebTickets.Controllers
 
 
         #endregion
+        public void Send(EmailMessage emailMessage)
+        {
+            var message = new MimeMessage();
+            message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+            message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+
+            message.Subject = emailMessage.Subject;
+            //We will say we are sending HTML. But there are options for plaintext etc. 
+            message.Body = new TextPart(TextFormat.Html)
+            {
+                Text = emailMessage.Content
+            };
+
+            //Be careful that the SmtpClient class is the one from Mailkit not the framework!
+            using (var emailClient = new SmtpClient())
+            {
+                //The last parameter here is to use SSL (Which you should!)
+                emailClient.Connect(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, true);
+
+                //Remove any OAuth functionality as we won't be using it. 
+                emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+
+                emailClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
+
+                emailClient.Send(message);
+
+                emailClient.Disconnect(true);
+            }
+
+        }
     }
 
     public class ComboBoxSelect2
