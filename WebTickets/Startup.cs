@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Service;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.FileProviders;
+using Model.Custom;
 
 namespace WebTickets
 {
@@ -67,8 +68,10 @@ namespace WebTickets
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
             // Add application services.
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IEmailService, EmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

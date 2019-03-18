@@ -1,114 +1,158 @@
-﻿
+﻿@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
 <!DOCTYPE html>
 <html ng-app="webticket">
 <head>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - WebTickets</title>
+	<link rel="apple-touch-icon" sizes="76x76" href="~/lib/material-dashboard/assets/img/apple-icon.png">
+	<link rel="icon" type="image/png" href="~/lib/material-dashboard/assets/img/favicon.png">
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+	<title>@ViewData["Title"] WebTickets</title>
 
+	<!--     Fonts and icons     -->
+	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+	<link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css">
+	<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">-->
+	<!-- CSS Files -->
+	<link href="~/lib/material-dashboard/assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
+	<link href="~/lib/select2/dist/css/select2.min.css" rel="stylesheet" />
 	<environment include="Development">
-		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-		<link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css">
 		<link rel="stylesheet" href="~/css/site.css" />
-
 	</environment>
+
 	<environment exclude="Development">
-		<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
-			  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-			  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-		<link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+		<!--     Fonts and icons     -->
+		<link rel="stylesheet" type="text/css" href="~/lib/material-dashboard/assets/css/font-google-roboto-material-dashboard.css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+		<link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css">
+		<!-- CSS Files -->
+		<link href="~/lib/material-dashboard/assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
+		<link href="~/lib/select2/dist/css/select2.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="~/css/site.css" />
 	</environment>
+
 </head>
-<body>
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">WebTickets</a>
-			</div>
-			<div class="navbar-collapse collapse" id="navbarNavDropdown">
-				<ul class="nav navbar-nav">
+<body class="">
+	<div class="wrapper ">
+		<div class="sidebar" data-color="green" data-background-color="black" >
+			<!--
+				Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
-
-					@if (User.IsInRole("Administrador"))
-					{
-						<li class="nav-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
-						<li class="nav-item"><a asp-area="" asp-controller="Tickets" asp-action="Create">Nuevo Tickets</a></li>
-						<li class="nav-item"><a asp-area="" asp-controller="Tickets" asp-action="Index">Consultas</a></li>
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Administracion
-							</a>
-							<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-								<li class="dropdown-item"><a asp-area="" asp-controller="Plantas" asp-action="Index">Area Equipos</a></li>
-								<li class="dropdown-item"><a asp-area="" asp-controller="EquipoPrincipal" asp-action="Index">Equipo Principal</a></li>
-								<li class="dropdown-item"><a asp-area="" asp-controller="EquipoSecundario" asp-action="Index">Equipo Secundario</a></li>
-								<li class="dropdown-item"><a asp-area="" asp-controller="Componentes" asp-action="Index">Componentes</a></li>
-								<li class="dropdown-item"><a asp-area="" asp-controller="RegistroEquipo" asp-action="Index">Clasificacion Equipos</a></li>
-								<li class="dropdown-item"><a asp-area="" asp-controller="Users" asp-action="Index">Maestro - Usuarios</a></li>
-								<li class="dropdown-item"><a asp-area="" asp-controller="TipoTrabajo" asp-action="Index">Maestro - Tipo Trabajos</a></li>
-								<li class="dropdown-item"><a asp-area="" asp-controller="Parametros" asp-action="Index">Maestro - Parametros</a></li>
-								<li class="dropdown-item"><a asp-area="" asp-controller="Prioridad" asp-action="Index">Maestro - Prioridades</a></li>
-								<li class="dropdown-item"><a asp-area="" asp-controller="Procesos" asp-action="Index">Maestro - Procesos</a></li>
-								<li class="dropdown-item"><a asp-area="" asp-controller="EstadoServicio" asp-action="Index">Maestro - Estado Servicios</a></li>
-								<li class="dropdown-item"><a asp-area="" asp-controller="CalificacionServicio" asp-action="Index">Maestro - Calificacion Servicios</a></li>
-							</ul>
-						</li>
-
-					}
-
-					@if (User.IsInRole("Operador"))
-					{
-						<li class="nav-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
-						<li class="nav-item"><a asp-area="" asp-controller="Tickets" asp-action="Create">Nuevo Tickets</a></li>
-						<li class="nav-item"><a asp-area="" asp-controller="Tickets" asp-action="Index">Consultas</a></li>
-					}
-
-
-				</ul>
-				<partial name="_LoginPartial" />
-			</div>
+				Tip 2: you can also add an image using data-image tag
+			-->
+			<partial name="_sidebar-nav" />
+			
 		</div>
-	</nav>
+		<div class="main-panel">
+			<!-- Navbar -->
+			<partial name="_navbar_top"/>
+			<!-- End Navbar -->
+			<!-- Content Body-->
+			<div class="content">
+				<div id="loader" data-loading> </div>
+				<div class="container-fluid">
+					<div class="animated fadeIn">
+						<!-- VIEW-CONTENT -->
+						@RenderBody()
+						<!-- /VIEW-CONTENT -->
 
-	<partial name="_CookieConsentPartial" />
-
-	<div class="container body-content">
-		@RenderBody()
-		<hr />
-		<footer>
-			<p>&copy; 2018 - WebTickets</p>
-		</footer>
+					</div>
+				</div>
+			</div>
+			<footer class="footer">
+				<div class="container-fluid">
+					<nav class="float-left">
+						<ul>
+							<li>
+								<a href="https://www.creative-tim.com">
+									Creative Tim
+								</a>
+							</li>
+							<li>
+								<a href="https://creative-tim.com/presentation">
+									About Us
+								</a>
+							</li>
+							<li>
+								<a href="http://blog.creative-tim.com">
+									Blog
+								</a>
+							</li>
+							<li>
+								<a href="https://www.creative-tim.com/license">
+									Licenses
+								</a>
+							</li>
+						</ul>
+					</nav>
+					<div class="copyright float-right">
+						&copy;
+						<script>
+							document.write(new Date().getFullYear())
+						</script>, made with <i class="material-icons">favorite</i> by
+						<a href="https://www.creative-tim.com" target="_blank">Creative Tim</a> for a better web.
+					</div>
+				</div>
+			</footer>
+		</div>
 	</div>
 
+
 	<environment include="Development">
-		<script src="~/lib/jquery/dist/jquery.js"></script>
-		<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+		<script src="~/lib/material-dashboard/assets/js/core/jquery.min.js"></script>
 		<script src="~/js/angular.min.js"></script>
+		<script src="~/js/ui-bootstrap-tpls-0.11.0.js"></script>
+		<script src="~/lib/select2/dist/js/select2.min.js"></script>
+		<script src="~/js/site.js" asp-append-version="true"></script>
+
+	</environment>
+	<!--   Core JS Files   -->
+	<script src="~/lib/material-dashboard/assets/js/core/popper.min.js"></script>
+	<script src="~/lib/material-dashboard/assets/js/core/bootstrap-material-design.min.js"></script>
+	<script src="~/lib/material-dashboard/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+	<!-- Plugin for the momentJs  -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/moment.min.js"></script>
+	<!--  Plugin for Sweet Alert -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/sweetalert2.js"></script>
+	<!-- Forms Validations Plugin -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/jquery.validate.min.js"></script>
+	<!-- Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/jquery.bootstrap-wizard.js"></script>
+	<!--	Plugin for Select, full documentation here: http://silviomoreto.github.io/bootstrap-select -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/bootstrap-selectpicker.js"></script>
+	<!--  Plugin for the DateTimePicker, full documentation here: https://eonasdan.github.io/bootstrap-datetimepicker/ -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/bootstrap-datetimepicker.min.js"></script>
+	<!--  DataTables.net Plugin, full documentation here: https://datatables.net/  -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/jquery.dataTables.min.js"></script>
+	<!--	Plugin for Tags, full documentation here: https://github.com/bootstrap-tagsinput/bootstrap-tagsinputs  -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/bootstrap-tagsinput.js"></script>
+	<!-- Plugin for Fileupload, full documentation here: http://www.jasny.net/bootstrap/javascript/#fileinput -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/jasny-bootstrap.min.js"></script>
+	<!--  Full Calendar Plugin, full documentation here: https://github.com/fullcalendar/fullcalendar    -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/fullcalendar.min.js"></script>
+	<!-- Vector Map plugin, full documentation here: http://jvectormap.com/documentation/ -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/jquery-jvectormap.js"></script>
+	<!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/nouislider.min.js"></script>
+	<!-- Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support SweetAlert -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/core.js"></script>
+	<!-- Library for adding dinamically elements -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/arrive.min.js"></script>
+	<!-- Chartist JS -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/chartist.min.js"></script>
+	<!--  Notifications Plugin    -->
+	<script src="~/lib/material-dashboard/assets/js/plugins/bootstrap-notify.js"></script>
+	<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+	<script src="~/lib/material-dashboard/assets/js/material-dashboard.js?v=2.1.1" type="text/javascript"></script>
+	<environment include="Development">
 		<script src="~/js/site.js" asp-append-version="true"></script>
 
 	</environment>
 	<environment exclude="Development">
-		<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-				asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-				asp-fallback-test="window.jQuery"
-				crossorigin="anonymous"
-				integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-		</script>
-		<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-				asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-				asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-				crossorigin="anonymous"
-				integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-		</script>
-		<script src="~/js/angular.min.js"></script>
-		<script src="~/js/site.min.js" asp-append-version="true"></script>
+		<script src="~/js/site.js" asp-append-version="true"></script>
 	</environment>
+
 
 	@RenderSection("Scripts", required: false)
 </body>

@@ -85,8 +85,8 @@ namespace WebTickets.Controllers
         }
 
         //
-        // POST: /Account/LogOff
-        [HttpPost]
+        // GET: /Account/LogOff
+        [HttpGet]
         [AllowAnonymous]
         public ActionResult Logout()
         {
@@ -103,6 +103,7 @@ namespace WebTickets.Controllers
             return View(rvm);
         }
 
+        
         private RegisterViewModel GetAreas()
         {
             var areas = _context.Area.ToList();
@@ -122,6 +123,25 @@ namespace WebTickets.Controllers
             return rvm;
         }
 
+        public IActionResult GetAreasAjax()
+        {
+            var areas = _context.Area.ToList();
+            List<SelectListItem> items_area = new List<SelectListItem>();
+            RegisterViewModel rvm = new RegisterViewModel();
+            foreach (var item in areas)
+            {
+                items_area.Add(
+                    new SelectListItem
+                    {
+                        Value = item.Id.ToString(),
+                        Text = string.Format("0{0} - {1}", item.Id, item.Nombre)
+                    });
+
+            }
+            rvm.Areas = items_area;
+            return Json(rvm);
+        }
+
         //
         // POST: /Account/Register
         [HttpPost]
@@ -129,6 +149,7 @@ namespace WebTickets.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            RegisterViewModel rvm;
            if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
@@ -138,7 +159,8 @@ namespace WebTickets.Controllers
                     Telefono = model.Telefono,
                     Ubicacion = model.Ubicacion,
                     Email = model.Email,
-                    UserName = model.UserName
+                    UserName = model.UserName,
+                    
 
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -164,12 +186,12 @@ namespace WebTickets.Controllers
             }
             else
             {
-                RegisterViewModel rvm = GetAreas();
+                rvm = GetAreas();
                 return View(rvm);
             }
-
+            rvm = GetAreas();
             // If we got this far, something failed, redisplay form
-            return View();
+            return View(rvm);
         }
         /*
         //

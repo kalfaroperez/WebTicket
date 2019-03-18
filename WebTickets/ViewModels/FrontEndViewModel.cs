@@ -81,7 +81,8 @@ namespace WebTickets.ViewModels
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public DateTime Fecha { get => DateTime.Now; set => _fecha = value; }
 
-        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Display(Name = "Usuario")]
+        [Required(ErrorMessage = "El campo '{0}' es requerido")]
         public string Operador_UserName { get; set; }
 
         [Display(Name = "Nombre Completo")]
@@ -89,7 +90,7 @@ namespace WebTickets.ViewModels
         public string Operador_Id { get; set; }
 
         [Display(Name = "Usuario")]
-        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Required(ErrorMessage = "El campo '{0}' es requerido")]
         public string Username { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
@@ -114,15 +115,6 @@ namespace WebTickets.ViewModels
         [StringLength(250, ErrorMessage = "El campo Nombre solo puede tener 250 caracteres")]
         public string Email { get; set; }
 
-        [Display(Name = "Asignado A")]
-        public string Asignado_A { get; set; }
-        public List<SelectListItem> Lista_Asignados_A { get; set; }
-
-        public string Asignado_A_Sector { get; set; }
-
-        public int Prioridad { get; set; }
-        public List<SelectListItem> Lista_Prioridades { get; set; }
-
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public string Incidente { get; set; }
 
@@ -134,35 +126,54 @@ namespace WebTickets.ViewModels
         public List<FileDetails> Files { get; set; }
             = new List<FileDetails>();
 
+        [Display(Name = "Asignado A")]
+        public string Asignado_A { get; set; }
+        public string Asignado_A_Text{ get; set; }
+        public List<SelectListItem> Lista_Asignados_A { get; set; }
+
+        public string Asignado_A_Sector { get; set; }
+
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        public int Prioridad { get; set; }
+        public string Prioridad_Text { get; set; }
+        public List<SelectListItem> Lista_Prioridades { get; set; }
+         
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public int Proceso { get; set; }
+        public string Proceso_Text { get; set; }
         public List<SelectListItem> Lista_Procesos { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Tipo Trabajo")]
         public int Tipo_Trabajo { get; set; }
+        public string Tipo_Trabajo_Text { get; set; }
         public List<SelectListItem> Lista_Tipo_Trabajos { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Area Equipo")]
         public int Planta { get; set; }
+        public string Planta_Text { get; set; }
         public List<SelectListItem> Lista_Plantas { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Equipo Principal")]
         public int EquipoPrincipal { get; set; }
+        public string EquipoPrincipal_Text { get; set; }
         public List<SelectListItem> Lista_Equipos_princ { get; set; }
 
         [Display(Name = "Equipo Secundario")]
         public int EquipoSecundario { get; set; }
+        public string EquipoSecundario_Text { get; set; }
         public List<SelectListItem> Lista_Equipos_sec { get; set; }
 
         [Display(Name = "Componente")]
         public int Componente { get; set; }
+        public string Componente_Text { get; set; }
         public List<SelectListItem> Lista_Componentes { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public int Estado { get; set; }
+        public string Estado_Text { get; set; }
         public List<SelectListItem> Lista_Estados { get; set; }
 
         public string Calificacion { get; set; }
@@ -174,15 +185,16 @@ namespace WebTickets.ViewModels
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public DateTime Fecha_Ultimo_Estado { get; set; }
 
+        private DateTime _fecha_e;
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public DateTime Fecha_Entrega { get; set; }
 
         [Display(Name = "Notas de Trabajo")]
         public string NotasTrabajo { get; set; }
-        public List<SigoTicketViewModel> Lista_Actividades { get; set; }
 
         [Display(Name = "Notas Cierre Servicio")]
         public string NotaCierreServicio { get; set; }
+
 
         public string Error { get; set; }
         public string Exito { get; set; }

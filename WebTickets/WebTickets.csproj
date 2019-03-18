@@ -13,8 +13,6 @@
     <Content Remove="Views\Account\ConfirmEmail.cshtml" />
     <Content Remove="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Remove="Views\Account\ExternalLoginFailure.cshtml" />
-    <Content Remove="Views\Account\ForgotPassword.cshtml" />
-    <Content Remove="Views\Account\ForgotPasswordConfirmation.cshtml" />
     <Content Remove="Views\Account\SendCode.cshtml" />
     <Content Remove="Views\Account\VerifyCode.cshtml" />
     <Content Remove="Views\Account\_ExternalLoginsListPartial.cshtml" />
@@ -22,6 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Font.Awesome" Version="5.5.0" />
+    <PackageReference Include="MailKit" Version="2.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.4">
@@ -33,6 +32,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.5.4" />
     <PackageReference Include="NLog" Version="4.5.11" />
+    <PackageReference Include="PagedList.Mvc" Version="4.5.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.2" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Design" Version="1.1.2" />
   </ItemGroup>

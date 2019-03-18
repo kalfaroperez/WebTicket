@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
+
 using System.Threading.Tasks;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using MimeKit;
+using MimeKit.Text;
 using Model.Auth;
+using Model.Custom;
 using Model.DB_Model;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Persistence.DatabaseContext;
 using WebTickets.Helpers;
 using WebTickets.ViewModels;
@@ -30,6 +31,7 @@ namespace WebTickets.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IFileProvider _fileProvider;
         private readonly ILogger _logger;
+        private readonly IEmailConfiguration _emailConfiguration;
 
         //Esta variable me servirá como bandera para confirmar si la peticion tuvo exito o no
         private static bool exito = false;
@@ -40,6 +42,7 @@ namespace WebTickets.Controllers
             SignInManager<ApplicationUser> signInManager,
             ILoggerFactory loggerFactory,
             IFileProvider fileProvider,
+            IEmailConfiguration emailConfiguration,
             ApplicationDbContext context)
         {
             _context = context;
@@ -47,17 +50,42 @@ namespace WebTickets.Controllers
             _userManager = userManager;
             _logger = loggerFactory.CreateLogger<TicketsController>();
             _fileProvider = fileProvider;
+            _emailConfiguration = emailConfiguration;
 
         }
 
         // GET: Tickets
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? page,
+            int countOfPageIndexesToDisplay)
         {
+
+            int pageSize = 10;
+            ViewData["Numero_Ticket"] = String.IsNullOrEmpty(sortOrder) ? "Numero_Ticket" : "";
+            ViewData["Prioridad"] = String.IsNullOrEmpty(sortOrder) ? "Prioridad" : "";
+            ViewData["Fecha"] = String.IsNullOrEmpty(sortOrder) ? "Fecha" : "";
+            ViewData["Username"] = String.IsNullOrEmpty(sortOrder) ? "Username" : "";
+            ViewData["Operador_Nombre_Completo"] = String.IsNullOrEmpty(sortOrder) ? "Operador_Nombre_Completo" : "";
+            ViewData["Asignado_A"] = String.IsNullOrEmpty(sortOrder) ? "Asignado_A" : "";
+            ViewData["EstadoServicio"] = String.IsNullOrEmpty(sortOrder) ? "EstadoServicio" : "";
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
 
             var result = new List<TicketListViewModel>();
             try
             {
-
+                //Resultado Consulta
                 var lista = await _context.Ticket.AsNoTracking().ToListAsync();
                 result = lista.Select(x => new TicketListViewModel
                 {
@@ -72,6 +100,92 @@ namespace WebTickets.Controllers
                     EstadoServicio = _context.EstadoServicio.Find(x.Estado).Nombre,
                 }).ToList();
 
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    result = result.Where(s => s.Numero_Ticket.Contains(searchString) ||
+                                          s.Username.Contains(searchString) ||
+                                          s.Operador_Nombre_Completo.Contains(searchString) ||
+                                          s.Operador_Nombre_Completo.Contains(searchString) ||
+                                          s.Asignado_A.Contains(searchString) ||
+                                          s.Fecha.ToShortDateString().Contains(searchString) ||
+                                          s.EstadoServicio.Contains(searchString)).ToList();
+                }
+
+                if (string.IsNullOrEmpty(sortOrder))
+                {
+                    sortOrder = "Numero_Ticket";
+                }
+
+                //Sorting
+                switch (sortOrder)
+                {
+                    case "Numero_Ticket":
+                        result = result.OrderBy(r => r.Numero_Ticket).ToList();
+                        break;
+                    case "Prioridad":
+                        result = result.OrderBy(r => r.Prioridad).ToList();
+                        break;
+                    case "Fecha":
+                        result = result.OrderBy(r => r.Fecha).ToList();
+                        break;
+                    case "Username":
+                        result = result.OrderBy(r => r.Username).ToList();
+                        break;
+                    case "Operador_Nombre_Completo":
+                        result = result.OrderBy(r => r.Operador_Nombre_Completo).ToList();
+                        break;
+                    case "Asignado_A":
+                        result = result.OrderBy(r => r.Asignado_A).ToList();
+                        break;
+                    case "EstadoServicio":
+                        result = result.OrderBy(r => r.EstadoServicio).ToList();
+                        break;
+                    default:
+                        result = result.OrderBy(r => r.Numero_Ticket).ToList();
+                        break;
+                }
+
+
+
+            }
+            catch (Exception e)
+            {
+
+                _logger.LogError(e.Message);
+            }
+            //int pageSize = 3;
+            //int pageNumber = (page ?? 1);
+            //return View(await PaginatedList<TicketListViewModel>.CreateAsync(result, page ?? 1, pageSize));
+            return View(PaginatedList<TicketListViewModel>.Create(
+                result,
+                page ?? 1,
+                pageSize,
+                5));
+        }
+
+        // GET: Tickets
+        [HttpGet]
+        public IActionResult Lista()
+        {
+
+            var result = new List<TicketListViewModel>();
+            try
+            {
+
+                var lista = _context.Ticket.AsNoTracking().ToList();
+                result = lista.Select(x => new TicketListViewModel
+                {
+                    Id = x.Id.ToString(),
+                    Numero_Ticket = x.Numero_Ticket,
+                    Username = (_context.ApplicationUser.Find(x.Usuario_Id) != null) ? _context.ApplicationUser.Find(x.Usuario_Id).UserName : "-",
+                    Operador_Nombre_Completo = (_context.ApplicationUser.Find(x.Usuario_Id) != null) ? _context.ApplicationUser.Find(x.Usuario_Id).FullName : "-",
+                    Prioridad = (_context.Prioridad.Find(x.Prioridad) != null) ? _context.Prioridad.Find(x.Prioridad).Nombre_Prioridad : "-",
+                    Asignado_A = (_context.ApplicationUser.Find(x.Asignado_A) != null) ? _context.ApplicationUser.Find(x.Asignado_A).UserName : "-",
+                    Fecha = x.Fecha,
+                    Fecha_Entrega = x.Fecha_Entrega,
+                    EstadoServicio = (_context.EstadoServicio.Find(x.Estado) != null) ? _context.EstadoServicio.Find(x.Estado).Nombre : "-"
+                }).ToList();
+
             }
             catch (Exception e)
             {
@@ -79,7 +193,7 @@ namespace WebTickets.Controllers
                 _logger.LogError(e.Message);
             }
 
-            return View(result);
+            return Json(result);
         }
 
         // GET: Tickets/Details/5
@@ -134,33 +248,83 @@ namespace WebTickets.Controllers
             }
             if (ModelState.IsValid)
             {
-                Ticket ticket = Fill_TicketModel(tvm);
-                _context.Add(ticket);
-                await _context.SaveChangesAsync();
-                //Una vez guardo el registro, Tomo el ID y lo envio para crear la carpeta 
-                //con el nombre del ID y guardar el Adjunto.
-                await UploadFiles(
-                    tvm.FileUpload,
-                    ticket.Numero_Ticket,
-                    Enum.GetName(typeof(PathUploapFile), PathUploapFile.Tickets));
+                string rol = await GetUserRoleName(tvm.Usuario_Id);
 
-                SigoTicket sigoTicket = new SigoTicket
+                if (User.IsInRole("Operador"))
                 {
-                    SeqTicketId = Convert.ToInt32(ticket.Id),
-                    Fecha = DateTime.Now,
-                    OperadorId = ticket.Operador_Id,
-                    UsuarioId = ticket.Usuario_Id,
-                    CampoCambiado = "Comentarios",
-                    ValorActual = ticket.Comentarios
-                };
-                _context.SigoTicket.Add(sigoTicket);
-                await _context.SaveChangesAsync();
-                exito = true;
-                ticket_numero = ticket.Numero_Ticket;
-                return RedirectToAction(nameof(Create), ViewBag.Resultado);
+                    Ticket ticket = Fill_TicketModel(tvm, rol);
+                    _context.Add(ticket);
+                    await _context.SaveChangesAsync();
+                    //Una vez guardo el registro, Tomo el ID y lo envio para crear la carpeta 
+                    //con el nombre del ID y guardar el Adjunto.
+                    await UploadFiles(
+                        tvm.FileUpload,
+                        ticket.Numero_Ticket,
+                        Enum.GetName(typeof(PathUploapFile), PathUploapFile.Tickets));
+
+                    SigoTicket sigoTicket = new SigoTicket
+                    {
+                        SeqTicketId = Convert.ToInt32(ticket.Id),
+                        Fecha = DateTime.Now,
+                        OperadorId = ticket.Operador_Id,
+                        UsuarioId = ticket.Usuario_Id,
+                        CampoCambiado = "Comentarios",
+                        ValorActual = ticket.Comentarios
+                    };
+                    _context.SigoTicket.Add(sigoTicket);
+                    await _context.SaveChangesAsync();
+                    exito = true;
+                    ticket_numero = ticket.Numero_Ticket;
+                    EmailAdreess desde = new EmailAdreess { Address = "kalfaroperez@gmail.com", Name = "SOLMA" };
+                    EmailAdreess para = new EmailAdreess { Address = tvm.Email, Name = tvm.Operador_Nombre_completo };
+                    EmailMessage email = new EmailMessage();
+                    email.FromAddresses.Add(desde);
+                    email.ToAddresses.Add(para);
+                    email.Subject = string.Format("Creacion del Ticket {0}", tvm.Numero_Ticket);
+                    email.Content = string.Format("Se creado el ticket {0}. ", tvm.Numero_Ticket);
+                    Send(email);
+                    return RedirectToAction(nameof(Create), ViewBag.Resultado);
+                }
+                else if (User.IsInRole("Administrador"))
+                {
+                    Ticket ticket = Fill_TicketModel(tvm, rol);
+                    _context.Add(ticket);
+                    await _context.SaveChangesAsync();
+                    //Una vez guardo el registro, Tomo el ID y lo envio para crear la carpeta 
+                    //con el nombre del ID y guardar el Adjunto.
+                    await UploadFiles(
+                        tvm.FileUpload,
+                        ticket.Numero_Ticket,
+                        Enum.GetName(typeof(PathUploapFile), PathUploapFile.Tickets));
+
+                    SigoTicket sigoTicket = new SigoTicket
+                    {
+                        SeqTicketId = Convert.ToInt32(ticket.Id),
+                        Fecha = DateTime.Now,
+                        OperadorId = ticket.Operador_Id,
+                        UsuarioId = ticket.Usuario_Id,
+                        CampoCambiado = "Comentarios",
+                        ValorActual = ticket.Comentarios
+                    };
+                    _context.SigoTicket.Add(sigoTicket);
+                    await _context.SaveChangesAsync();
+                    exito = true;
+                    ticket_numero = ticket.Numero_Ticket;
+                    return RedirectToAction(nameof(Create), ViewBag.Resultado);
+                }
+
             }
             CargarFormulario_Tickets(tvm);
             return View(tvm);
+        }
+
+        //Devuel el Rol del Usuario a partir del ID del usaurio
+        private async Task<string> GetUserRoleName(string UsuarioId)
+        {
+            var user = await _userManager.FindByIdAsync(UsuarioId);
+            var roles = await _userManager.GetRolesAsync(user);
+            string rol = roles[0].ToString();
+            return rol;
         }
 
 
@@ -211,7 +375,7 @@ namespace WebTickets.Controllers
                 {
                     try
                     {
-
+                        string rol = await GetUserRoleName(tvm.Usuario_Id);
                         InsertSeguimientoTicket(tvm);
                         //Ticket Comparer Compara los cambios
                         Ticket ticket = Fill_TicketModel(tvm);
@@ -232,9 +396,11 @@ namespace WebTickets.Controllers
                     {
 
 
-                        tvm.Error = "No se ha podido guardar el registro. Ha ocurrido un error <br/>"
-                                            + ex.Message + "<br/> " + ex.InnerException;
-                        return View(tvm);
+                        tvm.Error = "No se ha podido guardar el registro. Ha ocurrido un error "
+                                            + ex.Message + ex.InnerException;
+                        var ticket = _context.Ticket.AsNoTracking().FirstOrDefault(t => t.Id == tvm.Id);
+                        TicketViewModel tvm2 = CargarFormulario_Tickets(ticket);
+                        return View(tvm2);
                     }
 
                 }
@@ -265,6 +431,7 @@ namespace WebTickets.Controllers
                     CampoCambiado = "NotasTrabajo",
                     CambioNumero = cambioNumeroSeg,
                     NotasTrabajo = tvm.NotasTrabajo,
+                    ValorActual = tvm.NotasTrabajo,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -282,8 +449,14 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Operador",
                     CambioNumero = cambioNumeroSeg,
-                    ValorAnterior = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Operador_Id).FullName,
-                    ValorActual = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == tvm.Operador_Id).FullName,
+                    //ValorAnterior = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Operador_Id).FullName,
+                    //ValorActual = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == tvm.Operador_Id).FullName,
+                    ValorAnterior =
+                        (ticket.Operador_Id == "0") ? "0" :
+                    _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Operador_Id).FullName,
+                    ValorActual =
+                    (tvm.Operador_Id.ToString() == "0") ? "0" :
+                    _context.ApplicationUser.AsNoTracking().First(t => t.Id == tvm.Operador_Id).FullName,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -300,8 +473,14 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Area",
                     CambioNumero = cambioNumeroSeg,
-                    ValorAnterior = _context.Planta.AsNoTracking().SingleOrDefault(a => a.Id == ticket.Area_Id).Nombre,
-                    ValorActual = _context.Planta.AsNoTracking().SingleOrDefault(a => a.Id == tvm.Area_Id).Nombre,
+                    //ValorAnterior = _context.Planta.AsNoTracking().SingleOrDefault(a => a.Id == ticket.Area_Id).Nombre,
+                    //ValorActual = _context.Planta.AsNoTracking().SingleOrDefault(a => a.Id == tvm.Area_Id).Nombre,
+                    ValorAnterior =
+                        (ticket.Area_Id == 0) ? "0" :
+                    _context.Area.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Area_Id).Nombre,
+                    ValorActual =
+                    (tvm.Area_Id.ToString() == "0") ? "0" :
+                    _context.Area.AsNoTracking().First(t => t.Id == tvm.Area_Id).Nombre,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -318,8 +497,14 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Prioridad",
                     CambioNumero = cambioNumeroSeg,
-                    ValorAnterior = _context.Prioridad.AsNoTracking().SingleOrDefault(p => p.Id == ticket.Prioridad).Nombre_Prioridad,
-                    ValorActual = _context.Prioridad.AsNoTracking().SingleOrDefault(p => p.Id == tvm.Prioridad).Nombre_Prioridad,
+                    //ValorAnterior = _context.Prioridad.AsNoTracking().SingleOrDefault(p => p.Id == ticket.Prioridad).Nombre_Prioridad,
+                    //ValorActual = _context.Prioridad.AsNoTracking().SingleOrDefault(p => p.Id == tvm.Prioridad).Nombre_Prioridad,
+                    ValorAnterior =
+                        (ticket.Prioridad == 0) ? "0" :
+                    _context.Prioridad.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Prioridad).Nombre_Prioridad,
+                    ValorActual =
+                    (tvm.Prioridad.ToString() == "0") ? "0" :
+                    _context.Prioridad.AsNoTracking().First(t => t.Id == tvm.Prioridad).Nombre_Prioridad,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -336,8 +521,14 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Proceso",
                     CambioNumero = cambioNumeroSeg,
-                    ValorAnterior = _context.Procesos.AsNoTracking().SingleOrDefault(p => p.Id == ticket.Proceso).Nombre_Proceso,
-                    ValorActual = _context.Procesos.AsNoTracking().SingleOrDefault(p => p.Id == tvm.Proceso).Nombre_Proceso,
+                    //ValorAnterior = _context.Procesos.AsNoTracking().SingleOrDefault(p => p.Id == ticket.Proceso).Nombre_Proceso,
+                    //ValorActual = _context.Procesos.AsNoTracking().SingleOrDefault(p => p.Id == tvm.Proceso).Nombre_Proceso,
+                    ValorAnterior =
+                        (ticket.Proceso == 0) ? "0" :
+                    _context.Procesos.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Proceso).Nombre_Proceso,
+                    ValorActual =
+                    (tvm.Proceso.ToString() == "0") ? "0" :
+                    _context.Procesos.AsNoTracking().First(t => t.Id == tvm.Proceso).Nombre_Proceso,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -354,8 +545,12 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Asignado_A",
                     CambioNumero = cambioNumeroSeg,
-                    ValorAnterior = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Asignado_A).FullName,
-                    ValorActual = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == tvm.Asignado_A).FullName,
+                    ValorAnterior =
+                        (ticket.Asignado_A == "0") ? "0" :
+                    _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Asignado_A).FullName,
+                    ValorActual =
+                    (tvm.Asignado_A == "0" || tvm.Asignado_A == null) ? "0" :
+                    _context.ApplicationUser.AsNoTracking().First(t => t.Id == tvm.Asignado_A).FullName,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -372,8 +567,14 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Tipo_Trabajo",
                     CambioNumero = cambioNumeroSeg,
-                    ValorAnterior = _context.TipoTrabajo.AsNoTracking().SingleOrDefault(tt => tt.Id == ticket.Tipo_Trabajo).Nombre,
-                    ValorActual = _context.TipoTrabajo.AsNoTracking().SingleOrDefault(tt => tt.Id == tvm.Tipo_Trabajo).Nombre,
+                    //ValorAnterior = _context.TipoTrabajo.AsNoTracking().SingleOrDefault(tt => tt.Id == ticket.Tipo_Trabajo).Nombre,
+                    //ValorActual = _context.TipoTrabajo.AsNoTracking().SingleOrDefault(tt => tt.Id == tvm.Tipo_Trabajo).Nombre,
+                    ValorAnterior =
+                        (ticket.Tipo_Trabajo == 0) ? "0" :
+                    _context.TipoTrabajo.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Tipo_Trabajo).Nombre,
+                    ValorActual =
+                    (tvm.Tipo_Trabajo == 0) ? "0" :
+                    _context.TipoTrabajo.AsNoTracking().First(t => t.Id == tvm.Tipo_Trabajo).Nombre,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -390,8 +591,14 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Planta",
                     CambioNumero = cambioNumeroSeg,
-                    ValorAnterior = _context.Planta.AsNoTracking().SingleOrDefault(p => p.Id == ticket.Id_Planta).Nombre,
-                    ValorActual = _context.Planta.AsNoTracking().SingleOrDefault(p => p.Id == tvm.Planta).Nombre,
+                    //ValorAnterior = _context.Planta.AsNoTracking().SingleOrDefault(p => p.Id == ticket.Id_Planta).Nombre,
+                    //ValorActual = _context.Planta.AsNoTracking().SingleOrDefault(p => p.Id == tvm.Planta).Nombre,
+                    ValorAnterior =
+                        (ticket.Id_Planta == 0) ? "0" :
+                    _context.Planta.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_Planta).Nombre,
+                    ValorActual =
+                    (tvm.Planta == 0) ? "0" :
+                    _context.Planta.AsNoTracking().First(t => t.Id == tvm.Planta).Nombre,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -408,8 +615,14 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "EquipoPrincipal",
                     CambioNumero = cambioNumeroSeg,
-                    ValorAnterior = _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(ep => ep.Id == ticket.Id_EquipoPrinc).Nombre,
-                    ValorActual = _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(ep => ep.Id == tvm.EquipoPrincipal).Nombre,
+                    //ValorAnterior = _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(ep => ep.Id == ticket.Id_EquipoPrinc).Nombre,
+                    //ValorActual = _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(ep => ep.Id == tvm.EquipoPrincipal).Nombre,
+                    ValorAnterior =
+                        (ticket.Id_EquipoPrinc == 0) ? "0" :
+                    _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_EquipoPrinc).Nombre,
+                    ValorActual =
+                    (tvm.EquipoPrincipal == 0) ? "0" :
+                    _context.EquipoPrincipal.AsNoTracking().First(t => t.Id == tvm.EquipoPrincipal).Nombre,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -426,8 +639,14 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "EquipoSecundario",
                     CambioNumero = cambioNumeroSeg,
-                    ValorAnterior = _context.EquipoSecundario.AsNoTracking().SingleOrDefault(es => es.Id == ticket.Id_EquipoSec).Nombre,
-                    ValorActual = _context.EquipoSecundario.AsNoTracking().SingleOrDefault(es => es.Id == tvm.EquipoSecundario).Nombre,
+                    //ValorAnterior = _context.EquipoSecundario.AsNoTracking().SingleOrDefault(es => es.Id == ticket.Id_EquipoSec).Nombre,
+                    //ValorActual = _context.EquipoSecundario.AsNoTracking().SingleOrDefault(es => es.Id == tvm.EquipoSecundario).Nombre,
+                    ValorAnterior =
+                        (ticket.Id_EquipoSec == 0) ? "0" :
+                    _context.EquipoSecundario.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_EquipoSec).Nombre,
+                    ValorActual =
+                    (tvm.EquipoSecundario == 0) ? "0" :
+                    _context.EquipoSecundario.AsNoTracking().First(t => t.Id == tvm.EquipoPrincipal).Nombre,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -444,8 +663,14 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Componente",
                     CambioNumero = cambioNumeroSeg,
-                    ValorAnterior = _context.Componentes.AsNoTracking().SingleOrDefault(c => c.Id == ticket.Id_Componente).Nombre,
-                    ValorActual = _context.Componentes.AsNoTracking().SingleOrDefault(c => c.Id == tvm.Componente).Nombre,
+                    //ValorAnterior = _context.Componentes.AsNoTracking().SingleOrDefault(c => c.Id == ticket.Id_Componente).Nombre,
+                    //ValorActual = _context.Componentes.AsNoTracking().SingleOrDefault(c => c.Id == tvm.Componente).Nombre,
+                    ValorAnterior =
+                        (ticket.Id_Componente == 0) ? "0" :
+                    _context.Componentes.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_Componente).Nombre,
+                    ValorActual =
+                    (tvm.Componente == 0) ? "0" :
+                    _context.Componentes.AsNoTracking().First(t => t.Id == tvm.Componente).Nombre,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -462,8 +687,14 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "EstadoServicio",
                     CambioNumero = cambioNumeroSeg,
-                    ValorAnterior = _context.EstadoServicio.AsNoTracking().FirstOrDefault(es => es.Id == ticket.Estado).Nombre,
-                    ValorActual = _context.EstadoServicio.AsNoTracking().FirstOrDefault(es => es.Id == tvm.Estado).Nombre,
+                    //ValorAnterior = _context.EstadoServicio.AsNoTracking().FirstOrDefault(es => es.Id == ticket.Estado).Nombre,
+                    //ValorActual = _context.EstadoServicio.AsNoTracking().FirstOrDefault(es => es.Id == tvm.Estado).Nombre,
+                    ValorAnterior =
+                        (ticket.Estado == 0) ? "0" :
+                    _context.EstadoServicio.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Estado).Nombre,
+                    ValorActual =
+                    (tvm.Componente == 0) ? "0" :
+                    _context.EstadoServicio.AsNoTracking().First(t => t.Id == tvm.Estado).Nombre,
                     InsertDatetime = DateTime.Now
                 };
                 _context.SigoTicket.Add(sigoTicket);
@@ -525,11 +756,11 @@ namespace WebTickets.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetUsuario([FromBody]UsuarioViewModel usuario)
+        public IActionResult GetUsuario([FromBody]string id)
         {
 
             UsuarioViewModel uvm = new UsuarioViewModel();
-            var item = _context.ApplicationUser.Find(usuario.Id);
+            var item = _context.ApplicationUser.First(u => u.Id == id);
             if (item == null)
             {
                 return NotFound();
@@ -596,9 +827,99 @@ namespace WebTickets.Controllers
             return File(memory, GetContentType(path_file), Path.GetFileName(path_file));
         }
 
+        [HttpPost]
+        public IActionResult BuscarTicket([FromBody]string txtBuscar)
+        {
+
+            var tickets = from a in _context.Ticket
+                          where a.Numero_Ticket == txtBuscar
+                          select a;
+
+            /*List<TicketListViewModel> lista = new List<TicketListViewModel>();
+            foreach (var item in tickets)
+            {
+
+            }*/
+
+            return Json(tickets);
+        }
+
         #region Helpers
 
-        private static Ticket Fill_TicketModel(TicketViewModel tvm)
+        private Ticket Fill_TicketModel(TicketViewModel tvm, string rol_usuario_sesion)
+        {
+
+            Ticket ticket = new Ticket();
+            if (User.IsInRole("Administrador"))
+            {
+                ticket = new Ticket
+                {
+                    Numero_Ticket = tvm.Numero_Ticket,
+                    Usuario_Id = tvm.Usuario_Id,
+                    Operador_Id = tvm.Operador_Id,
+                    Fecha = DateTime.Now,
+                    Nombre_completo = tvm.Operador_Nombre_completo,
+                    Area_Id = tvm.Area_Id,
+                    Ubicacion = tvm.Ubicacion,
+                    Telefono = tvm.Telefono,
+                    EMail = tvm.Email,
+                    Asignado_A = tvm.Asignado_A,
+                    Prioridad = tvm.Prioridad,
+                    Incidente = tvm.Incidente,
+                    Comentarios = tvm.Comentarios,
+                    Proceso = tvm.Proceso,
+                    Tipo_Trabajo = tvm.Tipo_Trabajo,
+                    Id_Planta = tvm.Planta,
+                    Id_EquipoPrinc = tvm.EquipoPrincipal,
+                    Id_EquipoSec = tvm.EquipoSecundario,
+                    Id_Componente = tvm.Componente,
+                    Estado = tvm.Estado,
+                    Calificacion = tvm.Calificacion,
+                    Fecha_Entrega = tvm.Fecha_Entrega,
+                    Fecha_Ultimo_Estado = DateTime.Now,
+                    Insert_Datetime = DateTime.Now,
+                    Update_Datetime = DateTime.Now
+                };
+            }
+            else if (User.IsInRole("Operador"))
+            {
+                ticket = new Ticket
+                {
+                    Numero_Ticket = tvm.Numero_Ticket,
+                    Usuario_Id = tvm.Usuario_Id,
+                    Operador_Id = tvm.Operador_Id,
+                    Fecha = DateTime.Now,
+                    Nombre_completo = tvm.Operador_Nombre_completo,
+                    Area_Id = tvm.Area_Id,
+                    Ubicacion = tvm.Ubicacion,
+                    Telefono = tvm.Telefono,
+                    EMail = tvm.Email,
+                    Asignado_A = "0",
+                    Prioridad = 0,
+                    Incidente = tvm.Incidente,
+                    Comentarios = tvm.Comentarios,
+                    Proceso = 0,
+                    Tipo_Trabajo = 0,
+                    Id_Planta = 0,
+                    Id_EquipoPrinc = 0,
+                    Id_EquipoSec = 0,
+                    Id_Componente = 0,
+                    Estado = 0,
+                    Calificacion = tvm.Calificacion == "0" ? "0" : tvm.Calificacion,
+                    Fecha_Entrega = DateTime.Now,
+                    Fecha_Ultimo_Estado = DateTime.Now,
+                    Insert_Datetime = DateTime.Now,
+                    Update_Datetime = DateTime.Now
+                };
+            }
+            if (tvm.Id.ToString() != null)
+            {
+                ticket.Id = tvm.Id;
+            }
+            return ticket;
+        }
+
+        private Ticket Fill_TicketModel(TicketViewModel tvm)
         {
 
             Ticket ticket = new Ticket
@@ -623,12 +944,79 @@ namespace WebTickets.Controllers
                 Id_EquipoSec = tvm.EquipoSecundario,
                 Id_Componente = tvm.Componente,
                 Estado = tvm.Estado,
-                Calificacion = tvm.Calificacion,
+                Calificacion = tvm.Calificacion == "0" ? "0" : tvm.Calificacion,
                 Fecha_Entrega = tvm.Fecha_Entrega,
                 Fecha_Ultimo_Estado = DateTime.Now,
                 Insert_Datetime = DateTime.Now,
                 Update_Datetime = DateTime.Now
             };
+
+            #region Comentado
+            /*
+            if (User.IsInRole("Administrador"))
+            {
+                ticket = new Ticket
+                {
+                    Numero_Ticket = tvm.Numero_Ticket,
+                    Usuario_Id = tvm.Usuario_Id,
+                    Operador_Id = tvm.Operador_Id,
+                    Fecha = DateTime.Now,
+                    Nombre_completo = tvm.Operador_Nombre_completo,
+                    Area_Id = tvm.Area_Id,
+                    Ubicacion = tvm.Ubicacion,
+                    Telefono = tvm.Telefono,
+                    EMail = tvm.Email,
+                    Asignado_A = tvm.Asignado_A,
+                    Prioridad = tvm.Prioridad,
+                    Incidente = tvm.Incidente,
+                    Comentarios = tvm.Comentarios,
+                    Proceso = tvm.Proceso,
+                    Tipo_Trabajo = tvm.Tipo_Trabajo,
+                    Id_Planta = tvm.Planta,
+                    Id_EquipoPrinc = tvm.EquipoPrincipal,
+                    Id_EquipoSec = tvm.EquipoSecundario,
+                    Id_Componente = tvm.Componente,
+                    Estado = tvm.Estado,
+                    Calificacion = tvm.Calificacion == "0" ? "0" : tvm.Calificacion,
+                    Fecha_Entrega = tvm.Fecha_Entrega,
+                    Fecha_Ultimo_Estado = DateTime.Now,
+                    Insert_Datetime = DateTime.Now,
+                    Update_Datetime = DateTime.Now
+                };
+            }
+            else if (User.IsInRole("Operador"))
+            {
+                ticket = new Ticket
+                {
+                    Numero_Ticket = tvm.Numero_Ticket,
+                    Usuario_Id = tvm.Usuario_Id,
+                    Operador_Id = tvm.Operador_Id,
+                    Fecha = DateTime.Now,
+                    Nombre_completo = tvm.Operador_Nombre_completo,
+                    Area_Id = tvm.Area_Id,
+                    Ubicacion = tvm.Ubicacion,
+                    Telefono = tvm.Telefono,
+                    EMail = tvm.Email,
+                    Asignado_A = "0",
+                    Prioridad = 0,
+                    Incidente = tvm.Incidente,
+                    Comentarios = tvm.Comentarios,
+                    Proceso = 0,
+                    Tipo_Trabajo = 0,
+                    Id_Planta = 0,
+                    Id_EquipoPrinc = 0,
+                    Id_EquipoSec = 0,
+                    Id_Componente = 0,
+                    Estado = 0,
+                    Calificacion = tvm.Calificacion == "0" ? "0" : tvm.Calificacion,
+                    Fecha_Entrega = DateTime.Now,
+                    Fecha_Ultimo_Estado = DateTime.Now,
+                    Insert_Datetime = DateTime.Now,
+                    Update_Datetime = DateTime.Now
+                };
+            }*/
+            #endregion
+
             if (tvm.Id.ToString() != null)
             {
                 ticket.Id = tvm.Id;
@@ -663,33 +1051,34 @@ namespace WebTickets.Controllers
             tvm.Numero_Ticket = numero;
 
             //Selector Prioridades
-            tvm.Lista_Prioridades = GetPrioridades();
+            tvm.Lista_Prioridades = GetPrioridades(tvm.Prioridad);
 
             //Selector Procesos
-            tvm.Lista_Procesos = GetProcesos();
+            tvm.Lista_Procesos = GetProcesos(tvm.Proceso);
 
             //Selector Asignados_A
-            tvm.Lista_Asignados_A = Get_Lista_Asignado_A();
+            tvm.Lista_Asignados_A = Get_Lista_Asignado_A(tvm.Asignado_A);
 
             //Selector Tipo Trabajos
-            tvm.Lista_Tipo_Trabajos = Get_Tipo_Trabajos();
+            tvm.Lista_Tipo_Trabajos = Get_Tipo_Trabajos(tvm.Tipo_Trabajo);
 
             //Selector Plantas
-            tvm.Lista_Plantas = Get_Plantas();
+            tvm.Lista_Plantas = Get_Plantas(tvm.Planta);
 
             //Selector Equipos_princ
-            tvm.Lista_Equipos_princ = Get_Equipos_principales();
+            tvm.Lista_Equipos_princ = Get_Equipos_principales(tvm.EquipoPrincipal);
 
             //Selector Equipos_sec
-            tvm.Lista_Equipos_sec = Get_Equipos_Secundarios();
+            tvm.Lista_Equipos_sec = Get_Equipos_Secundarios(tvm.EquipoSecundario);
 
             //Selector Componentes
-            tvm.Lista_Componentes = Get_Componentes();
+            tvm.Lista_Componentes = Get_Componentes(tvm.Componente);
 
-            //Selector Componentes
-            tvm.Lista_Estados = Get_Estados_Servicio();
+            //Selector EstadoServicio
+            tvm.Lista_Estados = Get_Estados_Servicio(tvm.Estado);
 
-            tvm.Lista_Usuarios = Get_Usuarios();
+            //Selector EstadoServicio
+            tvm.Lista_Calificaion = Get_Calificacion_Servicios_List();
             return tvm;
         }
 
@@ -725,120 +1114,77 @@ namespace WebTickets.Controllers
             tvm.Comentarios = ticket.Comentarios;
 
             //Selector Prioridades
-            tvm.Lista_Prioridades = GetPrioridades();
+            //tvm.Lista_Prioridades = GetPrioridades(ticket.Prioridad);
             tvm.Prioridad = ticket.Prioridad;
+            tvm.Prioridad_Text = (ticket.Prioridad == 0) ? "" : 
+                _context.Prioridad.AsNoTracking().First(q => q.Id == ticket.Prioridad).Nombre_Prioridad;
 
             //Selector Procesos
-            tvm.Lista_Procesos = GetProcesos();
+            //tvm.Lista_Procesos = GetProcesos(ticket.Proceso);
             tvm.Proceso = ticket.Proceso;
+            tvm.Proceso_Text = (ticket.Proceso == 0) ? "" : 
+                _context.Procesos.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Proceso).Nombre_Proceso;
 
             //Selector Asignados_A
-            tvm.Lista_Asignados_A = Get_Lista_Asignado_A();
+            //tvm.Lista_Asignados_A = Get_Lista_Asignado_A(ticket.Asignado_A);
             tvm.Asignado_A = ticket.Asignado_A;
-
+            tvm.Asignado_A_Text = (ticket.Asignado_A == "0") ? "" :
+                _context.ApplicationUser.AsNoTracking().First(q => q.Id == ticket.Asignado_A).FullName;
             //Selector Tipo Trabajos
-            tvm.Lista_Tipo_Trabajos = Get_Tipo_Trabajos();
+            //tvm.Lista_Tipo_Trabajos = Get_Tipo_Trabajos(ticket.Tipo_Trabajo);
             tvm.Tipo_Trabajo = ticket.Tipo_Trabajo;
-
+            tvm.Tipo_Trabajo_Text = (ticket.Tipo_Trabajo == 0) ? "" :
+                    _context.TipoTrabajo.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Tipo_Trabajo).Nombre;
             //Selector Plantas
-            tvm.Lista_Plantas = Get_Plantas();
+            //tvm.Lista_Plantas = Get_Plantas(ticket.Id_Planta);
             tvm.Planta = ticket.Id_Planta;
-
+            tvm.Planta_Text = (ticket.Id_Planta == 0) ? "" :
+                    _context.Planta.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_Planta).Nombre;
             //Selector Equipos_princ
-            tvm.Lista_Equipos_princ = Get_Equipos_principales();
+            //tvm.Lista_Equipos_princ = Get_Equipos_principales(ticket.Id_EquipoPrinc);
             tvm.EquipoPrincipal = ticket.Id_EquipoPrinc;
-
+            tvm.EquipoPrincipal_Text = (ticket.Id_EquipoPrinc == 0) ? "" :
+                    _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_EquipoPrinc).Nombre;
             //Selector Equipos_sec
-            tvm.Lista_Equipos_sec = Get_Equipos_Secundarios();
+            //tvm.Lista_Equipos_sec = Get_Equipos_Secundarios(ticket.Id_EquipoSec);
             tvm.EquipoSecundario = ticket.Id_EquipoSec;
-
+            tvm.EquipoSecundario_Text = (ticket.Id_EquipoSec == 0) ? "" :
+                    _context.EquipoSecundario.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_EquipoSec).Nombre;
             //Selector Componentes
-            tvm.Lista_Componentes = Get_Componentes();
+            //tvm.Lista_Componentes = Get_Componentes(ticket.Id_Componente);
             tvm.Componente = ticket.Id_Componente;
-
+            tvm.Componente_Text = (ticket.Id_Componente == 0) ? "" :
+                    _context.Componentes.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_Componente).Nombre;
             //Selector Estados
-            tvm.Lista_Estados = Get_Estados_Servicio();
+            //tvm.Lista_Estados = Get_Estados_Servicio(ticket.Estado);
             tvm.Estado = ticket.Estado;
+            tvm.Estado_Text = (ticket.Estado == 0) ? "" :
+                    _context.EstadoServicio.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Estado).Nombre;
+            //Selector CalificacionServicio
+            tvm.Lista_Calificaion = Get_Calificacion_Servicios_List();
+            tvm.Calificacion = ticket.Calificacion;
 
             tvm.Fecha_Entrega = ticket.Fecha_Entrega;
             tvm.Fecha_Ultimo_Estado = ticket.Fecha_Ultimo_Estado;
-            tvm.Lista_Usuarios = Get_Usuarios();
-            tvm.Lista_Actividades = Get_SeguimientoTicket(Convert.ToInt32(ticket.Id));
-            //tvm.Lista_Actividades = Get_SeguimientoTicket();
+
 
 
             return tvm;
         }
 
-        private List<ApplicationUser> Get_Usuarios()
+        [HttpPost]
+        public IActionResult GetUsuarios()
         {
-            var usuarios = _context.ApplicationUser.ToList();
-            return usuarios;
-        }
-
-        private List<SigoTicketViewModel> Get_SeguimientoTicket(int id_ticket)
-        {
-            List<SigoTicketViewModel> lista_seg = new List<SigoTicketViewModel>();
-            var lista = _context.SigoTicket.ToList().Where(st => st.SeqTicketId == id_ticket).ToList();
-            
-            foreach (var item in lista)
-            {
-                var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
-                var usuario = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
-                SigoTicketViewModel stvm = new SigoTicketViewModel
-                {
-                    Id = item.SeqSigoTicketId.ToString(),
-                    OperadorId = operador,
-                    UsuarioId = usuario,
-                    NotasTrabajo = item.NotasTrabajo,
-                    ValorActual = item.ValorActual,
-                    ValorAnterior = item.ValorAnterior,
-                    Visible = item.Visible,
-                    Fecha = item.Fecha,
-                    Comentario = item.Comentario,
-                    NombreAdjunto = item.NombreAdjunto,
-                    TipoAdjunto = item.TipoAdjunto,
-                    CampoCambiado = item.CampoCambiado,
-                    InsertDatetime = item.InsertDatetime
-                };
-                lista_seg.Add(stvm);
-            }
-
-            return lista_seg;
+            var usuarios = _context.ApplicationUser.Join(_context.Area,
+                u => u.Area,
+                a => a.Id,
+                (u, a) => new { u.Id, u.FullName, area = a.Nombre }).ToList();
+            return Json(usuarios);
         }
 
         [HttpPost]
-        public IActionResult  GetSeguimientoTicket_NG([FromBody]SigoTicketViewModel sigo)
+        public IActionResult GetSeguimientoTicket_NG([FromBody]SigoTicketViewModel sigo)
         {
-            #region Comentados
-            /*
-             List<SigoTicketViewModel> lista_seg = new List<SigoTicketViewModel>();
-             var lista = _context.SigoTicket.ToList().Where(st => st.SeqTicketId == Convert.ToInt32(sigo.Id)).ToList();
-            foreach (var item in lista)
-            {
-                var operador = _context.ApplicationUser.First(s => s.Id == item.OperadorId).FullName;
-                var usuario = _context.ApplicationUser.First(s => s.Id == item.UsuarioId).FullName;
-                SigoTicketViewModel stvm = new SigoTicketViewModel
-                {
-                    Id = item.SeqSigoTicketId.ToString(),
-                    OperadorId = operador,
-                    UsuarioId = usuario,
-                    NotasTrabajo = item.NotasTrabajo,
-                    ValorActual = item.ValorActual,
-                    ValorAnterior = item.ValorAnterior,
-                    Visible = item.Visible,
-                    Fecha = item.Fecha,
-                    Comentario = item.Comentario,
-                    NombreAdjunto = item.NombreAdjunto,
-                    TipoAdjunto = item.TipoAdjunto,
-                    CampoCambiado = item.CampoCambiado,
-                    CambioNumero = item.CambioNumero,
-                    InsertDatetime = item.InsertDatetime
-                };
-                lista_seg.Add(stvm);
-            }*/
-            #endregion
-
 
             List<SeguimientoViewModel> lista_seg = new List<SeguimientoViewModel>();
             var id_ticket = sigo.Id;
@@ -846,8 +1192,9 @@ namespace WebTickets.Controllers
             var cambios = from st in _context.SigoTicket
                           join us in _context.ApplicationUser on st.UsuarioId equals us.Id
                           where st.SeqTicketId == Convert.ToInt32(id_ticket)
-                          group new {st.Fecha, us.FullName, st.CambioNumero }  by st.CambioNumero into stGr
-                          select new {
+                          group new { st.Fecha, us.FullName, st.CambioNumero } by st.CambioNumero into stGr
+                          select new
+                          {
                               cambioNumero = stGr.Key,
                               cantidadCambios = stGr.Count()
                           };
@@ -920,20 +1267,9 @@ namespace WebTickets.Controllers
                 }
             }
 
-            JsonSerializer serializer = new JsonSerializer();
-            serializer.Converters.Add(new JavaScriptDateTimeConverter());
-            serializer.NullValueHandling = NullValueHandling.Ignore;
-
-            using (StreamWriter sw = new StreamWriter(@"d:\json.txt"))
-            using (JsonWriter writer = new JsonTextWriter(sw))
-            {
-                serializer.Serialize(writer, seguimientos);
-                // {"ExpiryDate":new Date(1230375600000),"Price":0}
-            }
-
-
-            return Json(lista_seg);
+            return Json(seguimientos);
         }
+
 
         private List<SigoTicket> Get_SeguimientoTicket()
         {
@@ -945,18 +1281,18 @@ namespace WebTickets.Controllers
         /// Obtiene los registros de la entidad "Prioridad"
         /// </summary>
         /// <returns>Devuelve la Lista de Prioridades para ser cargadas en un selector</returns>
-        private List<SelectListItem> GetPrioridades()
+        private List<SelectListItem> GetPrioridades(int Id_Prioridad)
         {
             var prioridades = _context.Prioridad.ToList();
             List<SelectListItem> lista_prioridades = new List<SelectListItem>();
-            RegisterViewModel rvm = new RegisterViewModel();
             foreach (var item in prioridades)
             {
                 lista_prioridades.Add(
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre_Prioridad)
+                        Text = string.Format("{0}", item.Nombre_Prioridad),
+                        Disabled = (item.Id == Id_Prioridad) ? false : true
                     });
 
             }
@@ -965,10 +1301,38 @@ namespace WebTickets.Controllers
         }
 
         /// <summary>
+        /// Obtiene los registros de la entidad "Prioridad"
+        /// </summary>
+        /// <returns>Devuelve la Lista de Prioridades para ser cargadas en un selector</returns>
+        [HttpGet]
+        public IActionResult GetPrioridades_Ajax(string term)
+        {
+            var prioridades = new List<Prioridad>();
+            if (string.IsNullOrEmpty(term)) { prioridades = _context.Prioridad.ToList(); }
+            else
+            {
+                prioridades = _context.Prioridad.Where(t => t.Nombre_Prioridad.ToUpper().Contains(term.ToUpper())).ToList();
+            }
+            List<ComboBoxSelect2> lista_prioridades = new List<ComboBoxSelect2>();
+            foreach (var item in prioridades)
+            {
+                lista_prioridades.Add(
+                    new ComboBoxSelect2
+                    {
+                        Id = item.Id.ToString(),
+                        Text = item.Nombre_Prioridad
+                    });
+
+            }
+
+            return Json(lista_prioridades);
+        }
+
+        /// <summary>
         /// Obtiene los registros de la entidad "Procesos"
         /// </summary>
         /// <returns>Devuelve la Lista de Procesos para ser cargadas en un selector</returns>
-        private List<SelectListItem> GetProcesos()
+        private List<SelectListItem> GetProcesos(int Id)
         {
             var procesos = _context.Procesos.ToList();
             List<SelectListItem> lista_procesos = new List<SelectListItem>();
@@ -979,7 +1343,8 @@ namespace WebTickets.Controllers
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre_Proceso)
+                        Text = string.Format("{0}", item.Nombre_Proceso),
+                        Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -987,22 +1352,48 @@ namespace WebTickets.Controllers
             return lista_procesos;
         }
 
+        [HttpGet]
+        public IActionResult GetProcesos_Ajax(string term)
+        {
+            var procesos = new List<Procesos>();
+            if (string.IsNullOrEmpty(term))
+            {
+                procesos = _context.Procesos.ToList();
+            }
+            else
+            {
+                procesos = _context.Procesos.Where(t => t.Nombre_Proceso.ToUpper().Contains(term.ToUpper())).ToList();
+            }
+            List<ComboBoxSelect2> lista_procesos = new List<ComboBoxSelect2>();
+            foreach (var item in procesos)
+            {
+                lista_procesos.Add(
+                    new ComboBoxSelect2
+                    {
+                        Id = item.Id.ToString(),
+                        Text = item.Nombre_Proceso
+                    });
+
+            }
+
+            return Json(lista_procesos);
+        }
         /// <summary>
         /// Obtiene los registros de la entidad "Tipo_Trabajo"
         /// </summary>
         /// <returns>Devuelve la Lista de Tipos de Trabajo para ser cargadas en un selector</returns>
-        private List<SelectListItem> Get_Tipo_Trabajos()
+        private List<SelectListItem> Get_Tipo_Trabajos(int? Id)
         {
             var tipoTrabajos = _context.TipoTrabajo.ToList();
             List<SelectListItem> lista_tipo_trabajos = new List<SelectListItem>();
-            RegisterViewModel rvm = new RegisterViewModel();
             foreach (var item in tipoTrabajos)
             {
                 lista_tipo_trabajos.Add(
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre)
+                        Text = string.Format("{0}", item.Nombre),
+                        Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1010,45 +1401,158 @@ namespace WebTickets.Controllers
             return lista_tipo_trabajos;
         }
 
+        [HttpGet]
+        public IActionResult GetTipoTrabajoAjax(string term)
+        {
+            var tipo_trabajo = new List<TipoTrabajo>();
+            if (string.IsNullOrEmpty(term))
+            {
+                tipo_trabajo = _context.TipoTrabajo.ToList();
+            }
+            else
+            {
+                tipo_trabajo = _context.TipoTrabajo.Where(t => t.Nombre.ToUpper().Contains(term.ToUpper())).ToList();
+            }
+            List<ComboBoxSelect2> lista_trabajo = new List<ComboBoxSelect2>();
+            foreach (var item in tipo_trabajo)
+            {
+                lista_trabajo.Add(
+                    new ComboBoxSelect2
+                    {
+                        Id = item.Id.ToString(),
+                        Text = item.Nombre
+                    });
+
+            }
+
+            return Json(lista_trabajo);
+        }
+
         /// <summary>
         /// Obtiene los registros de la entidad "Asignado_A"
         /// </summary>
         /// <returns>Devuelve la Lista de Asignado_A para ser cargadas en un selector</returns>
-        private List<SelectListItem> Get_Lista_Asignado_A()
+        private List<SelectListItem> Get_Lista_Asignado_A(string Id)
         {
             var asignado_a_tabla = _context.ApplicationUser.Where(a => a.Area == 1).ToList();
             List<SelectListItem> lista_asignado_a = new List<SelectListItem>();
-            RegisterViewModel rvm = new RegisterViewModel();
             foreach (var item in asignado_a_tabla)
             {
                 lista_asignado_a.Add(
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
+                        Text = string.Format("{0} - {1} / {2}", item.UserName, item.FullName, item.Area),
+                        Disabled = (item.Id == Id) ? false : true
+                    });
+
+            }
+            return lista_asignado_a;
+
+        }
+
+        /// <summary>
+        /// Obtiene los registros de la entidad "Asignado_A"
+        /// </summary>
+        /// <returns>Devuelve la Lista de Asignado_A para ser cargadas en un selector</returns>
+        ///
+        [HttpGet]
+        public IActionResult GetAsignadoAjax(string term)
+        {
+            List<ApplicationUser> asignados = new List<ApplicationUser>();
+            var lista_asignado_a = new List<ComboBoxSelect2>();
+            if (string.IsNullOrEmpty(term))
+            {
+                asignados = _context.ApplicationUser.Where(a => a.Area == 1).ToList();
+            }
+            else
+            {
+                asignados = _context.ApplicationUser.
+                    Where(t => t.FullName.ToUpper().Contains(term.ToUpper()) && t.Area == 1).ToList();
+            }
+            foreach (var item in asignados)
+            {
+                lista_asignado_a.Add(
+                    new ComboBoxSelect2
+                    {
+                        Id = item.Id,
                         Text = string.Format("{0} - {1} / {2}", item.UserName, item.FullName, item.Area)
                     });
 
             }
 
-            return lista_asignado_a;
+
+            var procesos = new List<Procesos>();
+            if (string.IsNullOrEmpty(term)) { procesos = _context.Procesos.ToList(); }
+            else
+            {
+                procesos = _context.Procesos.Where(t => t.Nombre_Proceso.ToUpper().Contains(term.ToUpper())).ToList();
+            }
+            List<ComboBoxSelect2> lista_procesos = new List<ComboBoxSelect2>();
+            foreach (var item in procesos)
+            {
+                lista_procesos.Add(
+                    new ComboBoxSelect2
+                    {
+                        Id = item.Id.ToString(),
+                        Text = item.Nombre_Proceso
+                    });
+
+            }
+
+            return Json(lista_asignado_a);
         }
 
         /// <summary>
         /// Obtiene los registros de la entidad "Planta"
         /// </summary>
         /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
-        private List<SelectListItem> Get_Plantas()
+        /// 
+        [HttpPost]
+        public IActionResult Get_Plantas_Ajax(string term)
+        {
+            //var plantas = _context.Planta.Where(t => t.Nombre.Contains(term)).ToList();
+            var plantas = new List<ComboBoxSelect2>();
+            if (String.IsNullOrEmpty(term))
+            {
+                plantas = (from p in _context.Planta
+                           select new ComboBoxSelect2
+                           {
+                               Id = p.Id.ToString(),
+                               Text = p.Nombre
+                           }).ToList();
+            }
+            else
+            {
+                plantas = (from p in _context.Planta
+                           where p.Nombre.ToUpper().Contains(term.ToUpper())
+                           select new ComboBoxSelect2
+                           {
+                               Id = p.Id.ToString(),
+                               Text = p.Nombre
+                           }).ToList();
+            }
+
+            return Json(plantas);
+        }
+
+
+        /// <summary>
+        /// Obtiene los registros de la entidad "Planta"
+        /// </summary>
+        /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
+        private List<SelectListItem> Get_Plantas(int Id)
         {
             var plantas = _context.Planta.ToList();
             List<SelectListItem> lista_plantas = new List<SelectListItem>();
-            RegisterViewModel rvm = new RegisterViewModel();
             foreach (var item in plantas)
             {
                 lista_plantas.Add(
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre)
+                        Text = string.Format("{0}", item.Nombre),
+                        Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1060,7 +1564,7 @@ namespace WebTickets.Controllers
         /// Obtiene los registros de la entidad "Planta"
         /// </summary>
         /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
-        private List<SelectListItem> Get_Equipos_principales()
+        private List<SelectListItem> Get_Equipos_principales(int Id)
         {
             var equipoPrincipals = _context.EquipoPrincipal.ToList();
             List<SelectListItem> lista = new List<SelectListItem>();
@@ -1071,7 +1575,8 @@ namespace WebTickets.Controllers
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre)
+                        Text = string.Format("{0}", item.Nombre),
+                        Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1083,7 +1588,56 @@ namespace WebTickets.Controllers
         /// Obtiene los registros de la entidad "Planta"
         /// </summary>
         /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
-        private List<SelectListItem> Get_Equipos_Secundarios()
+        /// 
+        [HttpPost]
+        public IActionResult Get_Equipos_principales_Ajax(string term, string id_planta)
+        {
+            //var plantas = _context.Planta.Where(t => t.Nombre.Contains(term)).ToList();
+            var equipos_principales = new List<ComboBoxSelect2>();
+            if (String.IsNullOrEmpty(term))
+            {
+                var agrupado =
+                     (from ep in _context.RegistroEquipo
+                      where ep.IdPlanta.ToString() == id_planta
+                      group ep by new { Id = ep.IdEquipoPrinc.ToString(), Text = ep.NombreEquipoPrinc } into newGroup
+                      select newGroup).ToList();
+
+                foreach (var item in agrupado)
+                {
+                    ComboBoxSelect2 cs = new ComboBoxSelect2();
+                    cs.Id = item.Key.Id;
+                    cs.Text = item.Key.Text;
+                    equipos_principales.Add(cs);
+                }
+            }
+            else
+            {
+                var agrupado =
+                     (from ep in _context.RegistroEquipo
+                      where ep.IdPlanta.ToString() == id_planta &&
+                      ep.NombreEquipoPrinc.ToUpper().Contains(term.ToUpper())
+                      group ep by new { Id = ep.IdEquipoPrinc.ToString(), Text = ep.NombreEquipoPrinc } into newGroup
+                      //orderby newGroup.Key
+                      select newGroup).ToList();
+
+                foreach (var item in agrupado)
+                {
+                    ComboBoxSelect2 cs = new ComboBoxSelect2();
+                    cs.Id = item.Key.Id.ToString();
+                    cs.Text = item.Key.Text;
+                    equipos_principales.Add(cs);
+                }
+
+            }
+
+            return Json(equipos_principales);
+        }
+
+        /// <summary>
+        /// Obtiene los registros de la entidad "Planta"
+        /// </summary>
+        /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
+        private List<SelectListItem> Get_Equipos_Secundarios(int Id)
         {
             var equipoSecundarios = _context.EquipoSecundario.ToList();
             List<SelectListItem> lista = new List<SelectListItem>();
@@ -1094,7 +1648,8 @@ namespace WebTickets.Controllers
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre)
+                        Text = string.Format("{0}", item.Nombre),
+                        Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1102,11 +1657,61 @@ namespace WebTickets.Controllers
             return lista;
         }
 
+
         /// <summary>
         /// Obtiene los registros de la entidad "Planta"
         /// </summary>
         /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
-        private List<SelectListItem> Get_Componentes()
+        /// 
+        [HttpPost]
+        public IActionResult Get_Equipos_Secundarios_Ajax(string term, string id_planta, string id_equipo_princ)
+        {
+            //var plantas = _context.Planta.Where(t => t.Nombre.Contains(term)).ToList();
+            var equipos_secundarios = new List<ComboBoxSelect2>();
+            if (String.IsNullOrEmpty(term))
+            {
+                var agrupado =
+                     (from ep in _context.RegistroEquipo
+                      where ep.IdPlanta.ToString() == id_planta && ep.IdEquipoPrinc.ToString() == id_equipo_princ
+                      group ep by new { Id = ep.IdEquipoSec.ToString(), Text = ep.NombreEquipoSec } into newGroup
+                      select newGroup).ToList();
+
+                foreach (var item in agrupado)
+                {
+                    ComboBoxSelect2 cs = new ComboBoxSelect2();
+                    cs.Id = item.Key.Id;
+                    cs.Text = item.Key.Text;
+                    equipos_secundarios.Add(cs);
+                }
+            }
+            else
+            {
+                var agrupado =
+                     (from ep in _context.RegistroEquipo
+                      where ep.IdPlanta.ToString() == id_planta
+                      && ep.IdEquipoPrinc.ToString() == id_equipo_princ
+                      && ep.NombreEquipoSec.ToUpper().Contains(term.ToUpper())
+                      group ep by new { Id = ep.IdEquipoSec.ToString(), Text = ep.NombreEquipoSec } into newGroup
+                      //orderby newGroup.Key
+                      select newGroup).ToList();
+
+                foreach (var item in agrupado)
+                {
+                    ComboBoxSelect2 cs = new ComboBoxSelect2();
+                    cs.Id = item.Key.Id.ToString();
+                    cs.Text = item.Key.Text;
+                    equipos_secundarios.Add(cs);
+                }
+
+            }
+
+            return Json(equipos_secundarios);
+        }
+        /// <summary>
+        /// Obtiene los registros de la entidad "Planta"
+        /// </summary>
+        /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
+        private List<SelectListItem> Get_Componentes(int Id_Componente)
         {
             var componentes = _context.Componentes.ToList();
             List<SelectListItem> lista = new List<SelectListItem>();
@@ -1117,7 +1722,8 @@ namespace WebTickets.Controllers
                     new SelectListItem
                     {
                         Value = item.Id.ToString(),
-                        Text = string.Format("{0}", item.Nombre)
+                        Text = string.Format("{0}", item.Nombre),
+                        Disabled = (item.Id == Id_Componente) ? false : true
                     });
 
             }
@@ -1129,12 +1735,81 @@ namespace WebTickets.Controllers
         /// Obtiene los registros de la entidad "Planta"
         /// </summary>
         /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
-        private List<SelectListItem> Get_Estados_Servicio()
+        [HttpPost]
+        public IActionResult Get_Componentes_Ajax(string term, string id_planta, string id_equipo_princ, string id_equipo_sec)
+        {
+            var componentes = new List<ComboBoxSelect2>();
+            if (String.IsNullOrEmpty(term))
+            {
+                var agrupado =
+                     (from ep in _context.RegistroEquipo
+                      where ep.IdPlanta.ToString() == id_planta
+                      && ep.IdEquipoPrinc.ToString() == id_equipo_princ
+                      && ep.IdEquipoSec.ToString() == id_equipo_sec
+                      group ep by new { Id = ep.IdComponente.ToString(), Text = ep.NombreComponente } into newGroup
+                      select newGroup).ToList();
+
+                foreach (var item in agrupado)
+                {
+                    ComboBoxSelect2 cs = new ComboBoxSelect2();
+                    cs.Id = item.Key.Id;
+                    cs.Text = item.Key.Text;
+                    componentes.Add(cs);
+                }
+            }
+            else
+            {
+                var agrupado =
+                     (from ep in _context.RegistroEquipo
+                      where ep.IdPlanta.ToString() == id_planta
+                      && ep.IdEquipoPrinc.ToString() == id_equipo_princ
+                      && ep.IdEquipoSec.ToString() == id_equipo_sec
+                      && ep.NombreComponente.ToUpper().Contains(term.ToUpper())
+                      group ep by new { Id = ep.IdEquipoSec.ToString(), Text = ep.NombreEquipoSec } into newGroup
+                      //orderby newGroup.Key
+                      select newGroup).ToList();
+
+                foreach (var item in agrupado)
+                {
+                    ComboBoxSelect2 cs = new ComboBoxSelect2();
+                    cs.Id = item.Key.Id.ToString();
+                    cs.Text = item.Key.Text;
+                    componentes.Add(cs);
+                }
+
+            }
+
+            return Json(componentes);
+        }
+
+        /// <summary>
+        /// Obtiene los registros de la entidad "Planta"
+        /// </summary>
+        /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
+        private List<SelectListItem> Get_Estados_Servicio(int Id)
         {
             var estado_servicios = _context.EstadoServicio.ToList();
             List<SelectListItem> lista = new List<SelectListItem>();
-            RegisterViewModel rvm = new RegisterViewModel();
             foreach (var item in estado_servicios)
+            {
+                lista.Add(
+                    new SelectListItem
+                    {
+                        Value = item.Id.ToString(),
+                        Text = string.Format("{0}", item.Nombre),
+                        Disabled = (item.Id == Id) ? false : true
+                    });
+
+            }
+
+            return lista;
+        }
+
+        private List<SelectListItem> Get_Calificacion_Servicios_List()
+        {
+            var calificacionServicios = _context.CalificacionServicio.ToList();
+            List<SelectListItem> lista = new List<SelectListItem>();
+            foreach (var item in calificacionServicios)
             {
                 lista.Add(
                     new SelectListItem
@@ -1148,8 +1823,105 @@ namespace WebTickets.Controllers
             return lista;
         }
 
+        /// <summary>
+        /// Obtiene los registros de la entidad "Planta"
+        /// </summary>
+        /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
+        [HttpGet]
+        public IActionResult GetEstadosServicioAjax(string term)
+        {
+            var estado_servicios = new List<EstadoServicio>();
+            if (string.IsNullOrEmpty(term))
+            {
+                estado_servicios = _context.EstadoServicio.ToList();
+            }
+            else
+            {
+                estado_servicios = _context.EstadoServicio.Where(t => t.Nombre.ToUpper().Contains(term.ToUpper())).ToList();
+            }
+            List<ComboBoxSelect2> lista = new List<ComboBoxSelect2>();
+            foreach (var item in estado_servicios)
+            {
+                lista.Add(
+                    new ComboBoxSelect2
+                    {
+                        Id = item.Id.ToString(),
+                        Text = string.Format("{0}", item.Nombre)
+                    });
+
+            }
+
+            return Json(lista);
+        }
+
+        /// <summary>
+        /// Obtiene los registros de la entidad "Planta"
+        /// </summary>
+        /// <returns>Devuelve la Lista de Planta para ser cargadas en un selector</returns>
+        [HttpGet]
+        public IActionResult GetCalificacionServicioAjax(string term)
+        {
+            var calificaion_servicios = new List<CalificacionServicio>();
+            if (string.IsNullOrEmpty(term))
+            {
+                calificaion_servicios = _context.CalificacionServicio.ToList();
+            }
+            else
+            {
+                calificaion_servicios = _context.CalificacionServicio.Where(t => t.Nombre.ToUpper().Contains(term.ToUpper())).ToList();
+            }
+            List<ComboBoxSelect2> lista = new List<ComboBoxSelect2>();
+            foreach (var item in calificaion_servicios)
+            {
+                lista.Add(
+                    new ComboBoxSelect2
+                    {
+                        Id = item.Id.ToString(),
+                        Text = string.Format("{0}", item.Nombre)
+                    });
+
+            }
+
+            return Json(lista);
+        }
 
 
         #endregion
+        public void Send(EmailMessage emailMessage)
+        {
+            var message = new MimeMessage();
+            message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+            message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+
+            message.Subject = emailMessage.Subject;
+            //We will say we are sending HTML. But there are options for plaintext etc. 
+            message.Body = new TextPart(TextFormat.Html)
+            {
+                Text = emailMessage.Content
+            };
+
+            //Be careful that the SmtpClient class is the one from Mailkit not the framework!
+            using (var emailClient = new SmtpClient())
+            {
+                //The last parameter here is to use SSL (Which you should!)
+                emailClient.Connect(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, true);
+
+                //Remove any OAuth functionality as we won't be using it. 
+                emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+
+                emailClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
+
+                emailClient.Send(message);
+
+                emailClient.Disconnect(true);
+            }
+
+        }
+    }
+
+    public class ComboBoxSelect2
+    {
+        public string Id { get; set; }
+        public string Text { get; set; }
     }
 }
