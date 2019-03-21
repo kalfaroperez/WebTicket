@@ -215,58 +215,59 @@
 				</div>
 			</a>
 			<div class="card-body collapse show" id="datos_ticket">
-				<fieldset disabled>
-					<div class="row">
-						<div class="col-lg-12 col-md-12 col-sm-12">
-							<div class="form-group">
-								<label asp-for="Incidente" class="col-lg-2"></label>
-								<div class="controls col-sm-12">
-									<textarea asp-for="Incidente" rows="1" cols="40" class="form-control" placeholder="Coloque el Asunto de su Incidente" required></textarea>
-									<span asp-validation-for="Incidente" class="tooltip text-danger"> </span>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-12 col-md-12 col-sm-12">
-							<div class="form-group">
-								<label asp-for="Comentarios" class="input-sm col-lg-2"></label>
-								<div class="controls col-sm-12">
-									<textarea asp-for="Comentarios" rows="3" cols="40" class="form-control" placeholder="Describa a detalle su Incidente" required></textarea>
-									<span asp-validation-for="Comentarios" class="text-danger"> </span>
-								</div>
-							</div>
-						</div>
-					</div>
 
-					<div class="row">
-						<div class="col-lg-6 col-md-6 col-sm-12">
-							<label asp-for="FileUpload" class="col-lg-4 col-md-4 col-sm-12"></label>
+
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12">
+						<div class="form-group">
+							<label asp-for="Incidente" class="col-lg-2"></label>
 							<div class="controls col-sm-12">
-								<input asp-for="FileUpload" type="file" class="controls input-sm " multiple />
-								<span asp-validation-for="FileUpload" class="text-danger"></span>
+								<textarea asp-for="Incidente" rows="1" cols="40" class="form-control" placeholder="Coloque el Asunto de su Incidente" required></textarea>
+								<span asp-validation-for="Incidente" class="tooltip text-danger"> </span>
 							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-lg-6 col-md-6 col-sm-12">
-							<ul class="list-group">
-								@foreach (var file in Model.Files)
-								{
-									<li class="list-group-item input-sm">
-										<i class="fa fa-file-archive-o" aria-hidden="true"></i>
-										<input type="hidden" name="fileName" value="fileName" />
-										<a asp-action="Download" asp-route-filename="@Model.Numero_Ticket---@file.Name">
-											@file.Name
-										</a>
-										-
-										@file.Fecha_modificacion
-									</li>
-								}
-							</ul>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12">
+						<div class="form-group">
+							<label asp-for="Comentarios" class="input-sm col-lg-2"></label>
+							<div class="controls col-sm-12">
+								<textarea asp-for="Comentarios" rows="3" cols="40" class="form-control" placeholder="Describa a detalle su Incidente" required></textarea>
+								<span asp-validation-for="Comentarios" class="text-danger"> </span>
+							</div>
 						</div>
 					</div>
-				</fieldset>
+				</div>
+
+				<div class="row">
+					<div class="col-lg-6 col-md-6 col-sm-12">
+						<label asp-for="FileUpload" class="col-lg-4 col-md-4 col-sm-12"></label>
+						<div class="controls col-sm-12">
+							<input asp-for="FileUpload" type="file" class="controls input-sm " multiple />
+							<span asp-validation-for="FileUpload" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6 col-md-6 col-sm-12">
+						<ul class="list-group">
+							@foreach (var file in Model.Files)
+							{
+								<li class="list-group-item input-sm">
+									<i class="fa fa-file-archive-o" aria-hidden="true"></i>
+									<input type="hidden" name="fileName" value="fileName" />
+									<a asp-action="Download" asp-route-filename="@Model.Numero_Ticket---@file.Name">
+										@file.Name
+									</a>
+									-
+									@file.Fecha_modificacion
+								</li>
+							}
+						</ul>
+					</div>
+				</div>
+
 				@if (User.IsInRole("Operador"))
 				{
 					<fieldset disabled>

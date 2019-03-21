@@ -5,6 +5,7 @@ using System.Linq;
 
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -32,6 +33,7 @@ namespace WebTickets.Controllers
         private readonly IFileProvider _fileProvider;
         private readonly ILogger _logger;
         private readonly IEmailConfiguration _emailConfiguration;
+        private IHostingEnvironment _env;
 
         //Esta variable me servirá como bandera para confirmar si la peticion tuvo exito o no
         private static bool exito = false;
@@ -43,7 +45,8 @@ namespace WebTickets.Controllers
             ILoggerFactory loggerFactory,
             IFileProvider fileProvider,
             IEmailConfiguration emailConfiguration,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            IHostingEnvironment env)
         {
             _context = context;
             _signInManager = signInManager;
@@ -51,7 +54,7 @@ namespace WebTickets.Controllers
             _logger = loggerFactory.CreateLogger<TicketsController>();
             _fileProvider = fileProvider;
             _emailConfiguration = emailConfiguration;
-
+            _env = env;
         }
 
         // GET: Tickets
@@ -62,7 +65,7 @@ namespace WebTickets.Controllers
             int? page,
             int countOfPageIndexesToDisplay)
         {
-
+            
             int pageSize = 10;
             ViewData["Numero_Ticket"] = String.IsNullOrEmpty(sortOrder) ? "Numero_Ticket" : "";
             ViewData["Prioridad"] = String.IsNullOrEmpty(sortOrder) ? "Prioridad" : "";
@@ -171,8 +174,14 @@ namespace WebTickets.Controllers
             var result = new List<TicketListViewModel>();
             try
             {
+                //Consulto El Id del usuario en Session
+                string user_id = _userManager.GetUserId(User);
+                var lista = (User.IsInRole("Operador")) 
+                    ? 
+                    _context.Ticket.AsNoTracking().Where(u => u.Usuario_Id == user_id).ToList()
+                    :
+                    _context.Ticket.AsNoTracking().ToList();
 
-                var lista = _context.Ticket.AsNoTracking().ToList();
                 result = lista.Select(x => new TicketListViewModel
                 {
                     Id = x.Id.ToString(),
@@ -236,86 +245,109 @@ namespace WebTickets.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TicketViewModel tvm)
         {
-            if (tvm != null)
+            try
             {
-                if (tvm.FileUpload != null)
+                if (tvm != null)
                 {
-                    foreach (var formFile in tvm.FileUpload)
+                    if (tvm.FileUpload != null)
                     {
-                        await ProcessFormFile(formFile, ModelState);
+                        foreach (var formFile in tvm.FileUpload)
+                        {
+                            await ProcessFormFile(formFile, ModelState);
+                        }
                     }
                 }
+                if (ModelState.IsValid)
+                {
+                    string rol = await GetUserRoleName(tvm.Usuario_Id);
+                    Ticket ticket = Fill_TicketModel(tvm, rol);
+                    _context.Add(ticket);
+                    await _context.SaveChangesAsync();
+                    //Una vez guardo el registro, Tomo el ID y lo envio para crear la carpeta 
+                    //con el nombre del ID y guardar el Adjunto.
+                    await UploadFiles(
+                        tvm.FileUpload,
+                        ticket.Numero_Ticket,
+                        Enum.GetName(typeof(PathUploapFile), PathUploapFile.Tickets));
+
+                    SigoTicket sigoTicket = new SigoTicket
+                    {
+                        SeqTicketId = Convert.ToInt32(ticket.Id),
+                        Fecha = DateTime.Now,
+                        OperadorId = ticket.Operador_Id,
+                        UsuarioId = ticket.Usuario_Id,
+                        CampoCambiado = "Comentarios",
+                        ValorActual = ticket.Comentarios
+                    };
+                    _context.SigoTicket.Add(sigoTicket);
+                    await _context.SaveChangesAsync();
+                    exito = true;
+                    ticket_numero = ticket.Numero_Ticket;
+                    //Una vez guardado el ticket se envia el email
+                    EnviarCorreo(tvm);
+                    return RedirectToAction(nameof(Create), ViewBag.Resultado);
+
+                }
+                CargarFormulario_Tickets(tvm);
+                return View(tvm);
             }
-            if (ModelState.IsValid)
+            catch (Exception ex)
             {
-                string rol = await GetUserRoleName(tvm.Usuario_Id);
-
-                if (User.IsInRole("Operador"))
-                {
-                    Ticket ticket = Fill_TicketModel(tvm, rol);
-                    _context.Add(ticket);
-                    await _context.SaveChangesAsync();
-                    //Una vez guardo el registro, Tomo el ID y lo envio para crear la carpeta 
-                    //con el nombre del ID y guardar el Adjunto.
-                    await UploadFiles(
-                        tvm.FileUpload,
-                        ticket.Numero_Ticket,
-                        Enum.GetName(typeof(PathUploapFile), PathUploapFile.Tickets));
-
-                    SigoTicket sigoTicket = new SigoTicket
-                    {
-                        SeqTicketId = Convert.ToInt32(ticket.Id),
-                        Fecha = DateTime.Now,
-                        OperadorId = ticket.Operador_Id,
-                        UsuarioId = ticket.Usuario_Id,
-                        CampoCambiado = "Comentarios",
-                        ValorActual = ticket.Comentarios
-                    };
-                    _context.SigoTicket.Add(sigoTicket);
-                    await _context.SaveChangesAsync();
-                    exito = true;
-                    ticket_numero = ticket.Numero_Ticket;
-                    EmailAdreess desde = new EmailAdreess { Address = "kalfaroperez@gmail.com", Name = "SOLMA" };
-                    EmailAdreess para = new EmailAdreess { Address = tvm.Email, Name = tvm.Operador_Nombre_completo };
-                    EmailMessage email = new EmailMessage();
-                    email.FromAddresses.Add(desde);
-                    email.ToAddresses.Add(para);
-                    email.Subject = string.Format("Creacion del Ticket {0}", tvm.Numero_Ticket);
-                    email.Content = string.Format("Se creado el ticket {0}. ", tvm.Numero_Ticket);
-                    Send(email);
-                    return RedirectToAction(nameof(Create), ViewBag.Resultado);
-                }
-                else if (User.IsInRole("Administrador"))
-                {
-                    Ticket ticket = Fill_TicketModel(tvm, rol);
-                    _context.Add(ticket);
-                    await _context.SaveChangesAsync();
-                    //Una vez guardo el registro, Tomo el ID y lo envio para crear la carpeta 
-                    //con el nombre del ID y guardar el Adjunto.
-                    await UploadFiles(
-                        tvm.FileUpload,
-                        ticket.Numero_Ticket,
-                        Enum.GetName(typeof(PathUploapFile), PathUploapFile.Tickets));
-
-                    SigoTicket sigoTicket = new SigoTicket
-                    {
-                        SeqTicketId = Convert.ToInt32(ticket.Id),
-                        Fecha = DateTime.Now,
-                        OperadorId = ticket.Operador_Id,
-                        UsuarioId = ticket.Usuario_Id,
-                        CampoCambiado = "Comentarios",
-                        ValorActual = ticket.Comentarios
-                    };
-                    _context.SigoTicket.Add(sigoTicket);
-                    await _context.SaveChangesAsync();
-                    exito = true;
-                    ticket_numero = ticket.Numero_Ticket;
-                    return RedirectToAction(nameof(Create), ViewBag.Resultado);
-                }
-
+                tvm.Error = ex.Message;
+                CargarFormulario_Tickets(tvm);
             }
-            CargarFormulario_Tickets(tvm);
             return View(tvm);
+        }
+
+        /// <summary>
+        /// Envia un email al usuario despues de haber sido creado el ticket
+        /// </summary>
+        /// <param name="tvm">Información del Formulario</param>
+        private void EnviarCorreo(TicketViewModel tvm)
+        {
+            EmailAdreess desde = new EmailAdreess { Address = _emailConfiguration.SmtpUsername, Name = "SOLMA" };
+            EmailAdreess para_usuario = new EmailAdreess { Address = tvm.Email, Name = tvm.Operador_Nombre_completo };
+            EmailMessage email = new EmailMessage();
+            email.FromAddresses.Add(desde);
+            email.ToAddresses.Add(para_usuario);
+            //Emails para los administradores al momento de la creación En la BD se separan por comas
+            string lista_emails_admin = _context.Parametros.AsNoTracking().Single().FromUserRequest;
+            for (int i = 0; i < lista_emails_admin.Split(",").Count(); i++)
+            {
+                string[] arr = lista_emails_admin.Split(",");
+                string email_para_admin = arr[i];
+                EmailAdreess para_administrador = new EmailAdreess { Address = email_para_admin, Name = email_para_admin };
+                email.ToAddresses.Add(para_administrador);
+            }
+            EmailAdreess email_externo = new EmailAdreess { Address = "kalfaroperez@gmail.com", Name = "Solma" };
+            email.ToAddresses.Add(email_externo);
+
+            var webRoot = _env.WebRootPath; //get wwwroot Folder
+            var pathToFile = _env.WebRootPath
+                    + Path.DirectorySeparatorChar.ToString()
+                    + "emailTemplate"
+                    + Path.DirectorySeparatorChar.ToString()
+                    + "CreacionTicket.html";
+
+            var builder = new BodyBuilder();
+            using (StreamReader SourceReader = System.IO.File.OpenText(pathToFile))
+            {
+                builder.HtmlBody = SourceReader.ReadToEnd();
+            }
+
+            string messageBody = string.Format(
+                builder.HtmlBody,
+                ticket_numero,
+                tvm.Operador_Nombre_completo,
+                tvm.Incidente,
+                tvm.Comentarios
+            );
+
+            email.Subject = string.Format("Se ha creado su Ticket # {0}", tvm.Numero_Ticket);
+            email.Content = messageBody;
+
+
+            //Send(email);
         }
 
         //Devuel el Rol del Usuario a partir del ID del usaurio
@@ -420,6 +452,43 @@ namespace WebTickets.Controllers
 
             //Comparare los campos de la bd con los de 
             //la aplicacion para saber cual fue actualizado.
+            if (!string.IsNullOrEmpty(tvm.Incidente))
+            {
+                SigoTicket sigoTicket = new SigoTicket
+                {
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
+                    Fecha = DateTime.Now,
+                    OperadorId = ticket.Operador_Id,
+                    UsuarioId = ticket.Usuario_Id,
+                    CampoCambiado = "Incidente",
+                    CambioNumero = cambioNumeroSeg,
+                    //NotasTrabajo = tvm.NotasTrabajo,
+                    ValorAnterior = ticket.Incidente,
+                    ValorActual = tvm.Incidente,
+                    InsertDatetime = DateTime.Now
+                };
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChanges();
+            }
+
+            if (!string.IsNullOrEmpty(tvm.Comentarios))
+            {
+                SigoTicket sigoTicket = new SigoTicket
+                {
+                    SeqTicketId = Convert.ToInt32(ticket.Id),
+                    Fecha = DateTime.Now,
+                    OperadorId = ticket.Operador_Id,
+                    UsuarioId = ticket.Usuario_Id,
+                    CampoCambiado = "Comentarios",
+                    CambioNumero = cambioNumeroSeg,
+                    //NotasTrabajo = tvm.NotasTrabajo,
+                    ValorAnterior = ticket.Comentarios,
+                    ValorActual = tvm.Comentarios,
+                    InsertDatetime = DateTime.Now
+                };
+                _context.SigoTicket.Add(sigoTicket);
+                _context.SaveChanges();
+            }
             if (!string.IsNullOrEmpty(tvm.NotasTrabajo))
             {
                 SigoTicket sigoTicket = new SigoTicket
@@ -449,8 +518,6 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Operador",
                     CambioNumero = cambioNumeroSeg,
-                    //ValorAnterior = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Operador_Id).FullName,
-                    //ValorActual = _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == tvm.Operador_Id).FullName,
                     ValorAnterior =
                         (ticket.Operador_Id == "0") ? "0" :
                     _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Operador_Id).FullName,
@@ -473,8 +540,6 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Area",
                     CambioNumero = cambioNumeroSeg,
-                    //ValorAnterior = _context.Planta.AsNoTracking().SingleOrDefault(a => a.Id == ticket.Area_Id).Nombre,
-                    //ValorActual = _context.Planta.AsNoTracking().SingleOrDefault(a => a.Id == tvm.Area_Id).Nombre,
                     ValorAnterior =
                         (ticket.Area_Id == 0) ? "0" :
                     _context.Area.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Area_Id).Nombre,
@@ -497,8 +562,6 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Prioridad",
                     CambioNumero = cambioNumeroSeg,
-                    //ValorAnterior = _context.Prioridad.AsNoTracking().SingleOrDefault(p => p.Id == ticket.Prioridad).Nombre_Prioridad,
-                    //ValorActual = _context.Prioridad.AsNoTracking().SingleOrDefault(p => p.Id == tvm.Prioridad).Nombre_Prioridad,
                     ValorAnterior =
                         (ticket.Prioridad == 0) ? "0" :
                     _context.Prioridad.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Prioridad).Nombre_Prioridad,
@@ -521,8 +584,6 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Proceso",
                     CambioNumero = cambioNumeroSeg,
-                    //ValorAnterior = _context.Procesos.AsNoTracking().SingleOrDefault(p => p.Id == ticket.Proceso).Nombre_Proceso,
-                    //ValorActual = _context.Procesos.AsNoTracking().SingleOrDefault(p => p.Id == tvm.Proceso).Nombre_Proceso,
                     ValorAnterior =
                         (ticket.Proceso == 0) ? "0" :
                     _context.Procesos.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Proceso).Nombre_Proceso,
@@ -567,8 +628,6 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Tipo_Trabajo",
                     CambioNumero = cambioNumeroSeg,
-                    //ValorAnterior = _context.TipoTrabajo.AsNoTracking().SingleOrDefault(tt => tt.Id == ticket.Tipo_Trabajo).Nombre,
-                    //ValorActual = _context.TipoTrabajo.AsNoTracking().SingleOrDefault(tt => tt.Id == tvm.Tipo_Trabajo).Nombre,
                     ValorAnterior =
                         (ticket.Tipo_Trabajo == 0) ? "0" :
                     _context.TipoTrabajo.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Tipo_Trabajo).Nombre,
@@ -591,8 +650,6 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Planta",
                     CambioNumero = cambioNumeroSeg,
-                    //ValorAnterior = _context.Planta.AsNoTracking().SingleOrDefault(p => p.Id == ticket.Id_Planta).Nombre,
-                    //ValorActual = _context.Planta.AsNoTracking().SingleOrDefault(p => p.Id == tvm.Planta).Nombre,
                     ValorAnterior =
                         (ticket.Id_Planta == 0) ? "0" :
                     _context.Planta.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_Planta).Nombre,
@@ -615,8 +672,6 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "EquipoPrincipal",
                     CambioNumero = cambioNumeroSeg,
-                    //ValorAnterior = _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(ep => ep.Id == ticket.Id_EquipoPrinc).Nombre,
-                    //ValorActual = _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(ep => ep.Id == tvm.EquipoPrincipal).Nombre,
                     ValorAnterior =
                         (ticket.Id_EquipoPrinc == 0) ? "0" :
                     _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_EquipoPrinc).Nombre,
@@ -639,8 +694,6 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "EquipoSecundario",
                     CambioNumero = cambioNumeroSeg,
-                    //ValorAnterior = _context.EquipoSecundario.AsNoTracking().SingleOrDefault(es => es.Id == ticket.Id_EquipoSec).Nombre,
-                    //ValorActual = _context.EquipoSecundario.AsNoTracking().SingleOrDefault(es => es.Id == tvm.EquipoSecundario).Nombre,
                     ValorAnterior =
                         (ticket.Id_EquipoSec == 0) ? "0" :
                     _context.EquipoSecundario.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_EquipoSec).Nombre,
@@ -663,8 +716,6 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "Componente",
                     CambioNumero = cambioNumeroSeg,
-                    //ValorAnterior = _context.Componentes.AsNoTracking().SingleOrDefault(c => c.Id == ticket.Id_Componente).Nombre,
-                    //ValorActual = _context.Componentes.AsNoTracking().SingleOrDefault(c => c.Id == tvm.Componente).Nombre,
                     ValorAnterior =
                         (ticket.Id_Componente == 0) ? "0" :
                     _context.Componentes.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_Componente).Nombre,
@@ -687,8 +738,6 @@ namespace WebTickets.Controllers
                     UsuarioId = ticket.Usuario_Id,
                     CampoCambiado = "EstadoServicio",
                     CambioNumero = cambioNumeroSeg,
-                    //ValorAnterior = _context.EstadoServicio.AsNoTracking().FirstOrDefault(es => es.Id == ticket.Estado).Nombre,
-                    //ValorActual = _context.EstadoServicio.AsNoTracking().FirstOrDefault(es => es.Id == tvm.Estado).Nombre,
                     ValorAnterior =
                         (ticket.Estado == 0) ? "0" :
                     _context.EstadoServicio.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Estado).Nombre,
@@ -1904,7 +1953,7 @@ namespace WebTickets.Controllers
             using (var emailClient = new SmtpClient())
             {
                 //The last parameter here is to use SSL (Which you should!)
-                emailClient.Connect(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, true);
+                emailClient.Connect(_emailConfiguration.SmtpServer, _emailConfiguration.SmtpPort, false);
 
                 //Remove any OAuth functionality as we won't be using it. 
                 emailClient.AuthenticationMechanisms.Remove("XOAUTH2");

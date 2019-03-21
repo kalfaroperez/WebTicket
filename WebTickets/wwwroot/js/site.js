@@ -4,7 +4,7 @@
 // Write your JavaScript code.
 
 $(document).ready(function () {
-    
+
     $('#modalUsuario').on('shown.bs.modal', function () {
         //$('#myInput').trigger('focus')
     })
@@ -188,10 +188,6 @@ $(document).ready(function () {
         //}, 1000);
 
     });
-
-    
-    
-    
 });
 
 
@@ -233,28 +229,28 @@ function initTabs() {
 
 
 var app = angular.module("webticket", ['ui.bootstrap']);
-app.directive('loading', ['$http', function ($http) {
-    return {
-        restrict: 'A',
-        replace: true,
-        template: '<div class="loading loading-spiner"><img src="/../images/animated-loading-gif-transparent-background-6.gif" /> </div>',
-        link: function (scope, elm, attrs) {
-            scope.isLoading = function () {
-                return $http.pendingRequests.length > 0;
-            };
+//app.directive('loading', ['$http', function ($http) {
+//    return {
+//        restrict: 'A',
+//        replace: true,
+//        template: '<div class="loading loading-spiner"><img src="/../images/animated-loading-gif-transparent-background-6.gif" /> </div>',
+//        link: function (scope, elm, attrs) {
+//            scope.isLoading = function () {
+//                return $http.pendingRequests.length > 0;
+//            };
 
-            scope.$watch(scope.isLoading, function (v) {
-                if (v) {
-                    elm.show();
-                } else {
-                    elm.hide();
-                }
-            });
-        }
-    }
-}]);
+//            scope.$watch(scope.isLoading, function (v) {
+//                if (v) {
+//                    elm.show();
+//                } else {
+//                    elm.hide();
+//                }
+//            });
+//        }
+//    }
+//}]);
 
-app.controller("TicketCtrl", ['$scope', '$http',  'orderByFilter',
+app.controller("TicketCtrl", ['$scope', '$http', 'orderByFilter',
     function ($scope, $http, orderBy) {
         $scope.lista_seg = "";
         $scope.usuarios = "";
@@ -305,7 +301,7 @@ app.controller("TicketCtrl", ['$scope', '$http',  'orderByFilter',
                         $scope.propertyName = propertyName;
                         $scope.datos = orderBy($scope.datos, $scope.propertyName, $scope.reverse);
                     };
-                    
+
                     // when the response is available
                 }, function errorCallback(response) {
                     console.log(response);
@@ -340,7 +336,7 @@ app.controller("TicketCtrl", ['$scope', '$http',  'orderByFilter',
 
         var urlLista = $("#div_url").attr("urlLista");
 
-        $scope.load_resultados(urlLista);
+        //$scope.load_resultados(urlLista);
 
         $scope.CargarUsuario = function (row) {
             var usuario = new Object();
@@ -398,68 +394,68 @@ app.controller("TicketCtrl", ['$scope', '$http',  'orderByFilter',
 
 
 app.controller('TablaTicket', ['$scope', '$http', function ($scope, $http) {
-        //$scope.loading = true; // Show loading image    
-        $scope.currentPage = 0;
-        $scope.pageSize = 10;
-        $scope.pages = [];
-        $scope.usuarios = [];
+    //$scope.loading = true; // Show loading image    
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.pages = [];
+    $scope.usuarios = [];
 
 
-        $http({
-            method: 'GET',
-            url: "/Tickets/Lista"
-        }).then(function successCallback(response) {
-            // this callback will be called asynchronously
-            $scope.usuarios = response.data;
-            $scope.configPages();
-            //$scope.loading = false; // hide loading image on ajax success
-            // when the response is available
-        }, function errorCallback(response) {
-            console.log(response);
-            // called asynchronously if an error occurs
-            // or server returns response with an error status.
-        });
-
-
-     
-        $scope.configPages = function () {
-            $scope.pages.length = 0;
-            var ini = $scope.currentPage - 4;
-            var fin = $scope.currentPage + 5;
-            if (ini < 1) {
-                ini = 1;
-                if (Math.ceil($scope.usuarios.length / $scope.pageSize) > 10)
-                    fin = 10;
-                else
-                    fin = Math.ceil($scope.usuarios.length / $scope.pageSize);
-            } else {
-                if (ini >= Math.ceil($scope.usuarios.length / $scope.pageSize) - 10) {
-                    ini = Math.ceil($scope.usuarios.length / $scope.pageSize) - 10;
-                    fin = Math.ceil($scope.usuarios.length / $scope.pageSize);
-                }
-            }
-            if (ini < 1) ini = 1;
-            for (var i = ini; i <= fin; i++) {
-                $scope.pages.push({
-                    no: i
-                });
-            }
-
-            if ($scope.currentPage >= $scope.pages.length)
-                $scope.currentPage = $scope.pages.length - 1;
-        };
-
-        $scope.setPage = function (index) {
-            $scope.currentPage = index - 1;
-            
-        };
-
-    }]).filter('startFromGrid', function () {
-        return function (input, start) {
-            start = +start;
-            return input.slice(start);
-        }
+    $http({
+        method: 'GET',
+        url: "/Tickets/Lista"
+    }).then(function successCallback(response) {
+        // this callback will be called asynchronously
+        $scope.usuarios = response.data;
+        $scope.configPages();
+        //$scope.loading = false; // hide loading image on ajax success
+        // when the response is available
+    }, function errorCallback(response) {
+        console.log(response);
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
     });
+
+
+
+    $scope.configPages = function () {
+        $scope.pages.length = 0;
+        var ini = $scope.currentPage - 4;
+        var fin = $scope.currentPage + 5;
+        if (ini < 1) {
+            ini = 1;
+            if (Math.ceil($scope.usuarios.length / $scope.pageSize) > 10)
+                fin = 10;
+            else
+                fin = Math.ceil($scope.usuarios.length / $scope.pageSize);
+        } else {
+            if (ini >= Math.ceil($scope.usuarios.length / $scope.pageSize) - 10) {
+                ini = Math.ceil($scope.usuarios.length / $scope.pageSize) - 10;
+                fin = Math.ceil($scope.usuarios.length / $scope.pageSize);
+            }
+        }
+        if (ini < 1) ini = 1;
+        for (var i = ini; i <= fin; i++) {
+            $scope.pages.push({
+                no: i
+            });
+        }
+
+        if ($scope.currentPage >= $scope.pages.length)
+            $scope.currentPage = $scope.pages.length - 1;
+    };
+
+    $scope.setPage = function (index) {
+        $scope.currentPage = index - 1;
+
+    };
+
+}]).filter('startFromGrid', function () {
+    return function (input, start) {
+        start = +start;
+        return input.slice(start);
+    }
+});
 
 function autocomplete_planta() {
     $('#cbxPlanta').select2({
@@ -596,6 +592,6 @@ function autocomplete_Componente(id_planta, id_equipo_princ, id_equipo_sec) {
         $("#sel_componente").attr("value", id_componente);
     });
 
-    
+
 
 }
