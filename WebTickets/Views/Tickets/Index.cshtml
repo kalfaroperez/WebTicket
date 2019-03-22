@@ -72,7 +72,7 @@
 												<th class="td-actions  text-right" rowspan="1" colspan="1">Actions</th>
 											</tr>
 										</tfoot>
-										<tbody>
+										<tbody id="tbody_index" style="display:none">
 											<!--<tr ng-repeat="row in datos.slice(((currentPage-1)*itemsPerPage), ((currentPage)*itemsPerPage)) | filter:searchText | orderBy:propertyName:reverse">-->
 											<tr ng-repeat='row in usuarios | startFromGrid: currentPage * pageSize | filter: searchText | limitTo: pageSize' , ng-click='seleccionarUsuario(usuario.id)'>
 												<td>

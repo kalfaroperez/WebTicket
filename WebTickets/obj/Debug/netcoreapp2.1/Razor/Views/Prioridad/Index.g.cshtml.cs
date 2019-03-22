@@ -92,7 +92,7 @@ using WebTickets.Helpers;
             WriteLiteral("\r\n<h2>Index</h2>\r\n\r\n<p>\r\n    ");
             EndContext();
             BeginContext(165, 37, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "c17a42ebdfa24450866e37847f5cd7dd", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "ca1bcd54ba6d4b489407d0ab7d685fbb", async() => {
                 BeginContext(188, 10, true);
                 WriteLiteral("Create New");
                 EndContext();
@@ -182,7 +182,7 @@ using WebTickets.Helpers;
             WriteLiteral("\r\n            </td>\r\n            <td>\r\n                ");
             EndContext();
             BeginContext(1052, 53, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "bfbedd39efe84954b76d463eecc86f3a", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "df3f9550eb0f420f8c16baab52d419fe", async() => {
                 BeginContext(1097, 4, true);
                 WriteLiteral("Edit");
                 EndContext();
@@ -217,7 +217,7 @@ using WebTickets.Helpers;
             WriteLiteral(" |\r\n                ");
             EndContext();
             BeginContext(1125, 59, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "d4f2106bf3bc4eb9a3053892ae8d78a6", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "a30557c589d446a9a041f6e115e6dad2", async() => {
                 BeginContext(1173, 7, true);
                 WriteLiteral("Details");
                 EndContext();
@@ -252,7 +252,7 @@ using WebTickets.Helpers;
             WriteLiteral(" |\r\n                ");
             EndContext();
             BeginContext(1204, 57, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "cad3a9a4e37848dbaf471008188cd422", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "84751314d6bf4cfb96e14953b1247bf7", async() => {
                 BeginContext(1251, 6, true);
                 WriteLiteral("Delete");
                 EndContext();

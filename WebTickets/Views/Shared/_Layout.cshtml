@@ -35,24 +35,28 @@
 </head>
 <body class="">
 	<div class="wrapper ">
-		<div class="sidebar" data-color="green" data-background-color="black" >
+		<div class="sidebar" data-color="green" data-background-color="black">
 			<!--
 				Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
 				Tip 2: you can also add an image using data-image tag
 			-->
 			<partial name="_sidebar-nav" />
-			
+
 		</div>
 		<div class="main-panel">
 			<!-- Navbar -->
-			<partial name="_navbar_top"/>
+			<partial name="_navbar_top" />
 			<!-- End Navbar -->
 			<!-- Content Body-->
 			<div class="content">
-				<div id="loader" data-loading> </div>
 				<div class="container-fluid">
 					<div class="animated fadeIn">
+
+						<div id="loader" data-loading style="display:none; position:absolute;z-index:1000;width:10px; left:25%; top: 25%; ">
+							<img src="~/images/animated-loading.gif" />
+						</div>
+
 						<!-- VIEW-CONTENT -->
 						@RenderBody()
 						<!-- /VIEW-CONTENT -->
@@ -144,7 +148,7 @@
 	<!--  Notifications Plugin    -->
 	<script src="~/lib/material-dashboard/assets/js/plugins/bootstrap-notify.js"></script>
 	<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-	<script src="~/lib/material-dashboard/assets/js/material-dashboard.js?v=2.1.1" type="text/javascript"></script>
+	<!--<script src="~/lib/material-dashboard/assets/js/material-dashboard.js?v=2.1.1" type="text/javascript"></script>-->
 	<environment include="Development">
 		<script src="~/js/site.js" asp-append-version="true"></script>
 

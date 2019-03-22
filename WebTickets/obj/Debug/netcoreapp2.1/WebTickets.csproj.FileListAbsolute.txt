@@ -575,3 +575,4 @@ D:\Users\kalfaro\source\repos\kalfaroperez\webticket\WebTickets\obj\Debug\netcor
 D:\Users\kalfaro\source\repos\kalfaroperez\webticket\WebTickets\obj\Debug\netcoreapp2.1\WebTickets.csproj.CopyComplete
 D:\Users\kalfaro\source\repos\kalfaroperez\webticket\WebTickets\obj\Debug\netcoreapp2.1\WebTickets.dll
 D:\Users\kalfaro\source\repos\kalfaroperez\webticket\WebTickets\obj\Debug\netcoreapp2.1\WebTickets.pdb
+D:\Users\kalfaro\source\repos\kalfaroperez\webticket\WebTickets\obj\Debug\netcoreapp2.1\Razor\Views\Shared\_dashboard.g.cshtml.cs

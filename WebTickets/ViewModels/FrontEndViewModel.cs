@@ -10,6 +10,11 @@ using System.Threading.Tasks;
 
 namespace WebTickets.ViewModels
 {
+    public class InformePorEstado {
+        public string Estado;
+        public int Conteo;
+    }
+
     public class EquiposCommonListViewModel
     {
         public int Id { get; set; }

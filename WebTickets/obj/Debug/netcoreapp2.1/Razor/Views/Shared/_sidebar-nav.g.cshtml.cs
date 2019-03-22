@@ -84,7 +84,7 @@ using WebTickets.Helpers;
             WriteLiteral("\r\n<div class=\"logo\">\r\n\t<a href=\"/Home/Index\" class=\"simple-text logo-normal\">\r\n\t\t");
             EndContext();
             BeginContext(185, 61, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("img", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "724d193ff43646d8bb935c88dbc1421e", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("img", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "8b004b57070c4680a8e2fb6046738995", async() => {
             }
             );
             __Microsoft_AspNetCore_Mvc_Razor_TagHelpers_UrlResolutionTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.Razor.TagHelpers.UrlResolutionTagHelper>();
@@ -125,7 +125,7 @@ using WebTickets.Helpers;
 				");
             EndContext();
             BeginContext(800, 147, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "f4b82f53f0d945169c7db978b8aca0e3", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "6e13e65ccac14e47adc29ce3b3309903", async() => {
                 BeginContext(864, 79, true);
                 WriteLiteral("\r\n\t\t\t\t\t<i class=\"material-icons\">content_paste</i>\r\n\t\t\t\t\t<p>Consultas</p>\r\n\t\t\t\t");
                 EndContext();
