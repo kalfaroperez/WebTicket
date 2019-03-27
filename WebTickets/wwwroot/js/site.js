@@ -420,7 +420,7 @@ function autocomplete_comboBox() {
         placeholder: 'Seleccione un valor..',
 
     });
-    
+   
 }
 
 function autocomplete_equipoPrincipal(id_planta) {

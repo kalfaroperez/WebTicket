@@ -407,7 +407,7 @@ namespace WebTickets.Controllers
                 {
                     try
                     {
-                        string rol = await GetUserRoleName(tvm.Usuario_Id);
+                        
                         InsertSeguimientoTicket(tvm);
                         //Ticket Comparer Compara los cambios
                         Ticket ticket = Fill_TicketModel(tvm);
@@ -421,7 +421,7 @@ namespace WebTickets.Controllers
                             ticket.Numero_Ticket,
                             Enum.GetName(typeof(PathUploapFile), PathUploapFile.Tickets));
 
-                        EnviarCorreo(tvm);
+                        //EnviarCorreo(tvm);
                         transaction.Commit();
                         tvm.Exito = "";
                     }
@@ -453,7 +453,7 @@ namespace WebTickets.Controllers
 
             //Comparare los campos de la bd con los de 
             //la aplicacion para saber cual fue actualizado.
-            if (!string.IsNullOrEmpty(tvm.Incidente))
+            if (ticket.Incidente != tvm.Incidente)
             {
                 SigoTicket sigoTicket = new SigoTicket
                 {
@@ -472,7 +472,7 @@ namespace WebTickets.Controllers
                 _context.SaveChanges();
             }
 
-            if (!string.IsNullOrEmpty(tvm.Comentarios))
+            if (ticket.Comentarios != tvm.Comentarios)
             {
                 SigoTicket sigoTicket = new SigoTicket
                 {
@@ -609,7 +609,7 @@ namespace WebTickets.Controllers
                     CambioNumero = cambioNumeroSeg,
                     ValorAnterior =
                         (ticket.Asignado_A == "0") ? "0" :
-                    _context.ApplicationUser.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Asignado_A).FullName,
+                    _context.ApplicationUser.AsNoTracking().First(t => t.Id == ticket.Asignado_A).FullName,
                     ValorActual =
                     (tvm.Asignado_A == "0" || tvm.Asignado_A == null) ? "0" :
                     _context.ApplicationUser.AsNoTracking().First(t => t.Id == tvm.Asignado_A).FullName,
@@ -882,23 +882,25 @@ namespace WebTickets.Controllers
         {
 
             var tickets = from a in _context.Ticket
-                          where a.Numero_Ticket == txtBuscar
+                          where a.Numero_Ticket.Contains(txtBuscar)
                           select a;
-
-            /*List<TicketListViewModel> lista = new List<TicketListViewModel>();
-            foreach (var item in tickets)
-            {
-
-            }*/
 
             return Json(tickets);
         }
 
         #region Helpers
 
+        /// <summary>
+        /// Se utilizara este metodo solo para 
+        /// la creación de un nuevo ticket de Servicio 
+        /// y carga el objeto Ticket de acuerdo al rol del usuario que esta creando el servicio
+        /// </summary>
+        /// <param name="tvm"></param>
+        /// <param name="rol_usuario_sesion"></param>
+        /// <returns></returns>
         private Ticket Fill_TicketModel(TicketViewModel tvm, string rol_usuario_sesion)
         {
-
+            string user_id = _userManager.GetUserId(User);
             Ticket ticket = new Ticket();
             if (User.IsInRole("Administrador"))
             {
@@ -928,7 +930,8 @@ namespace WebTickets.Controllers
                     Fecha_Entrega = tvm.Fecha_Entrega,
                     Fecha_Ultimo_Estado = DateTime.Now,
                     Insert_Datetime = DateTime.Now,
-                    Update_Datetime = DateTime.Now
+                    Insert_Oper = user_id,
+                    
                 };
             }
             else if (User.IsInRole("Operador"))
@@ -959,7 +962,7 @@ namespace WebTickets.Controllers
                     Fecha_Entrega = DateTime.Now,
                     Fecha_Ultimo_Estado = DateTime.Now,
                     Insert_Datetime = DateTime.Now,
-                    Update_Datetime = DateTime.Now
+                    Insert_Oper = user_id,
                 };
             }
             if (tvm.Id.ToString() != null)
@@ -969,9 +972,15 @@ namespace WebTickets.Controllers
             return ticket;
         }
 
+        /// <summary>
+        /// Se utiliza este metodo para cargar el Ticket con la informacion que se encuentra en la vista 
+        /// y se utilizará solo para la funcion Editar
+        /// </summary>
+        /// <param name="tvm">TicketViewModel Vista</param>
+        /// <returns></returns>
         private Ticket Fill_TicketModel(TicketViewModel tvm)
         {
-
+            string user_id = _userManager.GetUserId(User);
             Ticket ticket = new Ticket
             {
                 Numero_Ticket = tvm.Numero_Ticket,
@@ -997,7 +1006,7 @@ namespace WebTickets.Controllers
                 Calificacion = tvm.Calificacion == "0" ? "0" : tvm.Calificacion,
                 Fecha_Entrega = tvm.Fecha_Entrega,
                 Fecha_Ultimo_Estado = DateTime.Now,
-                Insert_Datetime = DateTime.Now,
+                Update_Oper = user_id,
                 Update_Datetime = DateTime.Now
             };
 
@@ -1132,6 +1141,7 @@ namespace WebTickets.Controllers
             return tvm;
         }
 
+        /*
         private TicketViewModel CargarFormulario_Tickets(Ticket ticket)
         {
             TicketViewModel tvm = new TicketViewModel();
@@ -1221,7 +1231,130 @@ namespace WebTickets.Controllers
 
             return tvm;
         }
+        */
 
+        private TicketViewModel CargarFormulario_Tickets(Ticket ticket)
+        {
+            TicketViewModel tvm = new TicketViewModel();
+            //Consulto El Id del usuario en Session
+            string user_id = ticket.Usuario_Id;
+            var user = _context.ApplicationUser.Find(user_id);
+            tvm.Username = user.FullName;
+
+            //Usuario que creara el ticket
+            tvm.Usuario_Id = user_id;
+
+            tvm.Id = ticket.Id;
+            //Numero Ticket Consecutivo
+            tvm.Numero_Ticket = ticket.Numero_Ticket;
+            tvm.Fecha = ticket.Fecha;
+            tvm.Nombre_completo = user.FullName;
+
+            //Datos Operador
+            tvm.Operador_Id = ticket.Operador_Id;
+            var operador = _context.ApplicationUser.Find(ticket.Operador_Id);
+            //Ahora Procedo a cargar los Selectores del Formulario
+            tvm.Operador_Nombre_completo = operador.FullName;
+            tvm.Operador_UserName = operador.UserName;
+            tvm.Email = operador.Email;
+            tvm.Area_Id = operador.Area;
+            tvm.Area = _context.Area.Find(operador.Area).Nombre;
+            tvm.Ubicacion = operador.Ubicacion;
+
+            tvm.Incidente = ticket.Incidente;
+            tvm.Comentarios = ticket.Comentarios;
+
+            if (User.IsInRole("Operador"))
+            {
+                tvm.Prioridad_Text = (ticket.Prioridad == 0) ? "" :
+                _context.Prioridad.AsNoTracking().First(q => q.Id == ticket.Prioridad).Nombre_Prioridad;
+                tvm.Prioridad = ticket.Prioridad;
+
+                tvm.Proceso_Text = (ticket.Proceso == 0) ? "" :
+               _context.Procesos.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Proceso).Nombre_Proceso;
+                tvm.Proceso = ticket.Proceso;
+
+                tvm.Asignado_A_Text = (ticket.Asignado_A == "0") ? "" :
+                _context.ApplicationUser.AsNoTracking().First(q => q.Id == ticket.Asignado_A).FullName;
+                tvm.Asignado_A = ticket.Asignado_A;
+
+                tvm.Tipo_Trabajo_Text = (ticket.Tipo_Trabajo == 0) ? "" :
+                    _context.TipoTrabajo.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Tipo_Trabajo).Nombre;
+                tvm.Tipo_Trabajo = ticket.Tipo_Trabajo;
+
+                tvm.Planta_Text = (ticket.Id_Planta == 0) ? "" :
+                    _context.Planta.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_Planta).Nombre;
+                tvm.Planta = ticket.Id_Planta;
+
+                tvm.EquipoPrincipal_Text = (ticket.Id_EquipoPrinc == 0) ? "" :
+                    _context.EquipoPrincipal.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_EquipoPrinc).Nombre;
+                tvm.EquipoPrincipal = ticket.Id_EquipoPrinc;
+
+                tvm.EquipoSecundario_Text = (ticket.Id_EquipoSec == 0) ? "" :
+                    _context.EquipoSecundario.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_EquipoSec).Nombre;
+                tvm.EquipoSecundario = ticket.Id_EquipoSec;
+
+                tvm.Componente_Text = (ticket.Id_Componente == 0) ? "" :
+                    _context.Componentes.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Id_Componente).Nombre;
+                tvm.Componente = ticket.Id_Componente;
+
+                tvm.Estado_Text = (ticket.Estado == 0) ? "" :
+                    _context.EstadoServicio.AsNoTracking().SingleOrDefault(t => t.Id == ticket.Estado).Nombre;
+                tvm.Estado = ticket.Estado;
+            }
+
+            if (User.IsInRole("Administrador"))
+            {
+                //Selector Prioridades
+                tvm.Lista_Prioridades = GetPrioridades(ticket.Prioridad);
+                tvm.Prioridad = ticket.Prioridad;
+
+
+                //Selector Procesos
+                tvm.Lista_Procesos = GetProcesos(ticket.Proceso);
+                tvm.Proceso = ticket.Proceso;
+
+
+                //Selector Asignados_A
+                tvm.Lista_Asignados_A = Get_Lista_Asignado_A(ticket.Asignado_A);
+                tvm.Asignado_A = ticket.Asignado_A;
+
+                //Selector Tipo Trabajos
+                tvm.Lista_Tipo_Trabajos = Get_Tipo_Trabajos(ticket.Tipo_Trabajo);
+                tvm.Tipo_Trabajo = ticket.Tipo_Trabajo;
+
+                //Selector Plantas
+                tvm.Lista_Plantas = Get_Plantas(ticket.Id_Planta);
+                tvm.Planta = ticket.Id_Planta;
+
+                //Selector Equipos_princ
+                tvm.Lista_Equipos_princ = Get_Equipos_principales(ticket.Id_EquipoPrinc);
+                tvm.EquipoPrincipal = ticket.Id_EquipoPrinc;
+
+                //Selector Equipos_sec
+                tvm.Lista_Equipos_sec = Get_Equipos_Secundarios(ticket.Id_EquipoSec);
+                tvm.EquipoSecundario = ticket.Id_EquipoSec;
+
+                //Selector Componentes
+                tvm.Lista_Componentes = Get_Componentes(ticket.Id_Componente);
+                tvm.Componente = ticket.Id_Componente;
+
+                //Selector Estados
+                tvm.Lista_Estados = Get_Estados_Servicio(ticket.Estado);
+                tvm.Estado = ticket.Estado;
+
+                
+            }
+
+            //Selector CalificacionServicio
+            tvm.Lista_Calificaion = Get_Calificacion_Servicios_List();
+            tvm.Calificacion = ticket.Calificacion;
+
+            tvm.Fecha_Entrega = ticket.Fecha_Entrega;
+            tvm.Fecha_Ultimo_Estado = ticket.Fecha_Ultimo_Estado;
+
+            return tvm;
+        }
         [HttpPost]
         public IActionResult GetUsuarios()
         {
@@ -1278,7 +1411,8 @@ namespace WebTickets.Controllers
                             NombreAdjunto = item.NombreAdjunto,
                             TipoAdjunto = item.TipoAdjunto,
                             CampoCambiado = item.CampoCambiado,
-                            InsertDatetime = item.InsertDatetime
+                            InsertOper = item.InsertOper,
+                            InsertDatetime = item.InsertDatetime,
                         };
                         seg.Cambios.Add(stvm);
                     }
@@ -1309,6 +1443,7 @@ namespace WebTickets.Controllers
                             NombreAdjunto = item.NombreAdjunto,
                             TipoAdjunto = item.TipoAdjunto,
                             CampoCambiado = item.CampoCambiado,
+                            InsertOper = item.InsertOper,
                             InsertDatetime = item.InsertDatetime
                         };
                         seg.Cambios.Add(stvm);

@@ -248,7 +248,6 @@ namespace WebTickets.ViewModels
         public string TipoAdjunto { get; set; }
         public string NombreAdjunto { get; set; }
         public string InsertOper { get; set; }
-        public string InsertUser { get; set; }
         public DateTime InsertDatetime { get; set; }
     }
 

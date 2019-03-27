@@ -33,3 +33,10 @@ D:\Users\kalfaro\source\repos\kalfaroperez\webticket\Commons\Common\obj\Debug\ne
 D:\Users\kalfaro\source\repos\kalfaroperez\webticket\Commons\Common\obj\Debug\netcoreapp2.1\Common.csproj.CoreCompileInputs.cache
 D:\Users\kalfaro\source\repos\kalfaroperez\webticket\Commons\Common\obj\Debug\netcoreapp2.1\Common.dll
 D:\Users\kalfaro\source\repos\kalfaroperez\webticket\Commons\Common\obj\Debug\netcoreapp2.1\Common.pdb
+C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Common\bin\Debug\netcoreapp2.1\Common.deps.json
+C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Common\bin\Debug\netcoreapp2.1\Common.dll
+C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Common\bin\Debug\netcoreapp2.1\Common.pdb
+C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Common\obj\Debug\netcoreapp2.1\Common.csprojAssemblyReference.cache
+C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Common\obj\Debug\netcoreapp2.1\Common.csproj.CoreCompileInputs.cache
+C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Common\obj\Debug\netcoreapp2.1\Common.dll
+C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Common\obj\Debug\netcoreapp2.1\Common.pdb
