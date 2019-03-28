@@ -2151,21 +2151,6 @@ namespace WebTickets.Controllers
             }
 
         }
-
-        public List<string> Grafica_x_EstadoTicket()
-        {
-            List<string> lista = new List<string>();
-            var query = from tickets in _context.Ticket
-                        join user in _context.ApplicationUser on tickets.Asignado_A equals user.Id
-                        group new { user.Id } by user.UserName into rest
-                        select new
-                        {
-                            conteo = rest.Count(),
-                            asignado_a = rest.Key
-                        };
-
-            return lista;
-        }
     }
 
     public class ComboBoxSelect2
