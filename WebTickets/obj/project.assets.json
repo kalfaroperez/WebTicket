@@ -13674,11 +13674,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\WebTickets\\WebTickets.csproj",
+      "projectUniqueName": "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\WebTickets\\WebTickets.csproj",
       "projectName": "WebTickets",
-      "projectPath": "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\WebTickets\\WebTickets.csproj",
+      "projectPath": "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\WebTickets\\WebTickets.csproj",
       "packagesPath": "C:\\Users\\KRAP-PC\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\WebTickets\\obj\\",
+      "outputPath": "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\WebTickets\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -13697,17 +13697,17 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
-            "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\Auth.Service\\Auth.Service.csproj": {
-              "projectPath": "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\Auth.Service\\Auth.Service.csproj"
+            "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\Auth.Service\\Auth.Service.csproj": {
+              "projectPath": "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\Auth.Service\\Auth.Service.csproj"
             },
-            "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\Commons\\Model\\Model.csproj": {
-              "projectPath": "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\Commons\\Model\\Model.csproj"
+            "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj": {
+              "projectPath": "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj"
             },
-            "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\Persistence\\Persitence.DatabaseContext\\Persistence.DatabaseContext.csproj": {
-              "projectPath": "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\Persistence\\Persitence.DatabaseContext\\Persistence.DatabaseContext.csproj"
+            "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\Persistence\\Persitence.DatabaseContext\\Persistence.DatabaseContext.csproj": {
+              "projectPath": "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\Persistence\\Persitence.DatabaseContext\\Persistence.DatabaseContext.csproj"
             },
-            "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\Service\\Service.csproj": {
-              "projectPath": "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\Service\\Service.csproj"
+            "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\Service\\Service.csproj": {
+              "projectPath": "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\Service\\Service.csproj"
             }
           }
         }

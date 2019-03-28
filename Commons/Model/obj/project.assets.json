@@ -11907,11 +11907,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\Commons\\Model\\Model.csproj",
+      "projectUniqueName": "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj",
       "projectName": "Model",
-      "projectPath": "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\Commons\\Model\\Model.csproj",
+      "projectPath": "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\Commons\\Model\\Model.csproj",
       "packagesPath": "C:\\Users\\KRAP-PC\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\Commons\\Model\\obj\\",
+      "outputPath": "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\Commons\\Model\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -11930,8 +11930,8 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
-            "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\Commons\\Common\\Common.csproj": {
-              "projectPath": "C:\\Users\\KRAP-PC\\Source\\Repos\\WebTicket\\Commons\\Common\\Common.csproj"
+            "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\Commons\\Common\\Common.csproj": {
+              "projectPath": "C:\\Users\\KRAP-PC\\source\\repos\\WebTicket\\Commons\\Common\\Common.csproj"
             }
           }
         }

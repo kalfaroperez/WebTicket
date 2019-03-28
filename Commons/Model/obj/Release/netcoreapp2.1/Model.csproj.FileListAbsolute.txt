@@ -26,17 +26,3 @@ D:\Users\kalfaro\source\repos\WebTicket\Commons\Model\obj\Release\netcoreapp2.1\
 D:\Users\kalfaro\source\repos\WebTicket\Commons\Model\obj\Release\netcoreapp2.1\Model.csproj.CopyComplete
 D:\Users\kalfaro\source\repos\WebTicket\Commons\Model\obj\Release\netcoreapp2.1\Model.dll
 D:\Users\kalfaro\source\repos\WebTicket\Commons\Model\obj\Release\netcoreapp2.1\Model.pdb
-C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Model\bin\Release\netcoreapp2.1\Model.deps.json
-C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Model\bin\Release\netcoreapp2.1\Model.runtimeconfig.json
-C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Model\bin\Release\netcoreapp2.1\Model.runtimeconfig.dev.json
-C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Model\bin\Release\netcoreapp2.1\Model.dll
-C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Model\bin\Release\netcoreapp2.1\Model.pdb
-C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Model\bin\Release\netcoreapp2.1\Common.dll
-C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Model\bin\Release\netcoreapp2.1\Common.pdb
-C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Model\obj\Release\netcoreapp2.1\Model.csprojAssemblyReference.cache
-C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Model\obj\Release\netcoreapp2.1\Model.csproj.CoreCompileInputs.cache
-C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Model\obj\Release\netcoreapp2.1\Model.AssemblyInfoInputs.cache
-C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Model\obj\Release\netcoreapp2.1\Model.AssemblyInfo.cs
-C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Model\obj\Release\netcoreapp2.1\Model.csproj.CopyComplete
-C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Model\obj\Release\netcoreapp2.1\Model.dll
-C:\Users\KRAP-PC\Source\Repos\WebTicket\Commons\Model\obj\Release\netcoreapp2.1\Model.pdb
