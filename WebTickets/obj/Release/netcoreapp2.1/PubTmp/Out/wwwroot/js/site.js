@@ -128,26 +128,6 @@ function initTabs() {
 
 
 var app = angular.module("webticket", ['ui.bootstrap']);
-//app.directive('loading', ['$http', function ($http) {
-//    return {
-//        restrict: 'A',
-//        replace: true,
-//        template: '<div class="loading loading-spiner"><img src="/../images/animated-loading-gif-transparent-background-6.gif" /> </div>',
-//        link: function (scope, elm, attrs) {
-//            scope.isLoading = function () {
-//                return $http.pendingRequests.length > 0;
-//            };
-
-//            scope.$watch(scope.isLoading, function (v) {
-//                if (v) {
-//                    elm.show();
-//                } else {
-//                    elm.hide();
-//                }
-//            });
-//        }
-//    }
-//}]);
 
 app.controller("TicketCtrl", ['$scope', '$http', 'orderByFilter',
     function ($scope, $http, orderBy) {
