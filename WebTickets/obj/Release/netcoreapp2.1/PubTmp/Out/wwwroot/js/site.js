@@ -8,17 +8,20 @@ $(document).ready(function () {
     $('#modalUsuario').on('shown.bs.modal', function () {
         //$('#myInput').trigger('focus')
     })
-    window.setTimeout(function () {
-        $(".alert").fadeTo(1000, 0).slideUp(1000, function () {
-            $(this).remove();
-        });
-    }, 15000);
+
+    //window.setTimeout(function () {
+    //    $(".alert").fadeTo(1000, 0).slideUp(1000, function () {
+    //        $(this).remove();
+    //    });
+    //}, 15000);
 
     initTabs();
 
     autocomplete_planta();
     autocomplete_comboBox();
 
+    //Inicializa selectores para dar estilo Select2
+    cbxSelect2();
 
     $sidebar = $('.sidebar');
 
@@ -30,128 +33,27 @@ $(document).ready(function () {
 
     window_width = $(window).width();
 
-    fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
+    //fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
 
-    if (window_width > 767 && fixed_plugin_open == 'Dashboard') {
-        if ($('.fixed-plugin .dropdown').hasClass('show-dropdown')) {
-            $('.fixed-plugin .dropdown').addClass('open');
-        }
+    //if (window_width > 767 && fixed_plugin_open == 'Dashboard') {
+    //    if ($('.fixed-plugin .dropdown').hasClass('show-dropdown')) {
+    //        $('.fixed-plugin .dropdown').addClass('open');
+    //    }
 
-    }
+    //}
 
-    $('.fixed-plugin a').click(function (event) {
-        // Alex if we click on switch, stop propagation of the event, so the dropdown will not be hide, otherwise we set the  section active
-        if ($(this).hasClass('switch-trigger')) {
-            if (event.stopPropagation) {
-                event.stopPropagation();
-            } else if (window.event) {
-                window.event.cancelBubble = true;
-            }
-        }
-    });
+    //$('.fixed-plugin a').click(function (event) {
+    //    // Alex if we click on switch, stop propagation of the event, so the dropdown will not be hide, otherwise we set the  section active
+    //    if ($(this).hasClass('switch-trigger')) {
+    //        if (event.stopPropagation) {
+    //            event.stopPropagation();
+    //        } else if (window.event) {
+    //            window.event.cancelBubble = true;
+    //        }
+    //    }
+    //});
 
-    $('.fixed-plugin .active-color span').click(function () {
-        $full_page_background = $('.full-page-background');
-
-        $(this).siblings().removeClass('active');
-        $(this).addClass('active');
-
-        var new_color = $(this).data('color');
-
-        if ($sidebar.length != 0) {
-            $sidebar.attr('data-color', new_color);
-        }
-
-        if ($full_page.length != 0) {
-            $full_page.attr('filter-color', new_color);
-        }
-
-        if ($sidebar_responsive.length != 0) {
-            $sidebar_responsive.attr('data-color', new_color);
-        }
-    });
-
-    $('.fixed-plugin .background-color .badge').click(function () {
-        $(this).siblings().removeClass('active');
-        $(this).addClass('active');
-
-        var new_color = $(this).data('background-color');
-
-        if ($sidebar.length != 0) {
-            $sidebar.attr('data-background-color', new_color);
-        }
-    });
-
-    $('.fixed-plugin .img-holder').click(function () {
-        $full_page_background = $('.full-page-background');
-
-        $(this).parent('li').siblings().removeClass('active');
-        $(this).parent('li').addClass('active');
-
-
-        var new_image = $(this).find("img").attr('src');
-
-        if ($sidebar_img_container.length != 0 && $('.switch-sidebar-image input:checked').length != 0) {
-            $sidebar_img_container.fadeOut('fast', function () {
-                $sidebar_img_container.css('background-image', 'url("' + new_image + '")');
-                $sidebar_img_container.fadeIn('fast');
-            });
-        }
-
-        if ($full_page_background.length != 0 && $('.switch-sidebar-image input:checked').length != 0) {
-            var new_image_full_page = $('.fixed-plugin li.active .img-holder').find('img').data('src');
-
-            $full_page_background.fadeOut('fast', function () {
-                $full_page_background.css('background-image', 'url("' + new_image_full_page + '")');
-                $full_page_background.fadeIn('fast');
-            });
-        }
-
-        if ($('.switch-sidebar-image input:checked').length == 0) {
-            var new_image = $('.fixed-plugin li.active .img-holder').find("img").attr('src');
-            var new_image_full_page = $('.fixed-plugin li.active .img-holder').find('img').data('src');
-
-            $sidebar_img_container.css('background-image', 'url("' + new_image + '")');
-            $full_page_background.css('background-image', 'url("' + new_image_full_page + '")');
-        }
-
-        if ($sidebar_responsive.length != 0) {
-            $sidebar_responsive.css('background-image', 'url("' + new_image + '")');
-        }
-    });
-
-    $('.switch-sidebar-image input').change(function () {
-        $full_page_background = $('.full-page-background');
-
-        $input = $(this);
-
-        if ($input.is(':checked')) {
-            if ($sidebar_img_container.length != 0) {
-                $sidebar_img_container.fadeIn('fast');
-                $sidebar.attr('data-image', '#');
-            }
-
-            if ($full_page_background.length != 0) {
-                $full_page_background.fadeIn('fast');
-                $full_page.attr('data-image', '#');
-            }
-
-            background_image = true;
-        } else {
-            if ($sidebar_img_container.length != 0) {
-                $sidebar.removeAttr('data-image');
-                $sidebar_img_container.fadeOut('fast');
-            }
-
-            if ($full_page_background.length != 0) {
-                $full_page.removeAttr('data-image', '#');
-                $full_page_background.fadeOut('fast');
-            }
-
-            background_image = false;
-        }
-    });
-
+    
     $('.switch-sidebar-mini input').change(function () {
         $body = $('body');
 
@@ -175,19 +77,19 @@ $(document).ready(function () {
         }
 
         // we simulate the window Resize so the charts will get updated in realtime.
-        var simulateWindowResize = setInterval(function () {
-            window.dispatchEvent(new Event('resize'));
-        }, 180);
+        //var simulateWindowResize = setInterval(function () {
+        //    window.dispatchEvent(new Event('resize'));
+        //}, 180);
 
-        // we stop the simulation of Window Resize after the animations are completed
-        setTimeout(function () {
-            clearInterval(simulateWindowResize);
-        }, 1000);
+        //// we stop the simulation of Window Resize after the animations are completed
+        //setTimeout(function () {
+        //    clearInterval(simulateWindowResize);
+        //}, 1000);
 
     });
 });
 
-
+var loader = $("#loader");
 
 function initTabs() {
 
@@ -226,35 +128,36 @@ function initTabs() {
 
 
 var app = angular.module("webticket", ['ui.bootstrap']);
-app.directive('loading', ['$http', function ($http) {
-    return {
-        restrict: 'A',
-        replace: true,
-        template: '<div class="loading loading-spiner"><img src="/../images/animated-loading-gif-transparent-background-6.gif" /> </div>',
-        link: function (scope, elm, attrs) {
-            scope.isLoading = function () {
-                return $http.pendingRequests.length > 0;
-            };
+//app.directive('loading', ['$http', function ($http) {
+//    return {
+//        restrict: 'A',
+//        replace: true,
+//        template: '<div class="loading loading-spiner"><img src="/../images/animated-loading-gif-transparent-background-6.gif" /> </div>',
+//        link: function (scope, elm, attrs) {
+//            scope.isLoading = function () {
+//                return $http.pendingRequests.length > 0;
+//            };
 
-            scope.$watch(scope.isLoading, function (v) {
-                if (v) {
-                    elm.show();
-                } else {
-                    elm.hide();
-                }
-            });
-        }
-    }
-}]);
+//            scope.$watch(scope.isLoading, function (v) {
+//                if (v) {
+//                    elm.show();
+//                } else {
+//                    elm.hide();
+//                }
+//            });
+//        }
+//    }
+//}]);
 
-app.controller("TicketCtrl", ['$scope', '$http',  'orderByFilter',
+app.controller("TicketCtrl", ['$scope', '$http', 'orderByFilter',
     function ($scope, $http, orderBy) {
         $scope.lista_seg = "";
         $scope.usuarios = "";
+        loader.show();
         $scope.loadSegTicketController = function (_Id) {
             var sigo = new Object();
             sigo.Id = _Id;
-
+            
             // Simple GET request example:
             var req = {
                 method: 'POST',
@@ -265,7 +168,9 @@ app.controller("TicketCtrl", ['$scope', '$http',  'orderByFilter',
                 // this callback will be called asynchronously
                 // when the response is available
                 $scope.lista_seg = response.data;
+                loader.hide();
             }, function errorCallback(response) {
+                loader.hide();
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
             });
@@ -298,11 +203,12 @@ app.controller("TicketCtrl", ['$scope', '$http',  'orderByFilter',
                         $scope.propertyName = propertyName;
                         $scope.datos = orderBy($scope.datos, $scope.propertyName, $scope.reverse);
                     };
-                    
+                    loader.hide();
                     // when the response is available
                 }, function errorCallback(response) {
                     console.log(response);
-                    alert(response);
+                    loader.hide();
+
                     // called asynchronously if an error occurs
                     // or server returns response with an error status.
                 });
@@ -333,7 +239,7 @@ app.controller("TicketCtrl", ['$scope', '$http',  'orderByFilter',
 
         var urlLista = $("#div_url").attr("urlLista");
 
-        $scope.load_resultados(urlLista);
+        //$scope.load_resultados(urlLista);
 
         $scope.CargarUsuario = function (row) {
             var usuario = new Object();
@@ -391,68 +297,72 @@ app.controller("TicketCtrl", ['$scope', '$http',  'orderByFilter',
 
 
 app.controller('TablaTicket', ['$scope', '$http', function ($scope, $http) {
-        //$scope.loading = true; // Show loading image    
-        $scope.currentPage = 0;
-        $scope.pageSize = 10;
-        $scope.pages = [];
-        $scope.usuarios = [];
-
-
-        $http({
-            method: 'GET',
-            url: "/Tickets/Lista"
-        }).then(function successCallback(response) {
-            // this callback will be called asynchronously
-            $scope.usuarios = response.data;
-            $scope.configPages();
-            //$scope.loading = false; // hide loading image on ajax success
-            // when the response is available
+    //$scope.loading = true; // Show loading image    
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.pages = [];
+    $scope.usuarios = [];
+    loader.show();
+    
+    $http({
+        method: 'GET',
+        url: "/Tickets/Lista"
+    }).then(function successCallback(response) {
+        // this callback will be called asynchronously
+        $scope.usuarios = response.data;
+        $scope.configPages();
+        loader.hide();
+        $("#tbody_index").show();
+        //$scope.loading = false; // hide loading image on ajax success
+        // when the response is available
         }, function errorCallback(response) {
+
             console.log(response);
-            // called asynchronously if an error occurs
-            // or server returns response with an error status.
-        });
-
-
-     
-        $scope.configPages = function () {
-            $scope.pages.length = 0;
-            var ini = $scope.currentPage - 4;
-            var fin = $scope.currentPage + 5;
-            if (ini < 1) {
-                ini = 1;
-                if (Math.ceil($scope.usuarios.length / $scope.pageSize) > 10)
-                    fin = 10;
-                else
-                    fin = Math.ceil($scope.usuarios.length / $scope.pageSize);
-            } else {
-                if (ini >= Math.ceil($scope.usuarios.length / $scope.pageSize) - 10) {
-                    ini = Math.ceil($scope.usuarios.length / $scope.pageSize) - 10;
-                    fin = Math.ceil($scope.usuarios.length / $scope.pageSize);
-                }
-            }
-            if (ini < 1) ini = 1;
-            for (var i = ini; i <= fin; i++) {
-                $scope.pages.push({
-                    no: i
-                });
-            }
-
-            if ($scope.currentPage >= $scope.pages.length)
-                $scope.currentPage = $scope.pages.length - 1;
-        };
-
-        $scope.setPage = function (index) {
-            $scope.currentPage = index - 1;
-            
-        };
-
-    }]).filter('startFromGrid', function () {
-        return function (input, start) {
-            start = +start;
-            return input.slice(start);
-        }
+            loader.hide();
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
     });
+
+
+
+    $scope.configPages = function () {
+        $scope.pages.length = 0;
+        var ini = $scope.currentPage - 4;
+        var fin = $scope.currentPage + 5;
+        if (ini < 1) {
+            ini = 1;
+            if (Math.ceil($scope.usuarios.length / $scope.pageSize) > 10)
+                fin = 10;
+            else
+                fin = Math.ceil($scope.usuarios.length / $scope.pageSize);
+        } else {
+            if (ini >= Math.ceil($scope.usuarios.length / $scope.pageSize) - 10) {
+                ini = Math.ceil($scope.usuarios.length / $scope.pageSize) - 10;
+                fin = Math.ceil($scope.usuarios.length / $scope.pageSize);
+            }
+        }
+        if (ini < 1) ini = 1;
+        for (var i = ini; i <= fin; i++) {
+            $scope.pages.push({
+                no: i
+            });
+        }
+
+        if ($scope.currentPage >= $scope.pages.length)
+            $scope.currentPage = $scope.pages.length - 1;
+    };
+
+    $scope.setPage = function (index) {
+        $scope.currentPage = index - 1;
+
+    };
+
+}]).filter('startFromGrid', function () {
+    return function (input, start) {
+        start = +start;
+        return input.slice(start);
+    }
+});
 
 function autocomplete_planta() {
     $('#cbxPlanta').select2({
@@ -481,7 +391,13 @@ function autocomplete_planta() {
 
 }
 
+function cbxSelect2() {
+    $('.combobox_select2').select2();
+}
+
+
 function autocomplete_comboBox() {
+
     $('.cbx').select2({
         ajax: {
             url: function () {
@@ -498,12 +414,13 @@ function autocomplete_comboBox() {
                 return {
                     results: data,
                 };
+
             }
         },
         placeholder: 'Seleccione un valor..',
-        selectOnClose: true
-    });
 
+    });
+   
 }
 
 function autocomplete_equipoPrincipal(id_planta) {
@@ -583,5 +500,7 @@ function autocomplete_Componente(id_planta, id_equipo_princ, id_equipo_sec) {
         var id_componente = e.params.data.id;
         $("#sel_componente").attr("value", id_componente);
     });
+
+
 
 }

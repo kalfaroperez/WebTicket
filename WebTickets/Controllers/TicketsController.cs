@@ -1477,7 +1477,7 @@ namespace WebTickets.Controllers
                     {
                         Value = item.Id.ToString(),
                         Text = string.Format("{0}", item.Nombre_Prioridad),
-                        Disabled = (item.Id == Id_Prioridad) ? false : true
+                        //Disabled = (item.Id == Id_Prioridad) ? false : true
                     });
 
             }
@@ -1534,7 +1534,7 @@ namespace WebTickets.Controllers
                     {
                         Value = item.Id.ToString(),
                         Text = string.Format("{0}", item.Nombre_Proceso),
-                        Disabled = (item.Id == Id) ? false : true
+                        //Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1588,7 +1588,7 @@ namespace WebTickets.Controllers
                     {
                         Value = item.Id.ToString(),
                         Text = string.Format("{0}", item.Nombre),
-                        Disabled = (item.Id == Id) ? false : true
+                        //Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1643,7 +1643,7 @@ namespace WebTickets.Controllers
                     {
                         Value = item.Id.ToString(),
                         Text = string.Format("{0} - {1} / {2}", item.UserName, item.FullName, item.Area),
-                        Disabled = (item.Id == Id) ? false : true
+                        //Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1762,7 +1762,7 @@ namespace WebTickets.Controllers
                     {
                         Value = item.Id.ToString(),
                         Text = string.Format("{0}", item.Nombre),
-                        Disabled = (item.Id == Id) ? false : true
+                        //Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1786,7 +1786,7 @@ namespace WebTickets.Controllers
                     {
                         Value = item.Id.ToString(),
                         Text = string.Format("{0}", item.Nombre),
-                        Disabled = (item.Id == Id) ? false : true
+                        //Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1864,7 +1864,7 @@ namespace WebTickets.Controllers
                     {
                         Value = item.Id.ToString(),
                         Text = string.Format("{0}", item.Nombre),
-                        Disabled = (item.Id == Id) ? false : true
+                        //Disabled = (item.Id == Id) ? false : true
                     });
 
             }
@@ -1943,7 +1943,7 @@ namespace WebTickets.Controllers
                     {
                         Value = item.Id.ToString(),
                         Text = string.Format("{0}", item.Nombre),
-                        Disabled = (item.Id == Id_Componente) ? false : true
+                        //Disabled = (item.Id == Id_Componente) ? false : true
                     });
 
             }

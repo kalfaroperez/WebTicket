@@ -324,7 +324,7 @@
 						<div class="col-lg-6 col-md-6 col-sm-12">
 							<label asp-for="Prioridad" class="input-sm col-sm-4"></label>
 							<div class="controls col-sm-8">
-								<select class="cbx combobox input-sm" asp-for="Prioridad" url_accion="/Tickets/GetPrioridades_Ajax" asp-items="@Model.Lista_Prioridades">
+								<select class="combobox_select2 combobox input-sm" asp-for="Prioridad" url_accion="/Tickets/GetPrioridades_Ajax" asp-items="@Model.Lista_Prioridades">
 									<option value="0">Seleccione...</option>
 								</select>
 								<span asp-validation-for="Prioridad" class=" text-danger"></span>
@@ -333,7 +333,7 @@
 						<div class="col-lg-6 col-md-6 col-sm-12">
 							<label asp-for="Asignado_A" class="input-sm col-sm-4"></label>
 							<div class="controls col-sm-8">
-								<select class="cbx combobox input-sm" asp-for="Asignado_A" url_accion="/Tickets/GetAsignadoAjax" asp-items="@Model.Lista_Asignados_A">
+								<select class="combobox_select2 combobox input-sm" asp-for="Asignado_A" url_accion="/Tickets/GetAsignadoAjax" asp-items="@Model.Lista_Asignados_A">
 									<option value="0">Seleccione...</option>
 								</select>
 								<span asp-validation-for="Asignado_A" class=" text-danger"></span>
@@ -344,7 +344,7 @@
 						<div class="col-lg-6 col-md-6 col-sm-12">
 							<label asp-for="Proceso" class="input-sm col-sm-4"></label>
 							<div class="controls col-sm-8">
-								<select class="cbx combobox input-sm" asp-for="Proceso" url_accion="/Tickets/GetProcesos_Ajax" asp-items="@Model.Lista_Procesos">
+								<select class="combobox_select2 combobox input-sm" asp-for="Proceso" url_accion="/Tickets/GetProcesos_Ajax" asp-items="@Model.Lista_Procesos">
 									<option value="0">Seleccione...</option>
 								</select>
 								<span asp-validation-for="Proceso" class=" text-danger"></span>
@@ -353,7 +353,7 @@
 						<div class="col-lg-6 col-md-6 col-sm-12">
 							<label asp-for="Tipo_Trabajo" class="input-sm col-sm-4"></label>
 							<div class="controls col-sm-8">
-								<select class="cbx combobox input-sm" asp-for="Tipo_Trabajo" url_accion="/Tickets/GetTipoTrabajoAjax" asp-items="@Model.Lista_Tipo_Trabajos">
+								<select class="combobox_select2 combobox input-sm" asp-for="Tipo_Trabajo" url_accion="/Tickets/GetTipoTrabajoAjax" asp-items="@Model.Lista_Tipo_Trabajos">
 									<option value="0">Seleccione...</option>
 								</select>
 								<span asp-validation-for="Tipo_Trabajo" class=" text-danger"></span>
@@ -405,7 +405,7 @@
 						<div class="col-lg-6 col-md-6 col-sm-12">
 							<label asp-for="Estado" class="input-sm col-sm-4"></label>
 							<div class="controls col-sm-8">
-								<select class="cbx combobox input-sm" asp-for="Estado" url_accion="/Tickets/GetEstadosServicioAjax" asp-items="@Model.Lista_Estados">
+								<select class="combobox_select2 combobox input-sm" asp-for="Estado" url_accion="/Tickets/GetEstadosServicioAjax" asp-items="@Model.Lista_Estados">
 									<option value="0">Seleccione...</option>
 								</select>
 								<span asp-validation-for="Estado" class=" text-danger"></span>
@@ -439,7 +439,7 @@
 						<div class="col-lg-6 col-md-6 col-sm-12">
 							<label asp-for="Calificacion" class="input-sm col-sm-4"></label>
 							<div class="controls col-sm-8">
-								<select id='cbxCalificacion' class="cbx combobox" url_accion="/Tickets/GetCalificacionServicioAjax" asp-for="Calificacion" asp-items="@Model.Lista_Calificaion">
+								<select id='cbxCalificacion' class="combobox_select2 combobox" url_accion="/Tickets/GetCalificacionServicioAjax" asp-for="Calificacion" asp-items="@Model.Lista_Calificaion">
 									<option value="0">Seleccione...</option>
 								</select>
 								<span asp-validation-for="Calificacion" class=" text-danger"></span>
